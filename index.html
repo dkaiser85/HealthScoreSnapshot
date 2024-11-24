@@ -1438,9 +1438,14 @@
                 )
             );
 
+            // Get affiliate reference from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('r') || 'CMRI'; // Default to 'CMRI' if no ref provided
+
             // Prepare the data for submission
             const submissionData = {
                 timestamp: new Date().toISOString(),
+                ref: ref, // Add the affiliate reference
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
@@ -1826,13 +1831,25 @@
             setTimeout(() => popup.remove(), 300);
         }
 
+        // Function to get the affiliate reference from URL
+        function getRefFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('r') || 'direct'; // 'r' is our covert parameter name
+        }
+
+        // Your submit function
         async function submitToGoogleSheets(formData) {
             const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyJKcIixB8maCVWGX5vHSBCMH4_VEEjlYFPiKgd1PxCbYCAQc-iAQxBxFcpFr0FJLZ0BA/exec';
 
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify({
+                        ref: getRefFromURL(), // This captures the affiliate reference
                         name: formData.name,
                         company: formData.company,
                         email: formData.email,
@@ -1841,40 +1858,34 @@
                     })
                 });
 
-                const data = await response.json();
-                if (data.status === 'success') {
-                    console.log('Data successfully saved to Google Sheets');
-                    return true;
-                } else {
-                    console.error('Error saving to Google Sheets:', data.message);
-                    return false;
-                }
+                return true;
             } catch (error) {
                 console.error('Error:', error);
                 return false;
             }
         }
 
-        // Example usage:
-        // Call this function when you want to submit data, for example on form submit
-        const formData = {
-            name: "John Doe",
-            company: "Example Corp",
-            email: "john@example.com",
-            role: "Developer",
-            overallScore: "85"
-        };
+        // Form submission handler
+        document.getElementById('assessmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: e.target.name.value,
+                company: e.target.company.value,
+                email: e.target.email.value,
+                role: e.target.role.value,
+                overallScore: e.target.overallScore.value
+            };
 
-        submitToGoogleSheets(formData)
-            .then(success => {
-                if (success) {
-                    // Handle successful submission
-                    alert('Data submitted successfully!');
-                } else {
-                    // Handle submission failure
-                    alert('Failed to submit data. Please try again.');
-                }
-            });
+            const success = await submitToGoogleSheets(formData);
+            
+            if (success) {
+                alert('Thank you! Your response has been recorded.');
+                e.target.reset();
+            } else {
+                alert('There was an error submitting your response. Please try again.');
+            }
+        });
     </script>
 </body>
 </html>
