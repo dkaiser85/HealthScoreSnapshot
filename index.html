@@ -766,13 +766,18 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            display: flex;
+            display: none;
             align-items: flex-start;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1000;
             padding-top: 5vh;
+        }
+
+        .options-popup.active {
+            display: flex;
+            opacity: 1;
         }
 
         .popup-content {
@@ -1733,31 +1738,36 @@
         function showOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
-            popup.style.opacity = '1';
+            // Add small delay to ensure display: flex is applied before opacity transition
+            setTimeout(() => {
+                popup.classList.add('active');
+            }, 10);
             
-            // Add state to browser history
             window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
-            popup.style.opacity = '0';
+            popup.classList.remove('active');
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
             
-            // Go back in history instead of pushing a new state
             window.history.back();
         }
 
-        // Add popstate event listener after the existing event listeners
+        // Update popstate event listener
         window.addEventListener('popstate', function(event) {
             if (event.state && event.state.showPopup) {
-                showOptionsPopup();
+                const popup = document.getElementById('optionsPopup');
+                popup.style.display = 'flex';
+                setTimeout(() => {
+                    popup.classList.add('active');
+                }, 10);
             } else {
                 const popup = document.getElementById('optionsPopup');
                 if (popup) {
-                    popup.style.opacity = '0';
+                    popup.classList.remove('active');
                     setTimeout(() => {
                         popup.style.display = 'none';
                     }, 300);
