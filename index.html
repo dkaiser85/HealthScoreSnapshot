@@ -1440,11 +1440,8 @@
 
             // Get affiliate reference from URL with explicit default to 'CMRI'
             const urlParams = new URLSearchParams(window.location.search);
-            let ref = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
+            const ref = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
             
-            // Log the ref value for debugging
-            console.log('Affiliate Reference:', ref);
-
             // Prepare the data for submission
             const submissionData = {
                 timestamp: new Date().toISOString(),
@@ -1460,9 +1457,6 @@
                 }))
             };
 
-            // Log the full submission data for debugging
-            console.log('Submission Data:', submissionData);
-
             // Send data to Google Sheet
             fetch('https://script.google.com/macros/s/AKfycbySjFVRIb1roBz6w5v3Gu0-cCNWzgehEpOa2c6hKwVyn56JydMadJgo7AwI6KhD2KJMsg/exec', {
                 method: 'POST',
@@ -1470,7 +1464,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(submissionData)
+                body: JSON.stringify(submissionData)  // Send the full submissionData object
             })
             .then(response => {
                 console.log('Response received:', response);
@@ -1893,4 +1887,3 @@
     </script>
 </body>
 </html>
-
