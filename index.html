@@ -1430,21 +1430,28 @@
                 )
             );
 
-            // Get the affiliate reference from URL
+            // Get form data
+            const name = document.getElementById('name').value;
+            const company = document.getElementById('company').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            
+            // Get affiliate reference from URL
             const urlParams = new URLSearchParams(window.location.search);
             const affiliateReference = urlParams.get('r') || 'CMRI';
 
-            // Create the submission data
+            // Create submission data
             const submissionData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
+                name: name,
+                company: company,
+                email: email,
+                role: role,
                 overallScore: overallPercentage,
-                affiliateReference: affiliateReference  // Add this explicitly
+                affiliateReference: affiliateReference
             };
 
-            console.log('Submission Data:', submissionData); // Debug log
+            // Log the data being sent
+            console.log('Sending data:', submissionData);
 
             // Send to Google Sheets
             fetch('https://script.google.com/macros/s/AKfycbySjFVRIb1roBz6w5v3Gu0-cCNWzgehEpOa2c6hKwVyn56JydMadJgo7AwI6KhD2KJMsg/exec', {
@@ -1457,14 +1464,14 @@
             })
             .then(response => {
                 console.log('Response received:', response);
-                // Continue with creating results page...
+                // Show the results page
                 createResultsPage(scores);
             })
             .catch(error => {
                 console.error('Error:', error);
+                // Still show results even if submission fails
+                createResultsPage(scores);
             });
-
-            // Rest of your results page creation code...
         }
 
         // Show questionnaire function
