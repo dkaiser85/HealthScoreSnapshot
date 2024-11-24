@@ -1572,6 +1572,9 @@
                     left: 0,
                     behavior: 'smooth'
                 });
+                
+                // Show the options popup after scrolling
+                showOptionsPopup();
             }, 100);
 
             console.log('Form Data:', formData);
@@ -1730,8 +1733,6 @@
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
             popup.style.opacity = '1';
-            
-            // Add state to browser history
             window.history.pushState({ showPopup: true }, '');
         }
 
@@ -1741,8 +1742,6 @@
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
-            
-            // Go back in history instead of pushing a new state
             window.history.back();
         }
 
