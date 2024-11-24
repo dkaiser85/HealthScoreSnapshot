@@ -1442,10 +1442,10 @@
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
             
-            // Prepare the data for submission
+            // Prepare the data for submission - ensure order matches Google Sheet columns
             const submissionData = {
                 timestamp: new Date().toISOString(),
-                ref: ref,  // Include ref in submission data
+                affiliateReference: ref,  // Changed key name to match sheet column
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
@@ -1457,18 +1457,19 @@
                 }))
             };
 
-            // Send data to Google Sheet
+            // For debugging - check the data being sent
+            console.log('Submitting data:', submissionData);
+
             fetch('https://script.google.com/macros/s/AKfycbySjFVRIb1roBz6w5v3Gu0-cCNWzgehEpOa2c6hKwVyn56JydMadJgo7AwI6KhD2KJMsg/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(submissionData)  // Send the full submissionData object
+                body: JSON.stringify(submissionData)
             })
             .then(response => {
                 console.log('Response received:', response);
-                // Note: With mode: 'no-cors', we can't check response.ok
                 return response.text();
             })
             .then(data => {
@@ -1717,7 +1718,7 @@
                 return `
                     <h3 style="color: #5EBD77; margin-bottom: 1rem;">Strong but Needing Growth</h3>
                     <p style="line-height: 1.6; color: #333;">
-                        Your Organizational Health Snapshot™ reflects a healthy organization with many systems functioning well. 
+                        Your Organizational Health Snapshot��� reflects a healthy organization with many systems functioning well. 
                         However, even strong results can mask critical areas for improvement. Addressing overlooked 
                         opportunities can push productivity and profitability even higher. Stay vigilant and refine 
                         your strategy to ensure your organization operates at its peak potential.
