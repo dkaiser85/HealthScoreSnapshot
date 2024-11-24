@@ -1388,7 +1388,15 @@
             });
         }
 
-        // Handle form submission
+        // Add this function at the start to get affiliate code
+        function getAffiliateCode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            console.log('URL Ref Code:', refCode); // Debug log
+            return refCode || 'CMRI';
+        }
+
+        // Update handleFormSubmit function
         function handleFormSubmit() {
             console.log('Processing form submission');
             
@@ -1396,12 +1404,18 @@
             document.querySelectorAll('.question-item').forEach(item => {
                 item.classList.remove('unanswered');
             });
+
+            // Get affiliate code first
+            const affiliateCode = getAffiliateCode();
+            console.log('Using affiliate code:', affiliateCode); // Debug log
+            
             // Collect initial form data
             let formData = {
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
-                role: document.getElementById('role').value
+                role: document.getElementById('role').value,
+                affiliateCode: affiliateCode // Set affiliate code here
             };
 
             // Collect all scores
@@ -1422,14 +1436,6 @@
                 }
             });
 
-            // Validate
-            if (unansweredQuestions.length > 0) {
-                const questionList = unansweredQuestions.join(', ');
-                const isPlural = unansweredQuestions.length > 1;
-                alert(`Please answer question${isPlural ? 's' : ''} ${questionList} before submitting.`);
-                return;
-            }
-
             // Calculate overall percentage
             const overallPercentage = Math.round(
                 calculateScores.getOverallScore(
@@ -1437,21 +1443,15 @@
                 )
             );
 
-            // Get and validate affiliate code
-            const urlParams = new URLSearchParams(window.location.search);
-            const affiliateCode = urlParams.get('ref');
-            
-            // Update form data with CMRI as default
+            // Update form data with all fields
             formData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
+                ...formData,
                 scores: scores,
                 overallScore: overallPercentage,
-                affiliateCode: affiliateCode || 'CMRI', // Default to CMRI
                 submissionDate: new Date().toISOString()
             };
+
+            console.log('Final Form Data:', formData); // Debug log
 
             // Submit to Google Sheet
             submitToGoogleSheet(formData);
@@ -1583,15 +1583,17 @@
             console.log('Overall Percentage:', overallPercentage);
         }
 
+        // Update submitToGoogleSheet function
         function submitToGoogleSheet(data) {
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
             
             const submissionData = {
                 ...data,
-                affiliateCode: data.affiliateCode || 'CMRI', // Default to CMRI
                 source: window.location.href,
                 referrer: document.referrer || 'CMRI'
             };
+            
+            console.log('Submitting data:', submissionData); // Debug log
             
             fetch(scriptUrl, {
                 method: 'POST',
