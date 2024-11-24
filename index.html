@@ -1024,19 +1024,19 @@
             <div class="personal-info">
                 <div class="form-group">
                     <label for="name">Name*</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" name="name" autocomplete="name" required>
                 </div>
                 <div class="form-group">
                     <label for="company">Company*</label>
-                    <input type="text" id="company" required>
+                    <input type="text" id="company" name="company" autocomplete="organization" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email*</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" autocomplete="email" required>
                 </div>
                 <div class="form-group">
                     <label for="role">Job Role*</label>
-                    <input type="text" id="role" required>
+                    <input type="text" id="role" name="role" autocomplete="organization-title" required>
                 </div>
             </div>
 
@@ -1074,6 +1074,31 @@
     </div>
 
     <script>
+        // Add this function at the top of your script
+        function getAffiliateCode() {
+            try {
+                // First try to get ref from current URL
+                const urlParams = new URLSearchParams(window.location.search);
+                let refCode = urlParams.get('ref');
+
+                // If no ref in current URL, try parent URL
+                if (!refCode && document.referrer) {
+                    const parentUrl = new URL(document.referrer);
+                    const parentParams = new URLSearchParams(parentUrl.search);
+                    refCode = parentParams.get('ref');
+                }
+
+                console.log('URL Parameters:', window.location.search);
+                console.log('Parent URL:', document.referrer);
+                console.log('Detected affiliate code:', refCode);
+
+                return refCode || 'CMRI';
+            } catch (e) {
+                console.error('Error getting affiliate code:', e);
+                return 'CMRI';
+            }
+        }
+
         // Basic JavaScript to add questions and handle ratings
         const questions = [
             {
@@ -1388,44 +1413,21 @@
             });
         }
 
-        // Add this function at the start to get affiliate code
-        function getAffiliateCode() {
-            try {
-                // Try to get ref from parent URL (Showit page)
-                const parentUrl = new URL(document.referrer);
-                const parentParams = new URLSearchParams(parentUrl.search);
-                const refCode = parentParams.get('ref');
-                
-                console.log('Parent URL:', document.referrer);
-                console.log('Affiliate code from parent:', refCode);
-                
-                // Add more detailed logging
-                const finalCode = refCode || 'CMRI';
-                console.log('Final affiliate code being used:', finalCode);
-                return finalCode;
-            } catch (e) {
-                console.log('Error getting parent ref:', e);
-                return 'CMRI';
-            }
-        }
-
-        // Update handleFormSubmit to use this
+        // Update your handleFormSubmit function
         function handleFormSubmit() {
-            console.log('Processing form submission');
-            
-            // Get affiliate code from parent URL
             const affiliateCode = getAffiliateCode();
             console.log('Using affiliate code:', affiliateCode);
-            
-            // Collect initial form data
+
             let formData = {
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
                 role: document.getElementById('role').value,
-                affiliateCode: affiliateCode,
+                affiliateCode: affiliateCode,  // Make sure this is set
                 submissionDate: new Date().toISOString()
             };
+
+            console.log('Form data before submission:', formData);
 
             // Collect all scores
             const scores = [];
@@ -1592,20 +1594,24 @@
             console.log('Overall Percentage:', overallPercentage);
         }
 
-        // Update submitToGoogleSheet function
+        // Update your submitToGoogleSheet function
         function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbxkC9t3KOGF5_6yViyQxxD7amxc1VNMQjFnAbqdJzEZykSz4g0zt8Zaxp8gyTPutCTB/exec';
+            const scriptUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
             
-            // Log the data before sending
-            console.log('Data being sent to Google Sheet:', data);
+            const submissionData = {
+                ...data,
+                affiliateCode: data.affiliateCode || 'CMRI',  // Ensure affiliate code is set
+            };
+            
+            console.log('Final data being sent:', submissionData);
             
             fetch(scriptUrl, {
                 method: 'POST',
-                body: JSON.stringify(data)
+                body: JSON.stringify(submissionData)
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
+                console.log('Success response:', data);
             })
             .catch((error) => {
                 console.error('Error:', error);
