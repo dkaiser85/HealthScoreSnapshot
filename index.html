@@ -1390,24 +1390,29 @@
 
         // Add this function at the start to get affiliate code
         function getAffiliateCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI';
+            try {
+                // Try to get ref from parent URL (Showit page)
+                const parentUrl = new URL(document.referrer);
+                const parentParams = new URLSearchParams(parentUrl.search);
+                const refCode = parentParams.get('ref');
+                
+                console.log('Parent URL:', document.referrer);
+                console.log('Affiliate code from parent:', refCode);
+                
+                return refCode || 'CMRI';
+            } catch (e) {
+                console.log('Error getting parent ref:', e);
+                return 'CMRI';
+            }
         }
 
-        // Update handleFormSubmit function
+        // Update handleFormSubmit to use this
         function handleFormSubmit() {
             console.log('Processing form submission');
             
-            // First, remove any existing unanswered markers
-            document.querySelectorAll('.question-item').forEach(item => {
-                item.classList.remove('unanswered');
-            });
-
-            // Get affiliate code first
+            // Get affiliate code from parent URL
             const affiliateCode = getAffiliateCode();
-            console.log('Using affiliate code:', affiliateCode); // Debug log
+            console.log('Using affiliate code:', affiliateCode);
             
             // Collect initial form data
             let formData = {
@@ -1415,7 +1420,8 @@
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
                 role: document.getElementById('role').value,
-                affiliateCode: affiliateCode // Set affiliate code here
+                affiliateCode: affiliateCode,
+                submissionDate: new Date().toISOString()
             };
 
             // Collect all scores
