@@ -474,12 +474,35 @@
             background: #fff;
             border: 2px solid var(--primary-color-light);
         }
+
+        .score-message {
+            margin-top: 2rem;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-message h3 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .score-message p {
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Culture Snapshot Scorecard</h1>
+            <h1>Organizational Health Snapshot™</h1>
             <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
         </header>
         
@@ -697,7 +720,7 @@
             const resultsHTML = `
                 <div class="results-container">
                     <div class="overall-score">
-                        <h2>Your Culture Snapshot Results</h2>
+                        <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
                             <svg width="195" height="195" viewBox="0 0 195 195">
                                 <path class="gauge__background" 
@@ -717,13 +740,19 @@
                                       id="engagementText">0%</text>
                             </svg>
                         </div>
+                        
+                        <!-- Add conditional message -->
+                        <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            ${getScoreMessage(overallPercentage)}
+                        </div>
                     </div>
                     
                     <!-- Add CTA section after the gauge -->
                     <div class="cta-section">
-                        <h3>Ready for a deeper analysis of your culture costs?</h3>
-                        <p>Schedule a demo to see how The Culture MRI can help you understand and optimize your cultural investment.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
+                        <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Your Demo Now</a>
+                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
                     <!-- Rest of your results page content -->
@@ -749,9 +778,9 @@
                     
                     <!-- Add another CTA at the bottom -->
                     <div class="cta-section bottom">
-                        <h3>Transform these insights into actionable strategies</h3>
-                        <p>Book a demo to discover how The Culture MRI can help you maximize your cultural ROI.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
+                        <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Discover ROI Opportunities</a>
                     </div>
 
                     <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
@@ -856,7 +885,7 @@
             container.innerHTML = `
                 <div class="results-container">
                     <div class="overall-score">
-                        <h2>Your Culture Snapshot Results</h2>
+                        <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
                             <svg width="195" height="195" viewBox="0 0 195 195">
                                 <path class="gauge__background" 
@@ -876,12 +905,18 @@
                                       id="engagementText">0%</text>
                             </svg>
                         </div>
+                        
+                        <!-- Add conditional message -->
+                        <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            ${getScoreMessage(overallPercentage)}
+                        </div>
                     </div>
                     
                     <div class="cta-section">
-                        <h3>Ready for a deeper analysis of your culture costs?</h3>
-                        <p>Schedule a demo to see how The Culture MRI can help you understand and optimize your cultural investment.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
+                        <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Your Demo Now</a>
+                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
                     <div class="individual-scores">
@@ -905,9 +940,9 @@
                     </div>
                     
                     <div class="cta-section bottom">
-                        <h3>Transform these insights into actionable strategies</h3>
-                        <p>Book a demo to discover how The Culture MRI can help you maximize your cultural ROI.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
+                        <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Discover ROI Opportunities</a>
                     </div>
 
                     <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
@@ -956,6 +991,41 @@
                     message: "Congratulations! Your strong culture score shows great leadership. Let's discuss how to maintain and build upon this success.",
                     nextSteps: ["Schedule a maintenance review", "Get our Culture Leadership Guide", "Become a case study"]
                 };
+            }
+        }
+
+        function getScoreMessage(percentage) {
+            if (percentage <= 50) {
+                return `
+                    <h3 style="color: #ED5C5C; margin-bottom: 1rem;">Critical Condition</h3>
+                    <p style="line-height: 1.6; color: #333;">
+                        Your Organizational Health Snapshot™ indicates urgent challenges requiring immediate attention. 
+                        Low scores suggest unmet employee needs, misalignment, and significant risks to productivity 
+                        and profitability. Addressing these issues quickly can stabilize operations, reengage your 
+                        workforce, and recover lost potential. Act now to begin transforming your organizational 
+                        health into a competitive advantage.
+                    </p>
+                `;
+            } else if (percentage <= 84) {
+                return `
+                    <h3 style="color: #DFD691; margin-bottom: 1rem;">At Risk and Needing Growth</h3>
+                    <p style="line-height: 1.6; color: #333;">
+                        Your Organizational Health Snapshot™ reveals areas of concern that require proactive intervention. 
+                        While some systems are stable, gaps in meeting employee needs and optimizing performance place 
+                        your organization at risk of declining productivity and profitability. Timely action to address 
+                        these vulnerabilities can create a path toward stronger alignment, engagement, and growth.
+                    </p>
+                `;
+            } else {
+                return `
+                    <h3 style="color: #5EBD77; margin-bottom: 1rem;">Strong but Needing Growth</h3>
+                    <p style="line-height: 1.6; color: #333;">
+                        Your Organizational Health Snapshot™ reflects a healthy organization with many systems functioning well. 
+                        However, even strong results can mask critical areas for improvement. Addressing overlooked 
+                        opportunities can push productivity and profitability even higher. Stay vigilant and refine 
+                        your strategy to ensure your organization operates at its peak potential.
+                    </p>
+                `;
             }
         }
     </script>
