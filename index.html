@@ -1438,6 +1438,36 @@
                 )
             );
 
+            // Prepare the data for submission
+            const submissionData = {
+                timestamp: new Date().toISOString(),
+                name: document.getElementById('name').value,
+                company: document.getElementById('company').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                overallScore: overallPercentage,
+                individualScores: scores.map((score, index) => ({
+                    category: questions[index].title,
+                    score: Math.round(calculateScores.toPercentage(score))
+                }))
+            };
+
+            // Send data to Google Sheet
+            fetch('https://script.google.com/macros/s/AKfycbySjFVRIb1roBz6w5v3Gu0-cCNWzgehEpOa2c6hKwVyn56JydMadJgo7AwI6KhD2KJMsg/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(submissionData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
             // Create results HTML
             const container = document.querySelector('.container');
             container.innerHTML = `
