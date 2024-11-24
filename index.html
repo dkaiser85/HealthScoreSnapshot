@@ -1455,12 +1455,19 @@
             // Send data to Google Sheet
             fetch('https://script.google.com/macros/s/AKfycbySjFVRIb1roBz6w5v3Gu0-cCNWzgehEpOa2c6hKwVyn56JydMadJgo7AwI6KhD2KJMsg/exec', {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(submissionData)
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response received:', response);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
             .then(data => {
                 console.log('Success:', data);
             })
@@ -1818,6 +1825,56 @@
             popup.classList.remove('active');
             setTimeout(() => popup.remove(), 300);
         }
+
+        async function submitToGoogleSheets(formData) {
+            const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyJKcIixB8maCVWGX5vHSBCMH4_VEEjlYFPiKgd1PxCbYCAQc-iAQxBxFcpFr0FJLZ0BA/exec';
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: formData.name,
+                        company: formData.company,
+                        email: formData.email,
+                        role: formData.role,
+                        overallScore: formData.overallScore
+                    })
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    console.log('Data successfully saved to Google Sheets');
+                    return true;
+                } else {
+                    console.error('Error saving to Google Sheets:', data.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        // Example usage:
+        // Call this function when you want to submit data, for example on form submit
+        const formData = {
+            name: "John Doe",
+            company: "Example Corp",
+            email: "john@example.com",
+            role: "Developer",
+            overallScore: "85"
+        };
+
+        submitToGoogleSheets(formData)
+            .then(success => {
+                if (success) {
+                    // Handle successful submission
+                    alert('Data submitted successfully!');
+                } else {
+                    // Handle submission failure
+                    alert('Failed to submit data. Please try again.');
+                }
+            });
     </script>
 </body>
 </html>
