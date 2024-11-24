@@ -1362,6 +1362,64 @@
         document.addEventListener('DOMContentLoaded', function() {
             originalFormHTML = document.querySelector('.container').innerHTML;
             initializeForm();
+
+            // Add new form submission handler
+            const form = document.getElementById("cultureForm");
+            
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                // Collect user input
+                const name = document.getElementById("name").value;
+                const company = document.getElementById("company").value;
+                const email = document.getElementById("email").value;
+                const role = document.getElementById("role").value;
+
+                // Collect scores
+                const scores = Array.from(document.querySelectorAll(".rating-button.selected")).map((button) =>
+                    parseInt(button.textContent)
+                );
+                const overallScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
+
+                // Determine Affiliate Reference
+                const referrer = document.referrer;
+                const affiliateReference = referrer.includes("dkaiser85.github.io/HealthScoreSnapshot") ? "CMRI" : "Unknown";
+
+                // Prepare data
+                const data = {
+                    name,
+                    company,
+                    email,
+                    role,
+                    affiliateReference,
+                    scores,
+                    overallScore,
+                };
+
+                try {
+                    // Send to Google Sheets
+                    const response = await fetch("Yhttps://script.google.com/macros/s/AKfycbwOSCsNqVAyXWUUQb-OPLyfZ_DYr3kmkWbYHTSW_jnon2qNQWCpnlIPzVRk5Ke7pjK_WQ/exec", { // Replace with your Web App URL
+                        method: "POST",
+                        body: JSON.stringify(data),
+                        headers: { "Content-Type": "application/json" },
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        console.log("Results submitted successfully");
+                        // Continue with existing form submission logic
+                        handleFormSubmit();
+                    } else {
+                        console.error("Submission failed");
+                        alert("There was an issue submitting your results. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Submission error:", error);
+                    // Continue with form submission even if Google Sheets fails
+                    handleFormSubmit();
+                }
+            });
         });
 
         // Initialize form and add event listeners
