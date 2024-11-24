@@ -113,19 +113,19 @@
         .rating-scale {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 5px;
+            gap: 2px;
             margin-top: 0.5rem;
         }
 
         .rating-button {
             width: 100%;
             aspect-ratio: 1;
-            padding: 5px;
+            padding: 2px;
             border: 1px solid #ddd;
             background: white;
             cursor: pointer;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 12px;
             transition: all 0.2s ease-in-out;
             position: relative;
             font-family: 'Inter', sans-serif;
@@ -502,6 +502,187 @@
             color: #333;
             margin: 0;
         }
+
+        /* Add specific mobile adjustments */
+        @media (max-width: 320px) {
+            .rating-scale {
+                gap: 1px;
+            }
+            
+            .rating-button {
+                padding: 1px;
+                font-size: 11px;
+                border-radius: 2px;
+            }
+            
+            .question-item {
+                padding: 0.75rem;
+            }
+        }
+
+        .recommendations {
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+
+        .recommendations h3 {
+            color: #173248;
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .recommendations p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+
+        .recommendations li {
+            margin-bottom: 1.25rem;
+            padding-left: 1.75rem;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .recommendations li:before {
+            content: "→";  /* Changed to arrow for more strategic feel */
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .recommendations li strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: block;  /* Put each header on its own line */
+            margin-bottom: 0.25rem;
+        }
+
+        .recommendation-footer {
+            font-weight: 500;
+            color: #173248;
+            text-align: center;
+            margin: 2rem 0 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .recommendations {
+                padding: 1.5rem;
+                margin: 2rem auto;
+            }
+            
+            .recommendations h3 {
+                font-size: 1.25rem;
+            }
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: 300;
+            color: #666;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .close-button:hover {
+            background: rgba(0,0,0,0.05);
+            color: #333;
+            transform: scale(1.1);
+        }
+
+        .results-container {
+            position: relative;
+        }
+
+        .options-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .popup-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .popup-option {
+            padding: 1rem;
+            background: #f8f8f8;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .popup-option:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .popup-close {
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            border: none;
+            background: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .popup-content {
+                width: 85%;
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -687,6 +868,11 @@
             const fillElement = document.getElementById('engagementFill');
             const textElement = document.getElementById('engagementText');
             
+            if (!fillElement || !textElement) {
+                console.error('Gauge elements not found');
+                return;
+            }
+            
             // Calculate the stroke color based on percentage
             let strokeColor;
             if (percentage <= 50) {
@@ -701,13 +887,12 @@
             fillElement.setAttribute('stroke', strokeColor);
             
             // Calculate the dash offset for 270 degrees arc
-            // 270 degrees = 75% of the full circle (360 degrees)
             const pathLength = 367.566;
             const maxPercent = 270 / 360; // Use 270 degrees instead of full circle
             const percentageAdjusted = (percentage / 100) * maxPercent;
             const dashArray = `${pathLength * percentageAdjusted} ${pathLength}`;
             
-            // Set the dash array directly instead of using offset
+            // Set the dash array
             fillElement.style.strokeDasharray = dashArray;
             
             // Update the text
@@ -722,8 +907,12 @@
                 )
             );
             
+            const recommendationsHTML = getRecommendations(overallPercentage);
+            
             const resultsHTML = `
                 <div class="results-container">
+                    <div class="close-button" onclick="showOptionsPopup()">×</div>
+                    
                     <div class="overall-score">
                         <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
@@ -763,22 +952,31 @@
                     <!-- Rest of your results page content -->
                     <div class="individual-scores">
                         <h3>Detailed Breakdown</h3>
-                        ${scores.map((score, index) => {
-                            const percentage = calculateScores.toPercentage(score);
-                            const roundedPercentage = Math.round(percentage);
-                            const color = calculateScores.getColor(roundedPercentage);
-                            return `
-                                <div class="score-section">
-                                    <div class="score-header">
-                                        <h4>${questions[index].title}</h4>
-                                        <span class="score-value">${roundedPercentage}%</span>
+                        ${scores
+                            // Create array of objects with score and question info
+                            .map((score, index) => ({
+                                score: score,
+                                percentage: Math.round(calculateScores.toPercentage(score)),
+                                title: questions[index].title,
+                                description: questions[index].description
+                            }))
+                            // Sort from lowest to highest score
+                            .sort((a, b) => a.percentage - b.percentage)
+                            // Generate HTML for each score
+                            .map(item => {
+                                const color = calculateScores.getColor(item.percentage);
+                                return `
+                                    <div class="score-section">
+                                        <div class="score-header">
+                                            <h4>${item.title}</h4>
+                                            <span class="score-value">${item.percentage}%</span>
+                                        </div>
+                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
+                                        </div>
+                                        <p class="score-description">${item.description}</p>
                                     </div>
-                                    <div class="pill-gauge" style="--percentage: ${roundedPercentage}; --color: ${color}">
-                                    </div>
-                                    <p class="score-description">${questions[index].description}</p>
-                                </div>
-                            `;
-                        }).join('')}
+                                `;
+                            }).join('')}
                     </div>
                     
                     <!-- Add another CTA at the bottom -->
@@ -788,7 +986,18 @@
                         <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Discover ROI Opportunities</a>
                     </div>
 
-                    <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
+                    <div id="optionsPopup" class="options-popup">
+                        <div class="popup-content">
+                            <h3>What would you like to do next?</h3>
+                            <div class="popup-options">
+                                <a href="#" onclick="showQuestionnaire(); hideOptionsPopup(); return false;" class="popup-option">Take The Health Snapshot™ Again</a>
+                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule A Demo</a>
+                                <a href="https://theculturemri.com/assessment" class="popup-option">Take The Assessment</a>
+                                <a href="https://theculturemri.com/book" class="popup-option">Read The Book</a>
+                            </div>
+                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
+                        </div>
+                    </div>
                 </div>
             `;
 
@@ -885,10 +1094,12 @@
                 )
             );
 
-            // Create results HTML with the gauge
+            // Create results HTML
             const container = document.querySelector('.container');
             container.innerHTML = `
                 <div class="results-container">
+                    <div class="close-button" onclick="showOptionsPopup()">×</div>
+                    
                     <div class="overall-score">
                         <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
@@ -926,22 +1137,31 @@
 
                     <div class="individual-scores">
                         <h3>Detailed Breakdown</h3>
-                        ${scores.map((score, index) => {
-                            const percentage = calculateScores.toPercentage(score);
-                            const roundedPercentage = Math.round(percentage);
-                            const color = calculateScores.getColor(roundedPercentage);
-                            return `
-                                <div class="score-section">
-                                    <div class="score-header">
-                                        <h4>${questions[index].title}</h4>
-                                        <span class="score-value">${roundedPercentage}%</span>
+                        ${scores
+                            // Create array of objects with score and question info
+                            .map((score, index) => ({
+                                score: score,
+                                percentage: Math.round(calculateScores.toPercentage(score)),
+                                title: questions[index].title,
+                                description: questions[index].description
+                            }))
+                            // Sort from lowest to highest score
+                            .sort((a, b) => a.percentage - b.percentage)
+                            // Generate HTML for each score
+                            .map(item => {
+                                const color = calculateScores.getColor(item.percentage);
+                                return `
+                                    <div class="score-section">
+                                        <div class="score-header">
+                                            <h4>${item.title}</h4>
+                                            <span class="score-value">${item.percentage}%</span>
+                                        </div>
+                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
+                                        </div>
+                                        <p class="score-description">${item.description}</p>
                                     </div>
-                                    <div class="pill-gauge" style="--percentage: ${roundedPercentage}; --color: ${color}">
-                                    </div>
-                                    <p class="score-description">${questions[index].description}</p>
-                                </div>
-                            `;
-                        }).join('')}
+                                `;
+                            }).join('')}
                     </div>
                     
                     <div class="cta-section bottom">
@@ -950,14 +1170,38 @@
                         <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Discover ROI Opportunities</a>
                     </div>
 
-                    <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
+                    <div id="optionsPopup" class="options-popup">
+                        <div class="popup-content">
+                            <h3>What would you like to do next?</h3>
+                            <div class="popup-options">
+                                <a href="#" onclick="showQuestionnaire(); hideOptionsPopup(); return false;" class="popup-option">Take The Health Snapshot™ Again</a>
+                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule A Demo</a>
+                                <a href="https://theculturemri.com/assessment" class="popup-option">Take The Assessment</a>
+                                <a href="https://theculturemri.com/book" class="popup-option">Read The Book</a>
+                            </div>
+                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
+                        </div>
+                    </div>
                 </div>
             `;
 
-            // Add a small delay to allow the DOM to update before animating the gauge
+            // Add this block after setting innerHTML
             setTimeout(() => {
+                // Scroll to top
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
+                // Backup scroll to element
+                document.querySelector('.results-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Animate the gauge with the actual percentage
                 updateRadialGauge(overallPercentage);
-            }, 100);
+            }, 100); // Increased timeout to ensure DOM is ready
 
             console.log('Form Data:', formData);
             console.log('Scores:', scores);
@@ -977,25 +1221,76 @@
             return 'Good';
         }
 
-        function getRecommendations(score) {
-            if (score < 50) {
-                return {
-                    level: "Immediate Action Needed",
-                    message: "Your culture score indicates significant opportunities for improvement. Our team can help you develop a strategic plan to address key areas.",
-                    nextSteps: ["Schedule a consultation", "Get our Culture Quick-Fix Guide", "Join our next webinar"]
-                };
-            } else if (score < 85) {
-                return {
-                    level: "Growth Opportunity",
-                    message: "You're on the right track, but there's room for optimization. Let's discuss how to take your culture to the next level.",
-                    nextSteps: ["Book a strategy session", "Download our Culture Optimization Playbook", "Join our community"]
-                };
+        function getRecommendations(percentage) {
+            if (percentage <= 50) {
+                return `
+                    <div class="recommendations">
+                        <h3>Priority Action Steps</h3>
+                        <p>Your Organizational Health Snapshot™ results indicate critical areas requiring immediate attention to protect and improve business performance:</p>
+                        <ul>
+                            <li>
+                                <strong>Urgent Intervention:</strong> 
+                                Address significant cultural gaps that are impacting productivity, engagement, and retention
+                            </li>
+                            <li>
+                                <strong>Risk Mitigation:</strong> 
+                                Implement immediate strategies to realign teams and stabilize operational effectiveness
+                            </li>
+                            <li>
+                                <strong>Recovery Planning:</strong> 
+                                Develop a structured approach to rebuild cultural foundations and restore business performance
+                            </li>
+                        </ul>
+                        <p class="recommendation-footer">Don't let cultural challenges limit your business potential.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Get Your Full Culture MRI® Analysis</a>
+                    </div>
+                `;
+            } else if (percentage <= 84) {
+                return `
+                    <div class="recommendations">
+                        <h3>Growth Opportunities</h3>
+                        <p>Your Organizational Health Snapshot™ reveals key opportunities to strengthen your culture and enhance business outcomes:</p>
+                        <ul>
+                            <li>
+                                <strong>Performance Enhancement:</strong> 
+                                Target specific areas where improved alignment can drive stronger team performance
+                            </li>
+                            <li>
+                                <strong>Engagement Optimization:</strong> 
+                                Strengthen key cultural drivers to boost employee satisfaction and productivity
+                            </li>
+                            <li>
+                                <strong>Strategic Planning:</strong> 
+                                Create a roadmap to transform moderate performance into exceptional results
+                            </li>
+                        </ul>
+                        <p class="recommendation-footer">Ready to unlock your organization's full potential?</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Get Your Full Culture MRI® Analysis</a>
+                    </div>
+                `;
             } else {
-                return {
-                    level: "Excellence",
-                    message: "Congratulations! Your strong culture score shows great leadership. Let's discuss how to maintain and build upon this success.",
-                    nextSteps: ["Schedule a maintenance review", "Get our Culture Leadership Guide", "Become a case study"]
-                };
+                return `
+                    <div class="recommendations">
+                        <h3>Excellence Acceleration</h3>
+                        <p>Your Organizational Health Snapshot™ shows strong foundations. Here's how to leverage your cultural strengths for even greater success:</p>
+                        <ul>
+                            <li>
+                                <strong>Innovation Opportunities:</strong> 
+                                Identify advanced strategies to push performance boundaries and maximize team potential
+                            </li>
+                            <li>
+                                <strong>Competitive Advantage:</strong> 
+                                Further strengthen your cultural differentiators to maintain market leadership
+                            </li>
+                            <li>
+                                <strong>Sustainable Growth:</strong> 
+                                Develop frameworks to ensure continued excellence and scalable success
+                            </li>
+                        </ul>
+                        <p class="recommendation-footer">Discover how to transform strong performance into market dominance.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Get Your Full Culture MRI® Analysis</a>
+                    </div>
+                `;
             }
         }
 
@@ -1033,6 +1328,30 @@
                 `;
             }
         }
+
+        // Add these JavaScript functions:
+        function showOptionsPopup() {
+            const popup = document.getElementById('optionsPopup');
+            popup.style.display = 'flex';
+            popup.style.opacity = '1';
+        }
+
+        function hideOptionsPopup() {
+            const popup = document.getElementById('optionsPopup');
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+
+        // Add click outside to close functionality
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('optionsPopup');
+            const popupContent = document.querySelector('.popup-content');
+            if (event.target === popup) {
+                hideOptionsPopup();
+            }
+        });
     </script>
 </body>
 </html>
