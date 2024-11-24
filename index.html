@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Culture Snapshot Scorecard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Embed CSS directly in HTML for now -->
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary-color: #5B5FC7;
+            --background-color: #f5f5f5;
+            --primary-color-light: rgba(91, 95, 199, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .personal-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
+        }
+
+        .assessment-grid {
+            margin-top: 2rem;
+        }
+
+        .scale-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0 2rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .question-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .question-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .question-item.unanswered {
+            border: 2px solid #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        .question-text {
+            font-size: 14px;
+            line-height: 1.4;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .rating-scale {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 0.5rem;
+        }
+
+        .rating-button {
+            width: 100%;
+            aspect-ratio: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .rating-button:hover {
+            background-color: var(--primary-color-light);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(91, 95, 199, 0.2);
+        }
+
+        .rating-button.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: scale(1);
+            box-shadow: 0 2px 4px rgba(91, 95, 199, 0.3);
+        }
+
+        .rating-button:active {
+            transform: scale(0.95);
+        }
+
+        button[type="submit"] {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        button[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            color: #000000;
+            font-size: 2rem;
+            margin: 0 0 1rem 0;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .logo {
+            max-width: 250px;
+            height: auto;
+            margin: 1rem 0 2rem 0;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .personal-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .question-text {
+                font-size: 13px;
+            }
+        }
+
+        .score-summary {
+            display: none;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .average-score {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Add style for the instruction text */
+        .instruction-text {
+            text-align: center;
+            margin: 2rem 0;
+            color: #333; 
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Results Page Styles */
+        .results-container {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Clean 270-degree Gauge Styles */
+        .gauge {
+            position: relative;
+            width: 195px;
+            height: 195px;
+            margin: 2rem auto;
+        }
+
+        .gauge__background {
+            fill: none;
+            stroke: #f0f0f0;
+            stroke-width: 15;
+            stroke-linecap: round;
+        }
+
+        .gauge__fill {
+            fill: none;
+            stroke-width: 15;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        /* Add status text below percentage */
+        .status {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            color: #64748B; /* Grey color for status */
+            margin: 0;
+        }
+
+        /* Container styling */
+        .overall-score {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .overall-score h3 {
+            margin-top: 2rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        /* Pill Gauges */
+        .score-pill {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .question-label {
+            width: 120px;
+            font-weight: 500;
+        }
+
+        .pill-gauge {
+            height: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+            position: relative;
+        }
+
+        .pill-gauge::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: calc(var(--percentage) * 1%);
+            background: var(--color);
+            border-radius: 6px;
+            transition: width 1s ease-in-out;
+        }
+
+        .pill-value {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #333;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        /* Updated styles for individual scores */
+        .individual-scores {
+            margin-top: 3rem;
+        }
+
+        .score-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .score-header h4 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .score-value {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .pill-gauge {
+            height: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0.75rem 0;
+            position: relative;
+        }
+
+        .pill-gauge::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: calc(var(--percentage) * 1%);
+            background: var(--color);
+            border-radius: 6px;
+            transition: width 1s ease-in-out;
+        }
+
+        .score-description {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #666;
+            margin: 0.75rem 0 0 0;
+        }
+
+        .return-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+
+        .return-button:hover {
+            opacity: 0.9;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .percentage {
+            font-family: 'Inter', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-section {
+            background: var(--primary-color-light);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-section h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(91, 95, 199, 0.2);
+        }
+
+        .cta-section.bottom {
+            background: #fff;
+            border: 2px solid var(--primary-color-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Culture Snapshot Scorecard</h1>
+            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
+        </header>
+        
+        <form id="cultureForm">
+            <div class="personal-info">
+                <div class="form-group">
+                    <label for="name">Name*</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">Company*</label>
+                    <input type="text" id="company" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email*</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Job Role*</label>
+                    <input type="text" id="role" required>
+                </div>
+            </div>
+
+            <div class="instruction-text">
+                Indicate the degree to which you agree or disagree with these statements:
+            </div>
+
+            <div class="assessment-grid">
+                <div class="scale-header">
+                    <span>DISAGREE</span>
+                    <span>AGREE</span>
+                </div>
+                
+                <div class="question-group">
+                    <!-- Questions will be added via JavaScript -->
+                </div>
+            </div>
+
+            <button type="submit">See Your Snapshot</button>
+        </form>
+
+        <div class="score-summary" style="display: none;">
+            <h2>Assessment Summary</h2>
+            <div class="summary-grid">
+                <div class="average-score">
+                    <h3>Average Score</h3>
+                    <div class="score-circle"></div>
+                </div>
+                <div class="score-breakdown">
+                    <h3>Breakdown by Category</h3>
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basic JavaScript to add questions and handle ratings
+        const questions = [
+            {
+                text: "We have a clear picture of our cost of culture...",
+                title: "Understanding Cultural Costs",
+                description: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
+            },
+            {
+                text: "We have clear metrics in place to determine the profit impact...",
+                title: "HR Metrics and Profit Impact",
+                description: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
+            },
+            {
+                text: "Our mission, vision and values are easily translated...",
+                title: "Mission, Vision, and Values in Action",
+                description: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
+            },
+            {
+                text: "We are confident that we are maximizing our efforts...",
+                title: "Managing Employee Turnover Costs",
+                description: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
+            },
+            {
+                text: "We have Culture KPIs and can ensure an effective ROI...",
+                title: "Ensuring ROI for Cultural Initiatives",
+                description: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
+            },
+            {
+                text: "Since COVID happened, there is a distinctive change...",
+                title: "Post-COVID Workplace Changes",
+                description: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
+            },
+            {
+                text: "When budget time comes around, culture is easily accounted for...",
+                title: "Budgeting for Cultural Costs",
+                description: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
+            },
+            {
+                text: "We have an easy system and process for measuring...",
+                title: "Measuring and Driving Engagement",
+                description: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
+            },
+            {
+                text: "The brand of our company matches the culture...",
+                title: "Aligning Brand and Internal Culture",
+                description: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
+            },
+            {
+                text: "Most culture issues we have are Operations' related.",
+                title: "Operations and Culture Interconnection",
+                description: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
+            }
+        ];
+
+        function createQuestionElement(question) {
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.innerHTML = question.text;
+            
+            const ratingScale = document.createElement('div');
+            ratingScale.className = 'rating-scale';
+            
+            for (let i = 1; i <= 10; i++) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'rating-button';
+                button.textContent = i;
+                button.onclick = function() {
+                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    button.classList.add('selected');
+                    questionItem.classList.remove('unanswered');
+                };
+                ratingScale.appendChild(button);
+            }
+            
+            questionItem.appendChild(questionText);
+            questionItem.appendChild(ratingScale);
+            
+            return questionItem;
+        }
+
+        // Initialize the form with questions when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const questionGroup = document.querySelector('.question-group');
+            questions.forEach(question => {
+                const questionElement = createQuestionElement(question);
+                questionGroup.appendChild(questionElement);
+            });
+        });
+
+        // First, let's create the scoring calculation functions
+        const calculateScores = {
+            toPercentage: (score) => (score / 10) * 100,
+            
+            // Updated color function with new color codes
+            getColor: (percentage) => {
+                const score = Math.round(percentage);
+                if (score <= 50) {
+                    return '#ED5C5C'; // New red
+                } else if (score <= 84) {
+                    return '#DFD691'; // New yellow
+                } else {
+                    return '#5EBD77'; // New green
+                }
+            },
+            
+            getOverallScore: (scores) => {
+                const sum = scores.reduce((acc, curr) => acc + curr, 0);
+                return sum / scores.length;
+            }
+        };
+
+        // Add the update function
+        function updateRadialGauge(percentage) {
+            const fillElement = document.getElementById('engagementFill');
+            const textElement = document.getElementById('engagementText');
+            
+            // Calculate the stroke color based on percentage
+            let strokeColor;
+            if (percentage <= 50) {
+                strokeColor = '#ED5C5C'; // Red
+            } else if (percentage <= 84) {
+                strokeColor = '#DFD691'; // Yellow
+            } else {
+                strokeColor = '#5EBD77'; // Green
+            }
+            
+            // Update the fill color
+            fillElement.setAttribute('stroke', strokeColor);
+            
+            // Calculate the dash offset for 270 degrees arc
+            // 270 degrees = 75% of the full circle (360 degrees)
+            const pathLength = 367.566;
+            const maxPercent = 270 / 360; // Use 270 degrees instead of full circle
+            const percentageAdjusted = (percentage / 100) * maxPercent;
+            const dashArray = `${pathLength * percentageAdjusted} ${pathLength}`;
+            
+            // Set the dash array directly instead of using offset
+            fillElement.style.strokeDasharray = dashArray;
+            
+            // Update the text
+            textElement.textContent = `${Math.round(percentage)}%`;
+        }
+
+        // Update the createResultsPage function to use this
+        function createResultsPage(scores) {
+            const overallPercentage = Math.round(
+                calculateScores.getOverallScore(
+                    scores.map(score => calculateScores.toPercentage(score))
+                )
+            );
+            
+            const resultsHTML = `
+                <div class="results-container">
+                    <div class="overall-score">
+                        <h2>Your Culture Snapshot Results</h2>
+                        <div class="gauge">
+                            <svg width="195" height="195" viewBox="0 0 195 195">
+                                <path class="gauge__background" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <path class="gauge__fill" 
+                                      id="engagementFill" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <text x="97.5" y="115" 
+                                      text-anchor="middle" 
+                                      font-size="31px" 
+                                      font-weight="700"
+                                      fill="#173248" 
+                                      id="engagementText">0%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Add CTA section after the gauge -->
+                    <div class="cta-section">
+                        <h3>Ready for a deeper analysis of your culture costs?</h3>
+                        <p>Schedule a demo to see how The Culture MRI can help you understand and optimize your cultural investment.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                    </div>
+
+                    <!-- Rest of your results page content -->
+                    <div class="individual-scores">
+                        <h3>Detailed Breakdown</h3>
+                        ${scores.map((score, index) => {
+                            const percentage = calculateScores.toPercentage(score);
+                            const roundedPercentage = Math.round(percentage);
+                            const color = calculateScores.getColor(roundedPercentage);
+                            return `
+                                <div class="score-section">
+                                    <div class="score-header">
+                                        <h4>${questions[index].title}</h4>
+                                        <span class="score-value">${roundedPercentage}%</span>
+                                    </div>
+                                    <div class="pill-gauge" style="--percentage: ${roundedPercentage}; --color: ${color}">
+                                    </div>
+                                    <p class="score-description">${questions[index].description}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <!-- Add another CTA at the bottom -->
+                    <div class="cta-section bottom">
+                        <h3>Transform these insights into actionable strategies</h3>
+                        <p>Book a demo to discover how The Culture MRI can help you maximize your cultural ROI.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                    </div>
+
+                    <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
+                </div>
+            `;
+
+            // Update the DOM
+            const container = document.querySelector('.container');
+            container.innerHTML = resultsHTML;
+
+            // Animate the gauge to the final percentage
+            setTimeout(() => {
+                updateRadialGauge(overallPercentage);
+            }, 100);
+        }
+
+        // Store original form HTML
+        let originalFormHTML;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            originalFormHTML = document.querySelector('.container').innerHTML;
+            initializeForm();
+        });
+
+        // Initialize form and add event listeners
+        function initializeForm() {
+            const form = document.getElementById('cultureForm');
+            if (form) {
+                console.log('Form found, adding submit listener');
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Form submitted');
+                    handleFormSubmit();
+                });
+            }
+
+            // Add click handlers to rating buttons
+            document.querySelectorAll('.rating-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const ratingScale = this.closest('.rating-scale');
+                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        }
+
+        // Handle form submission
+        function handleFormSubmit() {
+            console.log('Processing form submission');
+            
+            // First, remove any existing unanswered markers
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('unanswered');
+            });
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                company: document.getElementById('company').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value
+            };
+
+            // Collect all scores
+            const scores = [];
+            const questionItems = document.querySelectorAll('.question-item');
+            let unansweredQuestions = [];
+            
+            questionItems.forEach((item, index) => {
+                const selected = item.querySelector('.rating-button.selected');
+                if (selected) {
+                    scores.push(parseInt(selected.textContent));
+                } else {
+                    unansweredQuestions.push(index + 1);
+                    item.classList.add('unanswered');
+                    if (unansweredQuestions.length === 1) {
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+
+            // Validate
+            if (unansweredQuestions.length > 0) {
+                const questionList = unansweredQuestions.join(', ');
+                const isPlural = unansweredQuestions.length > 1;
+                alert(`Please answer question${isPlural ? 's' : ''} ${questionList} before submitting.`);
+                return;
+            }
+
+            // Calculate overall percentage
+            const overallPercentage = Math.round(
+                calculateScores.getOverallScore(
+                    scores.map(score => calculateScores.toPercentage(score))
+                )
+            );
+
+            // Create results HTML with the gauge
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="results-container">
+                    <div class="overall-score">
+                        <h2>Your Culture Snapshot Results</h2>
+                        <div class="gauge">
+                            <svg width="195" height="195" viewBox="0 0 195 195">
+                                <path class="gauge__background" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <path class="gauge__fill" 
+                                      id="engagementFill" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <text x="97.5" y="115" 
+                                      text-anchor="middle" 
+                                      font-size="31px" 
+                                      font-weight="700"
+                                      fill="#173248" 
+                                      id="engagementText">0%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="cta-section">
+                        <h3>Ready for a deeper analysis of your culture costs?</h3>
+                        <p>Schedule a demo to see how The Culture MRI can help you understand and optimize your cultural investment.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                    </div>
+
+                    <div class="individual-scores">
+                        <h3>Detailed Breakdown</h3>
+                        ${scores.map((score, index) => {
+                            const percentage = calculateScores.toPercentage(score);
+                            const roundedPercentage = Math.round(percentage);
+                            const color = calculateScores.getColor(roundedPercentage);
+                            return `
+                                <div class="score-section">
+                                    <div class="score-header">
+                                        <h4>${questions[index].title}</h4>
+                                        <span class="score-value">${roundedPercentage}%</span>
+                                    </div>
+                                    <div class="pill-gauge" style="--percentage: ${roundedPercentage}; --color: ${color}">
+                                    </div>
+                                    <p class="score-description">${questions[index].description}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    
+                    <div class="cta-section bottom">
+                        <h3>Transform these insights into actionable strategies</h3>
+                        <p>Book a demo to discover how The Culture MRI can help you maximize your cultural ROI.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule a Demo</a>
+                    </div>
+
+                    <button onclick="showQuestionnaire()" class="return-button">Take Assessment Again</button>
+                </div>
+            `;
+
+            // Add a small delay to allow the DOM to update before animating the gauge
+            setTimeout(() => {
+                updateRadialGauge(overallPercentage);
+            }, 100);
+
+            console.log('Form Data:', formData);
+            console.log('Scores:', scores);
+            console.log('Overall Percentage:', overallPercentage);
+        }
+
+        // Show questionnaire function
+        function showQuestionnaire() {
+            const container = document.querySelector('.container');
+            container.innerHTML = originalFormHTML;
+            initializeForm();
+        }
+
+        function getStatus(percentage) {
+            if (percentage <= 50) return 'Poor';
+            if (percentage <= 84) return 'Fair';
+            return 'Good';
+        }
+
+        function getRecommendations(score) {
+            if (score < 50) {
+                return {
+                    level: "Immediate Action Needed",
+                    message: "Your culture score indicates significant opportunities for improvement. Our team can help you develop a strategic plan to address key areas.",
+                    nextSteps: ["Schedule a consultation", "Get our Culture Quick-Fix Guide", "Join our next webinar"]
+                };
+            } else if (score < 85) {
+                return {
+                    level: "Growth Opportunity",
+                    message: "You're on the right track, but there's room for optimization. Let's discuss how to take your culture to the next level.",
+                    nextSteps: ["Book a strategy session", "Download our Culture Optimization Playbook", "Join our community"]
+                };
+            } else {
+                return {
+                    level: "Excellence",
+                    message: "Congratulations! Your strong culture score shows great leadership. Let's discuss how to maintain and build upon this success.",
+                    nextSteps: ["Schedule a maintenance review", "Get our Culture Leadership Guide", "Become a case study"]
+                };
+            }
+        }
+    </script>
+</body>
+</html>
+
