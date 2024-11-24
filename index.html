@@ -1440,20 +1440,15 @@
 
             // Get affiliate reference from URL with explicit default to 'CMRI'
             const urlParams = new URLSearchParams(window.location.search);
-            let ref = urlParams.get('r');
+            let ref = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
             
-            // Explicitly set to 'CMRI' if ref is null, undefined, or empty string
-            if (!ref) {
-                ref = 'CMRI';
-            }
-
             // Log the ref value for debugging
             console.log('Affiliate Reference:', ref);
 
             // Prepare the data for submission
             const submissionData = {
                 timestamp: new Date().toISOString(),
-                ref: ref, // This should now always be 'CMRI' if no URL parameter
+                ref: ref,  // Include ref in submission data
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
@@ -1479,9 +1474,7 @@
             })
             .then(response => {
                 console.log('Response received:', response);
-                if (!response.ok && response.type !== 'opaque') { // Added check for opaque response
-                    throw new Error('Network response was not ok');
-                }
+                // Note: With mode: 'no-cors', we can't check response.ok
                 return response.text();
             })
             .then(data => {
