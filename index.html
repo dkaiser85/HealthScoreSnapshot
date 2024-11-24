@@ -1399,7 +1399,10 @@
                 console.log('Parent URL:', document.referrer);
                 console.log('Affiliate code from parent:', refCode);
                 
-                return refCode || 'CMRI';
+                // Add more detailed logging
+                const finalCode = refCode || 'CMRI';
+                console.log('Final affiliate code being used:', finalCode);
+                return finalCode;
             } catch (e) {
                 console.log('Error getting parent ref:', e);
                 return 'CMRI';
@@ -1593,17 +1596,12 @@
         function submitToGoogleSheet(data) {
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
             
-            const submissionData = {
-                ...data,
-                source: window.location.href,
-                referrer: document.referrer || 'CMRI'
-            };
-            
-            console.log('Submitting data:', submissionData); // Debug log
+            // Log the data before sending
+            console.log('Data being sent to Google Sheet:', data);
             
             fetch(scriptUrl, {
                 method: 'POST',
-                body: JSON.stringify(submissionData)
+                body: JSON.stringify(data)
             })
             .then(response => response.json())
             .then(data => {
