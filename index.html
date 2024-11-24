@@ -839,6 +839,168 @@
                 margin-bottom: 0.25rem;
             }
         }
+
+        .share-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .share-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .share-button svg {
+            transition: transform 0.2s ease;
+        }
+
+        .share-button:hover svg {
+            transform: translateY(-2px);
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .share-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .share-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .share-popup.active {
+            opacity: 1;
+        }
+
+        .share-popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .share-popup.active .share-popup-content {
+            transform: translateY(0);
+        }
+
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .share-options button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .share-options button:hover {
+            background: var(--primary-color-light);
+            border-color: var(--primary-color);
+        }
+
+        .copy-success {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            animation: fadeInOut 2s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            15% { opacity: 1; transform: translate(-50%, 0); }
+            85% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+
+        @media (max-width: 768px) {
+            .share-popup-content {
+                padding: 1.5rem;
+            }
+            
+            .share-options {
+                gap: 0.75rem;
+            }
+            
+            .share-options button {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .share-section.bottom {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px solid var(--primary-color-light);
+        }
+
+        .share-section.bottom p {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .share-section.bottom {
+                padding: 1.5rem;
+                margin-top: 1.5rem;
+            }
+            
+            .share-section.bottom p {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1104,7 +1266,7 @@
                     <div class="cta-section">
                         <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
                         <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                         <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
@@ -1142,20 +1304,33 @@
                     <div class="cta-section bottom">
                         <h3>Your Health Snapshot™ Is Just the Beginning</h3>
                         <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
 
                     <div id="optionsPopup" class="options-popup">
                         <div class="popup-content">
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="showQuestionnaire(); hideOptionsPopup(); return false;" class="popup-option">Take The Health Snapshot™ Again</a>
-                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule Full MRI Demo</a>
+                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
                             </div>
                             <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
                         </div>
+                    </div>
+
+                    <!-- Add share section at bottom -->
+                    <div class="share-section bottom">
+                        <p>Found these insights valuable? Share them with your team:</p>
+                        <button onclick="shareResults()" class="share-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                            Share Results
+                        </button>
                     </div>
                 </div>
             `;
@@ -1290,7 +1465,7 @@
                     <div class="cta-section">
                         <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
                         <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                         <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
@@ -1326,20 +1501,33 @@
                     <div class="cta-section bottom">
                         <h3>Your Health Snapshot™ Is Just the Beginning</h3>
                         <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
 
                     <div id="optionsPopup" class="options-popup">
                         <div class="popup-content">
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="showQuestionnaire(); hideOptionsPopup(); return false;" class="popup-option">Take The Health Snapshot™ Again</a>
-                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule Full MRI Demo</a>
+                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
                             </div>
                             <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
                         </div>
+                    </div>
+
+                    <!-- Add share section at bottom -->
+                    <div class="share-section bottom">
+                        <p>Found these insights valuable? Share them with your team:</p>
+                        <button onclick="shareResults()" class="share-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                            Share Results
+                        </button>
                     </div>
                 </div>
             `;
@@ -1401,7 +1589,7 @@
                             </li>
                         </ul>
                         <p class="recommendation-footer">Don't let cultural challenges limit your business potential.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
                 `;
             } else if (percentage <= 84) {
@@ -1424,7 +1612,7 @@
                             </li>
                         </ul>
                         <p class="recommendation-footer">Ready to unlock your organization's full potential?</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
                 `;
             } else {
@@ -1447,7 +1635,7 @@
                             </li>
                         </ul>
                         <p class="recommendation-footer">Discover how to transform strong performance into market dominance.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Full MRI Demo</a>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
                 `;
             }
@@ -1511,6 +1699,85 @@
                 hideOptionsPopup();
             }
         });
+
+        function createShareButton(overallPercentage, scores) {
+            return `
+                <div class="share-section">
+                    <button onclick="shareResults()" class="share-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
+                        Share Results
+                    </button>
+                </div>
+            `;
+        }
+
+        function shareResults() {
+            const sharePopup = document.createElement('div');
+            sharePopup.className = 'share-popup';
+            sharePopup.innerHTML = `
+                <div class="share-popup-content">
+                    <h3>Share Your Results</h3>
+                    <div class="share-options">
+                        <button onclick="shareViaEmail()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email
+                        </button>
+                        <button onclick="shareViaLink()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Copy Link
+                        </button>
+                    </div>
+                    <button class="close-button" onclick="closeSharePopup()">×</button>
+                </div>
+            `;
+            document.body.appendChild(sharePopup);
+
+            // Show popup with animation
+            setTimeout(() => sharePopup.classList.add('active'), 10);
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent('My Organizational Health Snapshot™ Results');
+            const body = encodeURIComponent(`
+                Check out my Organizational Health Snapshot™ results!
+                
+                Overall Score: ${document.getElementById('engagementText').textContent}
+                Date: ${new Date().toLocaleDateString()}
+                
+                View the full report: ${window.location.href}
+            `);
+            
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function shareViaLink() {
+            const shareUrl = window.location.href;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const message = document.createElement('div');
+                message.className = 'copy-success';
+                message.textContent = 'Link copied to clipboard!';
+                document.body.appendChild(message);
+                
+                setTimeout(() => message.remove(), 2000);
+            });
+        }
+
+        function closeSharePopup() {
+            const popup = document.querySelector('.share-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.remove(), 300);
+        }
     </script>
 </body>
 </html>
