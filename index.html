@@ -1369,60 +1369,60 @@
             form.addEventListener("submit", async (event) => {
                 event.preventDefault();
 
-                // Log the collected data
-                console.log("Form submitted, collecting data...");
-
                 // Collect user input
                 const name = document.getElementById("name").value;
                 const company = document.getElementById("company").value;
                 const email = document.getElementById("email").value;
                 const role = document.getElementById("role").value;
 
-                // Collect scores
-                const scores = Array.from(document.querySelectorAll(".rating-button.selected")).map((button) =>
+                // Collect scores and calculate overall score
+                const scores = Array.from(document.querySelectorAll(".rating-button.selected")).map(button => 
                     parseInt(button.textContent)
                 );
                 const overallScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
 
-                // Determine Affiliate Reference
-                const referrer = document.referrer;
-                const affiliateReference = referrer.includes("dkaiser85.github.io/HealthScoreSnapshot") ? "CMRI" : "Unknown";
+                // Get timestamp
+                const timestamp = new Date().toISOString();
 
-                // Prepare data
+                // Create detailed scores object
+                const detailedScores = questions.map((question, index) => ({
+                    question: question.title,
+                    score: scores[index] || 0
+                }));
+
+                // Prepare data for sheets
                 const data = {
+                    timestamp,
                     name,
                     company,
                     email,
                     role,
-                    affiliateReference,
-                    scores,
                     overallScore,
+                    detailedScores: JSON.stringify(detailedScores), // Convert to string for sheets
+                    scores: JSON.stringify(scores), // Convert raw scores to string
                 };
 
-                // Log the data being sent
                 console.log("Sending data to Google Sheets:", data);
 
                 try {
-                    console.log("Attempting to send data...");
                     const response = await fetch("https://script.google.com/macros/s/AKfycbwOSCsNqVAyXWUUQb-OPLyfZ_DYr3kmkWbYHTSW_jnon2qNQWCpnlIPzVRk5Ke7pjK_WQ/exec", {
                         method: "POST",
                         body: JSON.stringify(data),
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        mode: 'no-cors' // Add this line to handle CORS
                     });
 
                     console.log("Response received:", response);
-                    const result = await response.json();
-                    console.log("Result:", result);
-
-                    if (result.success) {
-                        console.log("Results submitted successfully");
-                        handleFormSubmit();
-                    } else {
-                        console.error("Submission failed:", result);
-                        alert("There was an issue submitting your results. Please try again.");
-                    }
+                    
+                    // Since we're using no-cors, we can't read the response
+                    // Just proceed with showing results
+                    handleFormSubmit();
+                    
                 } catch (error) {
                     console.error("Submission error:", error);
+                    // Still show results even if submission fails
                     handleFormSubmit();
                 }
             });
