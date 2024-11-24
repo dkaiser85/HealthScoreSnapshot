@@ -1566,21 +1566,13 @@
 
             // Add this block after setting innerHTML
             setTimeout(() => {
-                // Scroll to top
+                // Force scroll to absolute top of page
                 window.scrollTo({
                     top: 0,
+                    left: 0,
                     behavior: 'smooth'
                 });
-                
-                // Backup scroll to element
-                document.querySelector('.results-container').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-
-                // Animate the gauge with the actual percentage
-                updateRadialGauge(overallPercentage);
-            }, 100); // Increased timeout to ensure DOM is ready
+            }, 100);
 
             console.log('Form Data:', formData);
             console.log('Scores:', scores);
