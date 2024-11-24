@@ -734,25 +734,25 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 28px;
-            font-weight: 300;
-            color: #666;
-            cursor: pointer;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: all 0.2s ease;
+            border: none;
             background: white;
+            color: #666;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .close-button:hover {
-            background: rgba(0,0,0,0.05);
+            background: #f5f5f5;
             color: #333;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .results-container {
@@ -1734,6 +1734,9 @@
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
             popup.style.opacity = '1';
+            
+            // Add state to browser history
+            window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
@@ -1742,14 +1745,23 @@
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
+            
+            // Go back in history instead of pushing a new state
+            window.history.back();
         }
 
-        // Add click outside to close functionality
-        document.addEventListener('click', function(event) {
-            const popup = document.getElementById('optionsPopup');
-            const popupContent = document.querySelector('.popup-content');
-            if (event.target === popup) {
-                hideOptionsPopup();
+        // Add popstate event listener after the existing event listeners
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.showPopup) {
+                showOptionsPopup();
+            } else {
+                const popup = document.getElementById('optionsPopup');
+                if (popup) {
+                    popup.style.opacity = '0';
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                    }, 300);
+                }
             }
         });
 
