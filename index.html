@@ -1437,10 +1437,11 @@
                 )
             );
 
-            // Get affiliate code from URL
+            // Get and validate affiliate code
             const urlParams = new URLSearchParams(window.location.search);
-            const affiliateCode = urlParams.get('ref') || '';
-            // Update form data
+            const affiliateCode = urlParams.get('ref');
+            
+            // Update form data with CMRI as default
             formData = {
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
@@ -1448,7 +1449,7 @@
                 role: document.getElementById('role').value,
                 scores: scores,
                 overallScore: overallPercentage,
-                affiliateCode: affiliateCode,
+                affiliateCode: affiliateCode || 'CMRI', // Default to CMRI
                 submissionDate: new Date().toISOString()
             };
 
@@ -1583,14 +1584,13 @@
         }
 
         function submitToGoogleSheet(data) {
-            // Replace with your Google Apps Script Web App URL
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
             
-            // Add affiliate tracking to the submission
             const submissionData = {
                 ...data,
+                affiliateCode: data.affiliateCode || 'CMRI', // Default to CMRI
                 source: window.location.href,
-                referrer: document.referrer
+                referrer: document.referrer || 'CMRI'
             };
             
             fetch(scriptUrl, {
