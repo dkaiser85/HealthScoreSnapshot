@@ -745,14 +745,13 @@
             color: #666;
             font-size: 28px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: background-color 0.2s ease, color 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .close-button:hover {
             background: #f5f5f5;
             color: #333;
-            transform: scale(1.05);
         }
 
         .results-container {
@@ -1738,36 +1737,31 @@
         function showOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
-            // Add small delay to ensure display: flex is applied before opacity transition
-            setTimeout(() => {
-                popup.classList.add('active');
-            }, 10);
+            popup.style.opacity = '1';
             
+            // Add state to browser history
             window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
-            popup.classList.remove('active');
+            popup.style.opacity = '0';
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
             
+            // Go back in history instead of pushing a new state
             window.history.back();
         }
 
-        // Update popstate event listener
+        // Add popstate event listener after the existing event listeners
         window.addEventListener('popstate', function(event) {
             if (event.state && event.state.showPopup) {
-                const popup = document.getElementById('optionsPopup');
-                popup.style.display = 'flex';
-                setTimeout(() => {
-                    popup.classList.add('active');
-                }, 10);
+                showOptionsPopup();
             } else {
                 const popup = document.getElementById('optionsPopup');
                 if (popup) {
-                    popup.classList.remove('active');
+                    popup.style.opacity = '0';
                     setTimeout(() => {
                         popup.style.display = 'none';
                     }, 300);
