@@ -1439,7 +1439,7 @@
 
             // Get affiliate code from URL
             const urlParams = new URLSearchParams(window.location.search);
-            const affiliateCode = urlParams.get('aff') || '';
+            const affiliateCode = urlParams.get('ref') || '';
             // Update form data
             formData = {
                 name: document.getElementById('name').value,
@@ -1448,7 +1448,8 @@
                 role: document.getElementById('role').value,
                 scores: scores,
                 overallScore: overallPercentage,
-                affiliateCode: affiliateCode
+                affiliateCode: affiliateCode,
+                submissionDate: new Date().toISOString()
             };
 
             // Submit to Google Sheet
@@ -1585,9 +1586,16 @@
             // Replace with your Google Apps Script Web App URL
             const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
             
+            // Add affiliate tracking to the submission
+            const submissionData = {
+                ...data,
+                source: window.location.href,
+                referrer: document.referrer
+            };
+            
             fetch(scriptUrl, {
                 method: 'POST',
-                body: JSON.stringify(data)
+                body: JSON.stringify(submissionData)
             })
             .then(response => response.json())
             .then(data => {
