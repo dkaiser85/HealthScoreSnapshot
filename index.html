@@ -1327,7 +1327,7 @@
                             
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="#" onclick="shareDetailedResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
@@ -1544,7 +1544,7 @@
                             
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="#" onclick="shareDetailedResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
@@ -1862,6 +1862,66 @@
             const popup = document.querySelector('.share-popup');
             popup.classList.remove('active');
             setTimeout(() => popup.remove(), 300);
+        }
+
+        // Add the new detailed email sharing function
+        function shareDetailedResults() {
+            const percentage = document.getElementById('engagementText').textContent;
+            const numericPercentage = parseInt(percentage);
+            let condition = '';
+            let colorClass = '';
+            let summary = '';
+
+            if (numericPercentage <= 50) {
+                condition = 'Critical Condition';
+                colorClass = '#ED5C5C';
+                summary = 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.';
+            } else if (numericPercentage <= 84) {
+                condition = 'At Risk and Needing Growth';
+                colorClass = '#DFD691';
+                summary = 'While there are positive elements, some key areas need attention to strengthen team alignment and performance. Addressing these opportunities could enhance our workplace culture.';
+            } else {
+                condition = 'Strong but Needing Growth';
+                colorClass = '#5EBD77';
+                summary = 'Our foundation is solid, showing strong alignment in many areas. There are still opportunities to build on this strength and create an even more engaging workplace.';
+            }
+
+            // Get the highest and lowest scoring categories
+            const categories = [
+                { name: 'Purpose', score: scores[0] },
+                { name: 'Autonomy', score: scores[1] },
+                { name: 'Mastery', score: scores[2] },
+                { name: 'Stability', score: scores[3] }
+            ];
+            
+            const sortedCategories = [...categories].sort((a, b) => b.score - a.score);
+            const topStrength = sortedCategories[0].name;
+            const biggestOpportunity = sortedCategories[sortedCategories.length - 1].name;
+
+            const subject = encodeURIComponent(`${condition}: Organizational Health Results - See How We Scored`);
+            const body = encodeURIComponent(`
+Hi Team,
+
+I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
+
+Our Organizational Health Score is ${percentage}, which falls into the ${condition} category.
+
+Here's what it means:
+${summary}
+
+Breakdown of Key Areas:
+• Top Strength: ${topStrength}
+• Biggest Opportunity: ${biggestOpportunity}
+
+Why Does This Matter?
+The Snapshot reveals how well we're meeting employee needs, which directly impacts engagement and performance. This can spark a conversation about making improvements that help everyone thrive.
+
+This overview is based on insights from The Culture MRI®'s Organizational Health Snapshot™. If you want to explore what these scores mean for our team, visit: https://theculturemri.com/schedule-a-demo
+
+Best regards`);
+            
+            const recipient = 'info@theculturemri.com';
+            window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
         }
     </script>
 </body>
