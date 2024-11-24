@@ -1362,42 +1362,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             originalFormHTML = document.querySelector('.container').innerHTML;
             initializeForm();
-
-            // Add new form submission handler
-            const form = document.getElementById("cultureForm");
-            
-            form.addEventListener("submit", async (event) => {
-                event.preventDefault();
-
-                // Collect user input and scores
-                const formData = new FormData();
-                formData.append('timestamp', new Date().toLocaleString());
-                formData.append('name', document.getElementById("name").value);
-                formData.append('company', document.getElementById("company").value);
-                formData.append('email', document.getElementById("email").value);
-                formData.append('role', document.getElementById("role").value);
-
-                // Collect scores
-                const scores = Array.from(document.querySelectorAll(".rating-button.selected"))
-                    .map(button => parseInt(button.textContent));
-                
-                formData.append('scores', scores.join(','));
-                formData.append('overallScore', Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length));
-
-                try {
-                    // Send to Google Sheets
-                    await fetch("https://script.google.com/macros/s/AKfycbwOSCsNqVAyXWUUQb-OPLyfZ_DYr3kmkWbYHTSW_jnon2qNQWCpnlIPzVRk5Ke7pjK_WQ/exec", {
-                        method: "POST",
-                        body: formData
-                    });
-                    
-                } catch (error) {
-                    console.error("Submission error:", error);
-                }
-
-                // Show results regardless of submission status
-                handleFormSubmit();
-            });
         });
 
         // Initialize form and add event listeners
@@ -1474,6 +1438,24 @@
                 )
             );
 
+            // Get affiliate code from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const affiliateCode = urlParams.get('aff') || '';
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                company: document.getElementById('company').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                scores: scores,
+                overallScore: overallPercentage,
+                affiliateCode: affiliateCode
+            };
+
+            // Submit to Google Sheet
+            submitToGoogleSheet(formData);
+            
             // Create results HTML
             const container = document.querySelector('.container');
             container.innerHTML = `
@@ -1599,6 +1581,23 @@
             console.log('Form Data:', formData);
             console.log('Scores:', scores);
             console.log('Overall Percentage:', overallPercentage);
+        }
+
+        function submitToGoogleSheet(data) {
+            // Replace with your Google Apps Script Web App URL
+            const scriptUrl = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
 
         // Show questionnaire function
