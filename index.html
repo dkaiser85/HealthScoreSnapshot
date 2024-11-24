@@ -1566,15 +1566,22 @@
 
             // Add this block after setting innerHTML
             setTimeout(() => {
-                // Force scroll to absolute top of page
+                // Get the results container
+                const resultsContainer = document.querySelector('.results-container');
+                
+                // Scroll the container into view
+                resultsContainer.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'start'
+                });
+                
+                // Also do a direct scroll to ensure we're at the top
                 window.scrollTo({
                     top: 0,
                     left: 0,
                     behavior: 'smooth'
                 });
-                
-                // Show the options popup after scrolling
-                // showOptionsPopup();
             }, 100);
 
             console.log('Form Data:', formData);
@@ -1731,8 +1738,22 @@
         // Add these JavaScript functions:
         function showOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
+            
+            // Get current scroll position
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Position popup relative to current viewport
+            popup.style.position = 'fixed';
+            popup.style.top = '0';
+            popup.style.left = '0';
+            popup.style.right = '0';
+            popup.style.bottom = '0';
             popup.style.display = 'flex';
+            popup.style.alignItems = 'center';
+            popup.style.justifyContent = 'center';
             popup.style.opacity = '1';
+            popup.style.zIndex = '9999';
+            
             window.history.pushState({ showPopup: true }, '');
         }
 
