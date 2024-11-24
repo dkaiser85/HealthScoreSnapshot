@@ -1440,21 +1440,17 @@
 
             // Get affiliate reference from URL with explicit default to 'CMRI'
             const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
+            const affiliateReference = urlParams.get('r') || 'CMRI';  // This ensures ref is 'CMRI' if not provided
             
             // Prepare the data for submission - ensure order matches Google Sheet columns
             const submissionData = {
                 timestamp: new Date().toISOString(),
-                affiliateReference: ref,  // Changed key name to match sheet column
+                affiliateReference: affiliateReference,  // Add this explicitly
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
                 role: document.getElementById('role').value,
-                overallScore: overallPercentage,
-                individualScores: scores.map((score, index) => ({
-                    category: questions[index].title,
-                    score: Math.round(calculateScores.toPercentage(score))
-                }))
+                overallScore: overallPercentage
             };
 
             // For debugging - check the data being sent
@@ -1718,7 +1714,7 @@
                 return `
                     <h3 style="color: #5EBD77; margin-bottom: 1rem;">Strong but Needing Growth</h3>
                     <p style="line-height: 1.6; color: #333;">
-                        Your Organizational Health Snapshot��� reflects a healthy organization with many systems functioning well. 
+                        Your Organizational Health Snapshot™ reflects a healthy organization with many systems functioning well. 
                         However, even strong results can mask critical areas for improvement. Addressing overlooked 
                         opportunities can push productivity and profitability even higher. Stay vigilant and refine 
                         your strategy to ensure your organization operates at its peak potential.
