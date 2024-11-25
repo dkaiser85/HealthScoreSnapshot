@@ -1856,21 +1856,10 @@
             document.getElementById('introSection').style.display = 'none';
             document.getElementById('questionnaireSection').style.display = 'block';
             
-            // Force scroll to the absolute top immediately
-            window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: 'instant'
-            });
-
-            // Add a small delay to ensure the scroll happens after the content switch
-            setTimeout(() => {
-                window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'instant'
-                });
-            }, 0);
+            // Force scroll to top immediately
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         }
 
         // Update submitToGoogleSheet function
