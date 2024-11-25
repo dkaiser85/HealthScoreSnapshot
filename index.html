@@ -1198,40 +1198,40 @@
             }
         };
 
-        // Add the update function
+        // Make sure this function is properly defined at the top level
         function updateRadialGauge(percentage) {
-            const fillElement = document.getElementById('engagementFill');
-            const textElement = document.getElementById('engagementText');
+            // Add console log for debugging
+            console.log('Updating gauge with percentage:', percentage);
+            
+            const fillElement = document.querySelector('.gauge-fill');
+            const textElement = document.querySelector('.gauge-text');
             
             if (!fillElement || !textElement) {
                 console.error('Gauge elements not found');
                 return;
             }
-            
+
             // Calculate the stroke color based on percentage
             let strokeColor;
             if (percentage <= 50) {
-                strokeColor = '#ED5C5C'; // Red
+                strokeColor = '#ED5C5C';
             } else if (percentage <= 84) {
-                strokeColor = '#DFD691'; // Yellow
+                strokeColor = '#DFD691';
             } else {
-                strokeColor = '#5EBD77'; // Green
+                strokeColor = '#5EBD77';
             }
-            
+
             // Update the fill color
-            fillElement.setAttribute('stroke', strokeColor);
-            
-            // Calculate the dash offset for 270 degrees arc
-            const pathLength = 367.566;
-            const maxPercent = 270 / 360; // Use 270 degrees instead of full circle
-            const percentageAdjusted = (percentage / 100) * maxPercent;
-            const dashArray = `${pathLength * percentageAdjusted} ${pathLength}`;
-            
-            // Set the dash array
-            fillElement.style.strokeDasharray = dashArray;
-            
+            fillElement.style.stroke = strokeColor;
+
+            // Calculate the dash array
+            const circumference = 2 * Math.PI * 90; // r=90, so circumference = 2πr
+            const dashArray = (percentage / 100) * circumference;
+            fillElement.style.strokeDasharray = `${dashArray} ${circumference}`;
+
             // Update the text
             textElement.textContent = `${Math.round(percentage)}%`;
+            textElement.style.color = strokeColor;
         }
 
         // Update the createResultsPage function to use this
