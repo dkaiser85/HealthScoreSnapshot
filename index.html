@@ -734,24 +734,25 @@
             position: absolute;
             top: 20px;
             right: 20px;
+            font-size: 28px;
+            font-weight: 300;
+            color: #666;
+            cursor: pointer;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            border: none;
+            transition: all 0.2s ease;
             background: white;
-            color: #666;
-            font-size: 28px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .close-button:hover {
-            background: #f5f5f5;
+            background: rgba(0,0,0,0.05);
             color: #333;
+            transform: scale(1.1);
         }
 
         .results-container {
@@ -765,18 +766,13 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            display: none;
+            display: flex;
             align-items: flex-start;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1000;
             padding-top: 5vh;
-        }
-
-        .options-popup.active {
-            display: flex;
-            opacity: 1;
         }
 
         .popup-content {
@@ -1392,15 +1388,7 @@
             });
         }
 
-        // Add this function at the start to get affiliate code
-        function getAffiliateCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI';
-        }
-
-        // Update handleFormSubmit function
+        // Handle form submission
         function handleFormSubmit() {
             console.log('Processing form submission');
             
@@ -1408,18 +1396,13 @@
             document.querySelectorAll('.question-item').forEach(item => {
                 item.classList.remove('unanswered');
             });
-
-            // Get affiliate code first
-            const affiliateCode = getAffiliateCode();
-            console.log('Using affiliate code:', affiliateCode); // Debug log
             
-            // Collect initial form data
-            let formData = {
+            // Collect form data
+            const formData = {
                 name: document.getElementById('name').value,
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
-                affiliateCode: affiliateCode // Set affiliate code here
+                role: document.getElementById('role').value
             };
 
             // Collect all scores
@@ -1440,6 +1423,14 @@
                 }
             });
 
+            // Validate
+            if (unansweredQuestions.length > 0) {
+                const questionList = unansweredQuestions.join(', ');
+                const isPlural = unansweredQuestions.length > 1;
+                alert(`Please answer question${isPlural ? 's' : ''} ${questionList} before submitting.`);
+                return;
+            }
+
             // Calculate overall percentage
             const overallPercentage = Math.round(
                 calculateScores.getOverallScore(
@@ -1447,19 +1438,6 @@
                 )
             );
 
-            // Update form data with all fields
-            formData = {
-                ...formData,
-                scores: scores,
-                overallScore: overallPercentage,
-                submissionDate: new Date().toISOString()
-            };
-
-            console.log('Final Form Data:', formData); // Debug log
-
-            // Submit to Google Sheet
-            submitToGoogleSheet(formData);
-            
             // Create results HTML
             const container = document.querySelector('.container');
             container.innerHTML = `
@@ -1543,7 +1521,7 @@
                                 <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
+                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
                             </div>
                             <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
                         </div>
@@ -1566,45 +1544,25 @@
 
             // Add this block after setting innerHTML
             setTimeout(() => {
-                // Force scroll to absolute top of page
+                // Scroll to top
                 window.scrollTo({
                     top: 0,
-                    left: 0,
                     behavior: 'smooth'
                 });
                 
-                // Show the options popup after scrolling
-                // showOptionsPopup();
-            }, 100);
+                // Backup scroll to element
+                document.querySelector('.results-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Animate the gauge with the actual percentage
+                updateRadialGauge(overallPercentage);
+            }, 100); // Increased timeout to ensure DOM is ready
 
             console.log('Form Data:', formData);
             console.log('Scores:', scores);
             console.log('Overall Percentage:', overallPercentage);
-        }
-
-        // Update submitToGoogleSheet function
-        function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
-            
-            const submissionData = {
-                ...data,
-                source: window.location.href,
-                referrer: document.referrer || 'CMRI'
-            };
-            
-            console.log('Submitting data:', submissionData); // Debug log
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                body: JSON.stringify(submissionData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
         }
 
         // Show questionnaire function
@@ -1733,7 +1691,6 @@
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
             popup.style.opacity = '1';
-            window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
@@ -1742,21 +1699,14 @@
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
-            window.history.back();
         }
 
-        // Add popstate event listener after the existing event listeners
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.showPopup) {
-                showOptionsPopup();
-            } else {
-                const popup = document.getElementById('optionsPopup');
-                if (popup) {
-                    popup.style.opacity = '0';
-                    setTimeout(() => {
-                        popup.style.display = 'none';
-                    }, 300);
-                }
+        // Add click outside to close functionality
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('optionsPopup');
+            const popupContent = document.querySelector('.popup-content');
+            if (event.target === popup) {
+                hideOptionsPopup();
             }
         });
 
