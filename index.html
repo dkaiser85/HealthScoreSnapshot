@@ -1973,72 +1973,94 @@
                 const button = document.querySelector('.share-button');
                 const originalText = button.innerHTML;
                 button.disabled = true;
-                button.innerHTML = 'Sharing...';
+                button.innerHTML = 'Creating snapshot...';
 
-                // Create a temporary container for the screenshot content
+                // Create a temporary container
                 const tempContainer = document.createElement('div');
-                tempContainer.style.width = '1200px'; // Wide enough for good quality
-                tempContainer.style.padding = '40px';
-                tempContainer.style.backgroundColor = 'white';
-                tempContainer.style.boxSizing = 'border-box';
+                tempContainer.style.cssText = `
+                    background: white;
+                    padding: 40px;
+                    width: 600px;
+                    text-align: center;
+                    font-family: 'Inter', sans-serif;
+                `;
 
-                // Clone only the elements we want
-                const gauge = document.querySelector('.gauge').cloneNode(true);
+                // Get the score value
+                const scoreText = document.getElementById('engagementText').textContent;
+                
+                // Get the score message content
                 const scoreMessage = document.querySelector('.score-message').cloneNode(true);
+                
+                // Get the first CTA section
                 const cta = document.querySelector('.cta-section').cloneNode(true);
-                const logo = document.querySelector('.logo').cloneNode(true);
 
-                // Style the temporary container content
+                // Build simplified HTML without external images
                 tempContainer.innerHTML = `
-                    <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-                        <img src="${logo.src}" style="width: 200px; margin-bottom: 40px;">
-                        <div style="margin-bottom: 40px;">
-                            ${gauge.outerHTML}
+                    <div style="margin: 0 auto; max-width: 500px;">
+                        <h2 style="color: #333; margin-bottom: 30px; font-size: 24px;">
+                            Organizational Health Snapshot™
+                        </h2>
+                        
+                        <div style="margin: 40px auto; font-size: 48px; font-weight: bold; color: ${getScoreColor(parseInt(scoreText))}>
+                            ${scoreText}
                         </div>
-                        <div style="margin-bottom: 40px;">
-                            ${scoreMessage.outerHTML}
+                        
+                        <div style="margin: 30px auto;">
+                            ${scoreMessage.innerHTML}
                         </div>
-                        <div>
-                            ${cta.outerHTML}
+                        
+                        <div style="margin-top: 30px;">
+                            ${cta.innerHTML}
                         </div>
                     </div>
                 `;
 
-                // Add the temporary container to the body but hide it
+                // Add to document temporarily
                 tempContainer.style.position = 'absolute';
                 tempContainer.style.left = '-9999px';
                 document.body.appendChild(tempContainer);
 
                 // Create canvas
                 const canvas = await html2canvas(tempContainer, {
-                    scale: 2, // Higher resolution
-                    useCORS: true,
+                    scale: 2,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    windowWidth: 600,
+                    width: 600
                 });
 
                 // Remove temporary container
                 document.body.removeChild(tempContainer);
 
-                // Create download link
-                const link = document.createElement('a');
-                link.download = `Culture_Snapshot_${new Date().toISOString().split('T')[0]}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+                // Create and trigger download
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = `Culture_Snapshot_${new Date().toISOString().split('T')[0]}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    // Restore button state
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                });
 
+            } catch (error) {
+                console.error('Screenshot error:', error);
+                alert('Unable to save snapshot. Please try again or contact support.');
+                
                 // Restore button state
                 button.disabled = false;
                 button.innerHTML = originalText;
-
-            } catch (error) {
-                console.error('Error generating screenshot:', error);
-                alert('There was an error generating the screenshot. Please try again.');
-                
-                // Restore button state on error
-                const button = document.querySelector('.share-button');
-                button.disabled = false;
-                button.innerHTML = originalText;
             }
+        }
+
+        // Helper function to get score color
+        function getScoreColor(score) {
+            if (score <= 50) return '#ED5C5C';
+            if (score <= 84) return '#DFD691';
+            return '#5EBD77';
         }
     </script>
 </body>
