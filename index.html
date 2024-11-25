@@ -1341,11 +1341,11 @@
                         <p>Found these insights valuable? Share them with your team:</p>
                         <button onclick="downloadScreenshot()" class="share-button">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
                             </svg>
-                            Download Results
+                            Share
                         </button>
                     </div>
                 </div>
@@ -1696,11 +1696,11 @@
                     <p>Found these insights valuable? Share them with your team:</p>
                     <button onclick="downloadScreenshot()" class="share-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
                         </svg>
-                        Download Results
+                        Share
                     </button>
                 </div>
             `;
@@ -1718,7 +1718,7 @@
                 const button = document.querySelector('.share-button');
                 const originalText = button.innerHTML;
                 button.disabled = true;
-                button.innerHTML = 'Generating...';
+                button.innerHTML = 'Sharing...';
 
                 // Calculate dimensions for 8.5x11 at 300 DPI
                 const width = Math.round(8.5 * 300); // 8.5 inches * 300 DPI = 2550 pixels
