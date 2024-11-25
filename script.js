@@ -108,7 +108,11 @@ function getScoreMessage(percentage) {
 }
 
 // Form Handling
-function handleFormSubmit() {
+function handleFormSubmit(e) {
+    if (e) e.preventDefault(); // Prevent form submission
+    
+    console.log('Form submitted'); // Debug line to check if function is called
+    
     // Get all questions
     const questionItems = document.querySelectorAll('.question-item');
     let scores = [];
@@ -137,28 +141,44 @@ function handleFormSubmit() {
 
     // Hide the form
     const formContainer = document.querySelector('.container');
-    formContainer.style.display = 'none';
+    if (formContainer) {
+        formContainer.style.display = 'none';
+        console.log('Form container hidden'); // Debug line
+    } else {
+        console.error('Form container not found');
+    }
 
     // Show the results
     const resultsContainer = document.querySelector('.results-container');
-    resultsContainer.style.display = 'block';
+    if (resultsContainer) {
+        resultsContainer.style.display = 'block';
+        console.log('Results container shown'); // Debug line
+    } else {
+        console.error('Results container not found');
+    }
 
     // Update the gauge
     updateRadialGauge(percentageScore);
 
     // Update the message
     const messageContainer = document.querySelector('.results-message');
-    messageContainer.innerHTML = getScoreMessage(percentageScore);
+    if (messageContainer) {
+        messageContainer.innerHTML = getScoreMessage(percentageScore);
+    } else {
+        console.error('Message container not found');
+    }
 }
 
 // Add event listener to the submit button
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded'); // Debug line
+    
     const submitButton = document.querySelector('button[type="submit"]');
     if (submitButton) {
-        submitButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleFormSubmit();
-        });
+        console.log('Submit button found'); // Debug line
+        submitButton.addEventListener('click', handleFormSubmit);
+    } else {
+        console.error('Submit button not found');
     }
 });
 
