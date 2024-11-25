@@ -618,7 +618,6 @@
         }
 
         .score-message {
-            margin-top: 2rem;
             text-align: left;
             max-width: 600px;
             margin-left: auto;
@@ -1277,15 +1276,13 @@
                                     id="engagementText">${overallPercentage}%</text>
                             </svg>
                         </div>
+                        
+                        <!-- Add score message here -->
+                        <div class="score-message" style="margin-top: 2rem;">
+                            ${getScoreMessage(overallPercentage)}
+                        </div>
                     </div>
                     
-                    <!-- Add CTA section after the gauge -->
-                    <div class="cta-section">
-                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
-                        <p>Your results reveal more than just numbers—they highlight how employee engagement impacts your bottom line. Discover actionable strategies to turn insights into profit.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule A Culture MRI® Demo</a>
-                    </div>
-
                     <!-- Rest of your results page content -->
                     <div class="individual-scores">
                         <h3>Detailed Breakdown</h3>
