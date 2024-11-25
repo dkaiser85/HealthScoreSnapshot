@@ -1101,6 +1101,93 @@
                 font-size: 14px;
             }
         }
+
+        /* Update input styles */
+        input[type="number"] {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            -webkit-appearance: none; /* Remove default iOS styling */
+            -moz-appearance: textfield; /* Remove default Firefox styling */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Remove spinner buttons */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Active/Focus states */
+        input[type="number"]:focus,
+        input[type="number"]:active {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 480px) {
+            input[type="number"] {
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+            
+            /* Enhance touch target size */
+            input[type="number"] {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Improve animation performance */
+            input[type="number"]:focus,
+            input[type="number"]:active {
+                transform: scale(1.1);
+                transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+        }
+
+        /* Specific adjustments for very small screens */
+        @media screen and (max-width: 360px) {
+            input[type="number"] {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            /* Adjust question container for better spacing */
+            .question-container {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+            
+            /* Make labels more compact but still readable */
+            .question-label {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+            
+            /* Adjust scale indicators */
+            .scale-indicator {
+                font-size: 12px;
+            }
+        }
+
+        /* Add smooth scrolling for iOS */
+        @supports (-webkit-touch-callout: none) {
+            input[type="number"] {
+                /* iOS-specific smooth animation */
+                -webkit-transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+        }
     </style>
 </head>
 <body>
