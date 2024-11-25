@@ -1720,7 +1720,8 @@
 
         function createShareButton(overallPercentage, scores) {
             return `
-                <div class="share-section">
+                <div class="share-section bottom">
+                    <p>Found these insights valuable? Share them with your team:</p>
                     <button onclick="shareResults()" class="share-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
@@ -1734,40 +1735,28 @@
         }
 
         function shareResults() {
-            const sharePopup = document.createElement('div');
-            sharePopup.className = 'share-popup';
-            sharePopup.innerHTML = `
-                <div class="share-popup-content">
-                    <h3>Share Your Results</h3>
-                    <div class="share-options">
-                        <button onclick="shareViaEmail()">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            Email
-                        </button>
-                        <button onclick="shareViaLink()">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                            </svg>
-                            Copy Link
-                        </button>
-                    </div>
-                    <button class="close-button" onclick="closeSharePopup()">×</button>
-                </div>
-            `;
-            document.body.appendChild(sharePopup);
+            // Get the overall percentage from the gauge
+            const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
+            
+            // Get all the scores from the score sections
+            const scores = Array.from(document.querySelectorAll('.score-section')).map(section => {
+                const scoreValue = section.querySelector('.score-value').textContent;
+                return parseInt(scoreValue);
+            });
 
-            // Show popup with animation
-            setTimeout(() => sharePopup.classList.add('active'), 10);
+            // Generate and encode email content
+            const emailContent = generateEmailContent(overallPercentage, scores);
+            const subject = encodeURIComponent('Our Organizational Health Snapshot™ Results');
+            const body = encodeURIComponent(emailContent);
+            
+            // Open default email client with pre-populated content
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
         function generateEmailContent(overallPercentage, scores) {
             // Get highest and lowest scoring categories
             const scoreData = scores.map((score, index) => ({
-                score: calculateScores.toPercentage(score),
+                score: score,
                 category: getCategoryName(index)
             }));
             
@@ -1804,16 +1793,16 @@ ${document.getElementById('name').value}`;
 
         function getCategoryName(index) {
             const categories = [
-                "Ensuring ROI for Cultural Initiatives",
-                "Budgeting for Cultural Costs",
-                "Operations and Culture Interconnection",
+                "Understanding Cultural Costs",
+                "HR Metrics and Profit Impact",
+                "Mission, Vision, and Values in Action",
                 "Managing Employee Turnover Costs",
                 "Post-COVID Workplace Changes",
                 "Measuring and Driving Engagement",
                 "Aligning Brand and Internal Culture",
-                "Mission, Vision, and Values in Action",
-                "Understanding Cultural Costs",
-                "HR Metrics and Profit Impact"
+                "Culture KPIs and ROI",
+                "Budgeting for Culture",
+                "Operations and Culture Alignment"
             ];
             return categories[index];
         }
@@ -1826,36 +1815,6 @@ ${document.getElementById('name').value}`;
             } else {
                 return "Strong Position: Many systems are functioning well, but there are still opportunities to push productivity and profitability even higher by refining our approach.";
             }
-        }
-
-        // Update the shareViaEmail function to use this template
-        function shareViaEmail() {
-            const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
-            const emailContent = generateEmailContent(overallPercentage, scores);
-            
-            const subject = encodeURIComponent('Our Organizational Health Snapshot™ Results');
-            const body = encodeURIComponent(emailContent);
-            
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
-        }
-
-        function shareViaLink() {
-            const shareUrl = window.location.href;
-            
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                const message = document.createElement('div');
-                message.className = 'copy-success';
-                message.textContent = 'Link copied to clipboard!';
-                document.body.appendChild(message);
-                
-                setTimeout(() => message.remove(), 2000);
-            });
-        }
-
-        function closeSharePopup() {
-            const popup = document.querySelector('.share-popup');
-            popup.classList.remove('active');
-            setTimeout(() => popup.remove(), 300);
         }
 
         // Add this new function to handle returning to the form
