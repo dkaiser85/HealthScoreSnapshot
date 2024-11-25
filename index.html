@@ -1875,19 +1875,39 @@
 
         // Update submitToGoogleSheet function
         function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbxCDpp4j5cadBpCVXWM1lThJt4bz9WR1WferhqaiiMaXtAG-W5lTOfhnuXAmo7KfV7J/exec';
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbwzSmZTxE8qqmRSPCQ_sM2jyImpNuOpx0RFbn1VEKlItMW9PC2wQNiviHpxhEktz1PO/exec';
             
-            const submissionData = {
-                ...data,
-                source: window.location.href,
-                referrer: document.referrer || 'CMRI'
+            // Get the comments from textareas
+            const q1Comments = document.querySelector('.question-block:nth-child(1) textarea').value;
+            const q2Comments = document.querySelector('.question-block:nth-child(2) textarea').value;
+            
+            const formattedData = {
+                timestamp: new Date().toISOString(),
+                name: data.name,
+                company: data.company,
+                email: data.email,
+                role: data.role,
+                
+                openQuestions: {
+                    success: data.openQuestions.success,
+                    successComments: q1Comments,
+                    barriers: data.openQuestions.barriers,
+                    barriersComments: q2Comments,
+                    additional: data.openQuestions.additional
+                },
+                
+                scores: data.scores,
+                averageScore: data.averageScore,
+                
+                Source: window.location.href,
+                Referrer: document.referrer || 'CMRI'
             };
             
-            console.log('Submitting data:', submissionData); // Debug log
+            console.log('Submitting data:', formattedData); // Debug log
             
             fetch(scriptUrl, {
                 method: 'POST',
-                body: JSON.stringify(submissionData)
+                body: JSON.stringify(formattedData)
             })
             .then(response => response.json())
             .then(data => {
