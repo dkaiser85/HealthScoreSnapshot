@@ -1718,7 +1718,7 @@
             }
         });
 
-        function createShareButton(overallPercentage, scores) {
+        function createShareButton() {
             return `
                 <div class="share-section bottom">
                     <p>Found these insights valuable? Share them with your team:</p>
@@ -1735,18 +1735,35 @@
         }
 
         function shareResults() {
+            console.log('Share button clicked'); // Debug log
+            
+            // Get the overall percentage
             const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
+            console.log('Overall percentage:', overallPercentage); // Debug log
             
-            const scores = Array.from(document.querySelectorAll('.score-section')).map(section => {
-                const scoreValue = section.querySelector('.score-value').textContent;
-                return parseInt(scoreValue);
+            // Get scores differently - look for pill-gauge elements
+            const scores = Array.from(document.querySelectorAll('.pill-gauge')).map(gauge => {
+                const percentage = gauge.style.getPropertyValue('--percentage');
+                return parseInt(percentage);
             });
+            console.log('Collected scores:', scores); // Debug log
 
-            const emailContent = generateEmailContent(overallPercentage, scores);
-            const subject = encodeURIComponent(generateEmailSubject(overallPercentage));
-            const body = encodeURIComponent(emailContent);
-            
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            try {
+                // Generate email content
+                const emailContent = generateEmailContent(overallPercentage, scores);
+                const subject = encodeURIComponent(generateEmailSubject(overallPercentage));
+                const body = encodeURIComponent(emailContent);
+                
+                // Create mailto link
+                const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
+                console.log('Generated mailto link'); // Debug log
+                
+                // Open email client
+                window.location.href = mailtoLink;
+            } catch (error) {
+                console.error('Error generating email:', error); // Error logging
+                alert('There was an error sharing the results. Please try again.');
+            }
         }
 
         function generateEmailSubject(overallPercentage) {
@@ -1755,21 +1772,27 @@
         }
 
         function generateEmailContent(overallPercentage, scores) {
-            const scoreData = scores.map((score, index) => ({
-                score: score,
-                category: getCategoryName(index)
-            }));
-            
-            const topStrength = scoreData.reduce((max, item) => 
-                item.score > max.score ? item : max, scoreData[0]);
-            const biggestOpportunity = scoreData.reduce((min, item) => 
-                item.score < min.score ? item : min, scoreData[0]);
+            try {
+                // Map scores to categories
+                const scoreData = scores.map((score, index) => ({
+                    score: score,
+                    category: getCategoryName(index)
+                }));
+                
+                // Find top strength and biggest opportunity
+                const topStrength = scoreData.reduce((max, item) => 
+                    item.score > max.score ? item : max, scoreData[0]);
+                const biggestOpportunity = scoreData.reduce((min, item) => 
+                    item.score < min.score ? item : min, scoreData[0]);
 
-            const statusLevel = getStatusLevel(overallPercentage);
-            const summary = getStatusSummary(overallPercentage);
-            const userName = document.getElementById('name') ? document.getElementById('name').value : '';
+                const statusLevel = getStatusLevel(overallPercentage);
+                const summary = getStatusSummary(overallPercentage);
+                
+                // Get user's name safely
+                const nameElement = document.getElementById('name');
+                const userName = nameElement ? nameElement.value : 'Team Member';
 
-            return `Hi Team,
+                return `Hi Team,
 
 I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
 
@@ -1789,6 +1812,10 @@ This overview is based on insights from The Culture MRI®'s Organizational Healt
 
 Best regards,
 ${userName}`;
+            } catch (error) {
+                console.error('Error in generateEmailContent:', error);
+                throw error;
+            }
         }
 
         function getStatusLevel(percentage) {
