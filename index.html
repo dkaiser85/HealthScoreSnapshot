@@ -1768,25 +1768,27 @@
                 const nameElement = document.getElementById('name');
                 const userName = nameElement ? nameElement.value : 'Team Member';
 
-                return `Hi Team,
+                return `Team,
 
-I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
+I recently completed the Organizational Health Snapshot™ powered by The Culture MRI®, and I'm sharing the insights it uncovered.
 
-Our Organizational Health Score is ${overallPercentage}%, which falls into the ${statusLevel} category.
+Our Organizational Health Score is ${overallPercentage}%, placing us in the ${statusLevel} category. According to The Culture MRI®, this highlights the need for ${getStatusContext(overallPercentage)}.
 
-Here's what it means:
-• ${summary}
+What does this mean?
+	•	${summary}
+	•	${getStatusImplication(overallPercentage)}
 
 Breakdown of Key Areas:
-• Top Strength: ${topStrength.category} (${topStrength.score}%)
-• Biggest Opportunity: ${biggestOpportunity.category} (${biggestOpportunity.score}%)
+	•	Top Strength: ${topStrength.category} (${topStrength.score}%)
+	•	Biggest Opportunity: ${biggestOpportunity.category} (${biggestOpportunity.score}%)
 
-Why Does This Matter?
-The Snapshot reveals how well we're meeting employee needs, which directly impacts engagement and performance. This can spark a conversation about making improvements that help everyone thrive.
+Why does this matter?
+The Snapshot measures how effectively our organization meets employee needs—insights that directly correlate to engagement, satisfaction, and productivity. This data provides a starting point for conversations about improvement, with the potential to help every team member thrive.
 
-This overview is based on insights from The Culture MRI®'s Organizational Health Snapshot™. If you want to explore what these scores mean for our team, check out https://theculturemri.com/schedule-a-demo
+If you'd like to explore what these findings mean for us or discuss next steps, you can visit The Culture MRI® website.
 
-Best regards,
+Thank you for taking the time to consider these insights.
+
 ${userName}`;
             } catch (error) {
                 console.error('Error in generateEmailContent:', error);
@@ -1806,11 +1808,11 @@ ${userName}`;
 
         function getStatusSummary(percentage) {
             if (percentage <= 50) {
-                return 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.';
+                return 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and overall performance';
             } else if (percentage <= 84) {
-                return 'While some systems are stable, there are important gaps in meeting employee needs and optimizing performance. Addressing these areas can create stronger alignment and engagement.';
+                return 'Taking action in these areas can enhance team alignment and create stronger engagement across the organization';
             } else {
-                return 'Many systems are functioning well, but there are still opportunities to push productivity and profitability even higher by refining our approach.';
+                return 'Building on these strengths can help us achieve even higher levels of performance and engagement';
             }
         }
 
@@ -1828,6 +1830,27 @@ ${userName}`;
                 "Operations and Culture Interconnection"
             ];
             return categories[index];
+        }
+
+        // Add these helper functions for the new content
+        function getStatusContext(percentage) {
+            if (percentage <= 50) {
+                return "urgent attention to improve alignment, engagement, and overall performance";
+            } else if (percentage <= 84) {
+                return "focused attention on strengthening our cultural foundations and performance";
+            } else {
+                return "continued refinement to maintain and build upon our strong foundation";
+            }
+        }
+
+        function getStatusImplication(percentage) {
+            if (percentage <= 50) {
+                return "Addressing these areas could strengthen how we work together and create meaningful improvements for our entire team.";
+            } else if (percentage <= 84) {
+                return "Taking action in these areas can enhance team alignment and create stronger engagement across the organization.";
+            } else {
+                return "Building on these strengths can help us achieve even higher levels of performance and engagement.";
+            }
         }
 
         // Add this new function to handle returning to the form
