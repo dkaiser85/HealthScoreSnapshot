@@ -1015,6 +1015,30 @@
                 font-size: 0.9rem;
             }
         }
+
+        .form-group.unanswered input {
+            border-color: #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        .form-group.unanswered label {
+            color: #ED5C5C;
+        }
+
+        .question-item.unanswered {
+            border: 2px solid #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        /* Remove red highlighting when user starts filling in the field */
+        .form-group.unanswered input:focus {
+            border-color: var(--primary-color);
+            background-color: white;
+        }
+
+        .form-group input:focus + label {
+            color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -1335,6 +1359,12 @@
             const container = document.querySelector('.container');
             container.innerHTML = resultsHTML;
 
+            // Scroll to top smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
             // Animate the gauge to the final percentage
             setTimeout(() => {
                 updateRadialGauge(overallPercentage);
@@ -1425,21 +1455,33 @@
 
             // Validate required fields
             if (!formData.name || !formData.company || !formData.email || !formData.role) {
-                alert('Please fill in all required fields.');
+                // Instead of alert, highlight the empty required fields
+                ['name', 'company', 'email', 'role'].forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value) {
+                        field.style.borderColor = '#ED5C5C';
+                        field.parentElement.classList.add('unanswered');
+                    }
+                });
+                // Scroll to the first empty field
+                const firstEmptyField = document.querySelector('.unanswered');
+                if (firstEmptyField) {
+                    firstEmptyField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return;
             }
 
             // Collect all scores and mark unanswered questions
             const scores = [];
             const questionItems = document.querySelectorAll('.question-item');
-            let unansweredQuestions = [];
+            let hasUnanswered = false;
             
             questionItems.forEach((item, index) => {
                 const selected = item.querySelector('.rating-button.selected');
                 if (!selected) {
-                    unansweredQuestions.push(index + 1);
+                    hasUnanswered = true;
                     item.classList.add('unanswered');
-                    if (unansweredQuestions.length === 1) {
+                    if (!document.querySelector('.unanswered')) {
                         item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 } else {
@@ -1448,12 +1490,11 @@
             });
 
             // Stop if there are unanswered questions
-            if (unansweredQuestions.length > 0) {
-                alert('Please answer all questions before submitting.');
+            if (hasUnanswered) {
                 return;
             }
 
-            // Calculate overall percentage
+            // If we get here, all questions are answered - proceed with form submission
             const overallPercentage = Math.round(
                 calculateScores.getOverallScore(
                     scores.map(score => calculateScores.toPercentage(score))
@@ -1472,72 +1513,7 @@
             submitToGoogleSheet(formData);
             
             // Create results HTML
-            const container = document.querySelector('.container');
-            container.innerHTML = `
-                <div class="results-container">
-                    <div class="close-button" onclick="returnToForm()">×</div>
-                    
-                    <h2 style="text-align: center; margin-bottom: 2rem; color: #173248; font-family: 'Inter', sans-serif;">Organizational Health Snapshot™ Results</h2>
-                    
-                    <div class="overall-score">
-                        <div class="gauge">
-                            <svg width="195" height="195" viewBox="0 0 195 195">
-                                <path class="gauge__background" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke="#f0f0f0"
-                                      stroke-width="15"
-                                      fill="none"
-                                      stroke-linecap="round" />
-                                <path class="gauge__fill" 
-                                      id="engagementFill" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5"
-                                      stroke-width="15"
-                                      fill="none"
-                                      stroke-linecap="round"
-                                      stroke-dasharray="367.566"
-                                      stroke-dashoffset="367.566" />
-                                <text x="97.5" y="115" 
-                                      text-anchor="middle" 
-                                      font-size="31px" 
-                                      font-weight="700"
-                                      fill="#173248" 
-                                      id="engagementText">0%</text>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="score-message" style="margin-top: 2rem;">
-                        ${getScoreMessage(overallPercentage)}
-                    </div>
-
-                    <div class="score-breakdown">
-                        ${generateScoreBreakdown(scores)}
-                    </div>
-
-                    <div class="cta-section" style="margin-top: 2rem; text-align: center;">
-                        <h3>Your Health Snapshot Is Just the Beginning  </h3>
-                        <p>With the full Culture MRI®, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-
-                    <div class="share-section" style="margin-top: 2rem; text-align: center;">
-                        ${createShareButton(overallPercentage, scores)}
-                    </div>
-                </div>
-            `;
-
-            // Add this block after setting innerHTML
-            setTimeout(() => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-
-                updateRadialGauge(overallPercentage);
-            }, 100);
-
-            // After creating results HTML, add:
-            updateDemoLinks();
+            createResultsPage(scores);
         }
 
         // Update submitToGoogleSheet function
@@ -2006,6 +1982,17 @@ ${userName}`;
                 });
             });
         }
+
+        // Add event listeners to remove error styling when user starts filling in fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-group input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    this.style.borderColor = '';
+                    this.parentElement.classList.remove('unanswered');
+                });
+            });
+        });
     </script>
 </body>
 </html>
