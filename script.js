@@ -125,13 +125,6 @@ function calculateScore() {
 
 // Show results page
 function showResults() {
-    // Check if all questions are answered
-    const unanswered = document.querySelectorAll('.question-item:not(:has(.rating-button.selected))');
-    if (unanswered.length > 0) {
-        unanswered.forEach(item => item.classList.add('unanswered'));
-        return; // Stop here if there are unanswered questions
-    }
-
     const score = calculateScore();
     const percentage = Math.round((score / 10) * 100);
     
@@ -161,6 +154,43 @@ function showResults() {
                 <h3>Your Organization's Health Status</h3>
                 <p>Based on your responses, your organization shows strong potential with room for strategic improvements.</p>
             </div>
+            
+            <!-- Add category breakdown -->
+            <div class="category-scores">
+                <div class="category">
+                    <h4>Understanding & Costs</h4>
+                    <p>${calculateCategoryAverage(0, 1).toFixed(1)}/10</p>
+                </div>
+                <div class="category">
+                    <h4>Mission & Values</h4>
+                    <p>${calculateCategoryAverage(2, 3).toFixed(1)}/10</p>
+                </div>
+                <div class="category">
+                    <h4>Culture & ROI</h4>
+                    <p>${calculateCategoryAverage(4, 5).toFixed(1)}/10</p>
+                </div>
+                <div class="category">
+                    <h4>Measurement & Alignment</h4>
+                    <p>${calculateCategoryAverage(6, 9).toFixed(1)}/10</p>
+                </div>
+            </div>
         </div>
     `;
+}
+
+// Add this new helper function
+function calculateCategoryAverage(startIndex, endIndex) {
+    let total = 0;
+    let count = 0;
+    
+    for (let i = startIndex; i <= endIndex; i++) {
+        const questionItem = document.querySelectorAll('.question-item')[i];
+        const selectedButton = questionItem.querySelector('.rating-button.selected');
+        if (selectedButton) {
+            total += parseInt(selectedButton.textContent);
+            count++;
+        }
+    }
+    
+    return count > 0 ? total / count : 0;
 }
