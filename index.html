@@ -112,7 +112,7 @@
         }
 
         .assessment-grid {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .scale-header {
@@ -309,7 +309,7 @@
                 max-width: 150px;
             }
 
-            .rating-scale {
+            rating-scale {
                 gap: 1px;
             }
             
@@ -427,11 +427,14 @@
 
         /* Add style for the instruction text */
         .instruction-text {
-            text-align: center;
-            margin: 2rem 0;
-            color: #333; 
-            font-size: 15px;
+            font-size: 16px;
+            color: #333;
+            margin: 3rem 0 2rem 0;
+            padding: 0;
             font-weight: 500;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
         }
 
         /* Results Page Styles */
@@ -443,34 +446,19 @@
 
         /* Clean 270-degree Gauge Styles */
         .gauge {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 1rem auto 2rem auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .gauge svg {
-            display: block;
-            margin: 0 auto;
-            width: 100%;
-            height: 100%;
+            margin: 2rem auto;
         }
 
         .gauge__background {
-            fill: none;
-            stroke: #f0f0f0;
-            stroke-width: 15;
+            stroke: #E5E7EB;
             stroke-linecap: round;
+            fill: none;
         }
 
         .gauge__fill {
-            fill: none;
-            stroke-width: 15;
             stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease-in-out;
+            fill: none;
+            transition: stroke-dasharray 1s ease-in-out;
         }
 
         /* Add status text below percentage */
@@ -1081,11 +1069,6 @@
             color: #ED5C5C;
         }
 
-        .question-item.unanswered {
-            border: 2px solid #ED5C5C;
-            background-color: rgba(237, 92, 92, 0.05);
-        }
-
         /* Remove red highlighting when user starts filling in the field */
         .form-group.unanswered input:focus {
             border-color: var(--primary-color);
@@ -1094,6 +1077,11 @@
 
         .form-group input:focus + label {
             color: var(--primary-color);
+        }
+
+        /* Add real-time validation feedback */
+        .form-group input:valid {
+            border-color: #5EBD77;
         }
 
         /* Prevent scroll bounce on iOS */
@@ -1265,9 +1253,35 @@
 
         .gauge {
             position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 1rem auto 2rem auto;  /* Added bottom margin */
+            width: 195px;  /* Match SVG viewBox width */
+            height: 195px; /* Match SVG viewBox height */
+            margin: 2rem auto;  /* Center horizontally with auto margins */
+            display: block;  /* Ensure block-level display */
+        }
+
+        .gauge svg {
+            width: 100%;
+            height: 100%;
+            display: block;  /* Remove any inline spacing */
+            margin: 0 auto;  /* Center the SVG */
+        }
+
+        /* Update the results container styles */
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;  /* Center all content */
+        }
+
+        /* Ensure the overall score container is centered */
+        .overall-score {
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .score-message {
@@ -1287,7 +1301,7 @@
             .gauge {
                 width: 140px;
                 height: 140px;
-                margin: 1rem auto 1.5rem auto;  /* Adjusted for mobile */
+                margin: 1.5rem auto 1.5rem auto;  /* Adjusted for mobile */
             }
 
             .score-message {
@@ -1322,25 +1336,287 @@
                 padding: 0.75rem;
             }
         }
+
+        .intro-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .intro-text {
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .intro-text h2, .intro-text h3 {
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+        }
+
+        .contact-info {
+            background: var(--primary-color-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .contact-info p {
+            margin: 0.5rem 0;
+        }
+
+        .begin-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 3rem auto;
+            padding: 1rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .begin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(91, 95, 199, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .intro-content {
+                padding: 1rem;
+            }
+            
+            .contact-info {
+                padding: 1rem;
+            }
+        }
+
+        .error-message {
+            color: #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.1);
+            padding: 12px;
+            border-radius: 4px;
+            margin: 1rem auto;
+            max-width: 600px;
+            text-align: center;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .open-questions {
+            margin-bottom: 4rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2rem;
+        }
+
+        .question-block {
+            margin-bottom: 2rem;
+        }
+
+        .question-block h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .question-block h3::after {
+            content: "";
+        }
+
+        .question-block.unanswered {
+            border: 2px solid #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .question-block.unanswered input:first-child {
+            border-color: #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        .question-block.unanswered h3 {
+            color: #ED5C5C;
+        }
+
+        /* Update existing question-item styles for consistency */
+        .question-item.unanswered {
+            border: 2px solid #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        .question-item.unanswered .question-text {
+            color: #ED5C5C;
+        }
+
+        /* Remove error state when user starts typing */
+        .question-block.unanswered input:focus {
+            border-color: var(--primary-color);
+            background-color: white;
+        }
+
+        .question-block input:focus + h3 {
+            color: var(--primary-color);
+        }
+
+        /* Add real-time validation feedback */
+        .question-block input:valid {
+            border-color: #5EBD77;
+        }
+
+        .question-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .input-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-list input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+        }
+
+        .input-list input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .question-block h3,
+            .question-description,
+            .input-list input,
+            textarea {
+                font-size: 14px;
+            }
+
+            .input-list {
+                gap: 0.75rem;
+            }
+
+            .question-block {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .thank-you-message {
+            text-align: center;
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .thank-you-message h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .thank-you-message p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .thank-you-message h2 {
+                font-size: 1.25rem;
+            }
+
+            .thank-you-message p {
+                font-size: 1rem;
+            }
+
+            .gauge {
+                width: 140px;
+                height: 140px;
+                margin: 1.5rem auto;
+            }
+        }
+
+        .question-block.unanswered textarea {
+            border-color: #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
+
+        .question-block textarea:valid {
+            border-color: #5EBD77;
+        }
+
+        /* Remove the green validation styling for the open questions section */
+        .question-block input:valid,
+        .question-block textarea:valid {
+            border-color: #ddd;  /* Reset to default border color */
+        }
+
+        /* Keep the red validation styling for errors */
+        .question-block.unanswered input,
+        .question-block.unanswered textarea {
+            border-color: #ED5C5C;
+            background-color: rgba(237, 92, 92, 0.05);
+        }
     </style>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Organizational Health Snapshot™</h1>
-            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
-        </header>
-        
-        <form id="cultureForm">
+        <!-- Introduction Section (initially visible) -->
+        <div id="introSection">
+            <header>
+                <h1>Organizational Health Snapshot™</h1>
+                <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
+            </header>
+
+            <!-- Add the personal info form here -->
             <div class="personal-info">
                 <div class="form-group">
                     <label for="name">Name*</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" required minlength="2">
                 </div>
                 <div class="form-group">
                     <label for="company">Company*</label>
-                    <input type="text" id="company" required>
+                    <input type="text" id="company" required minlength="2">
                 </div>
                 <div class="form-group">
                     <label for="email">Email*</label>
@@ -1348,486 +1624,253 @@
                 </div>
                 <div class="form-group">
                     <label for="role">Job Role*</label>
-                    <input type="text" id="role" required>
+                    <input type="text" id="role" required minlength="2">
                 </div>
             </div>
 
-            <div class="instruction-text">
-                Indicate the degree to which you agree or disagree with these statements:
-            </div>
-
-            <div class="assessment-grid">
-                <div class="scale-header">
-                    <span>DISAGREE</span>
-                    <span>AGREE</span>
+            <div class="intro-content">
+                <div class="intro-text">
+                    <h2>How to Complete this Evaluation</h2>
+                    <p>Thank you for taking the time to complete this Culture Operations evaluation. You will gain valuable insights by learning how a systematic approach to culture can help to improve employee engagement and increase your overall profitability.</p>
+                    
+                    <h3>Your Culture Operations Scorecard</h3>
+                    <p>You can't get this wrong. There is no one "right" answer. The clearer and more accurate you are, the better the outcome will be. Your feedback will provide the information to get a clear picture of where you are and where you want to be, while enabling you to better understand the reality of your current situation with regard to Culture Operations.</p>
+                    
+                    <h3>Your Vision</h3>
+                    <p>Please complete the scorecard by indicating where you currently stand for each of the 10 statements listed. Score from 1 to 10 for each in relation to your current reality (1 being the weakest and 10 being the strongest).</p>
+                    
+                    <p>To protect the integrity of the results, please wait to discuss or share your answers with others. Answer the first question as if you knew you could NOT fail. Consider what's possible, what's not possible, and, most importantly, what you would consider success.</p>
+                    
+                    <p>Answer "what's preventing you from getting there" with as little opinion as possible. Think "just the facts". Please answer each question as fully as possible. Take your time. This is the opportunity for you to think about your culture more fully.</p>
+                    
+                    <h3>Here to Support You</h3>
+                    <p>Should you need assistance or have questions, feel free to reach out anytime:</p>
+                    <div class="contact-info">
+                        <p>Bob Keator, The Culture MRI</p>
+                        <p>Phone: (404) 695-3712</p>
+                        <p>Email: bob@theculturemri.com</p>
+                        <p>Schedule: <a href="https://calendly.com/culturemri" target="_blank">calendly.com/culturemri</a></p>
+                        <p>Website: <a href="https://www.TheCultureMRI.com" target="_blank">www.TheCultureMRI.com</a></p>
+                    </div>
                 </div>
                 
-                <div class="question-group">
-                    <!-- Questions will be added via JavaScript -->
-                </div>
+                <button onclick="showQuestionnaire()" class="begin-button">Begin Evaluation</button>
             </div>
+        </div>
 
-            <button type="submit">See Your Snapshot</button>
-        </form>
+        <!-- Questionnaire Section (initially hidden) -->
+        <div id="questionnaireSection" style="display: none;">
+            <form id="cultureForm">
+                <!-- New Questions Section -->
+                <div class="open-questions">
+                    <div class="question-block">
+                        <h3>1. What does success look like? *</h3>
+                        <p class="question-description">Imagine we've assessed employee engagement at your company and your Culture Operations plan has been in place for a year. You and your entire team are remarking how great the culture is. What progress, metrics, programs, or outcomes would you point to that would cause you to feel this way?</p>
+                        <div class="input-list">
+                            <input type="text" placeholder="1.*" required>
+                            <input type="text" placeholder="2.">
+                            <input type="text" placeholder="3.">
+                        </div>
+                        <textarea placeholder="Additional Comments:" rows="3"></textarea>
+                    </div>
 
-        <div class="score-summary" style="display: none;">
-            <h2>Assessment Summary</h2>
-            <div class="summary-grid">
-                <div class="average-score">
-                    <h3>Average Score</h3>
-                    <div class="score-circle"></div>
+                    <div class="question-block">
+                        <h3>2. What's currently preventing you from getting there? *</h3>
+                        <div class="input-list">
+                            <input type="text" placeholder="1.*" required>
+                            <input type="text" placeholder="2.">
+                            <input type="text" placeholder="3.">
+                        </div>
+                        <textarea placeholder="Additional Comments:" rows="3"></textarea>
+                    </div>
+
+                    <div class="question-block">
+                        <h3>3. Is there anything else you would like to share? *</h3>
+                        <textarea rows="4" required placeholder="*Please Share"></textarea>
+                    </div>
                 </div>
-                <div class="score-breakdown">
-                    <h3>Breakdown by Category</h3>
-                    <!-- Dynamic content -->
+
+                <!-- Original Rating Questions -->
+                <div class="instruction-text">
+                    Indicate the degree to which you agree or disagree with these statements:
+                </div>
+
+                <div class="assessment-grid">
+                    <div class="scale-header">
+                        <span>DISAGREE</span>
+                        <span>AGREE</span>
+                    </div>
+                    
+                    <div class="question-group">
+                        <!-- Questions will be added via JavaScript -->
+                    </div>
+                </div>
+
+                <button type="submit">See My Results</button>
+            </form>
+
+            <div class="score-summary" style="display: none;">
+                <h2>Assessment Summary</h2>
+                <div class="summary-grid">
+                    <div class="average-score">
+                        <h3>Average Score</h3>
+                        <div class="score-circle"></div>
+                    </div>
+                    <div class="score-breakdown">
+                        <h3>Breakdown by Category</h3>
+                        <!-- Dynamic content -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Basic JavaScript to add questions and handle ratings
+        // Add this before your existing JavaScript code
         const questions = [
-            {
-                text: "We have a clear picture of our cost of culture...",
-                title: "Understanding Cultural Costs",
-                description: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
-            },
-            {
-                text: "We have clear metrics in place to determine the profit impact...",
-                title: "HR Metrics and Profit Impact",
-                description: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
-            },
-            {
-                text: "Our mission, vision and values are easily translated...",
-                title: "Mission, Vision, and Values in Action",
-                description: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
-            },
-            {
-                text: "We are confident that we are maximizing our efforts...",
-                title: "Managing Employee Turnover Costs",
-                description: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
-            },
-            {
-                text: "We have Culture KPIs and can ensure an effective ROI...",
-                title: "Ensuring ROI for Cultural Initiatives",
-                description: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
-            },
-            {
-                text: "Since COVID happened, there is a distinctive change...",
-                title: "Post-COVID Workplace Changes",
-                description: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
-            },
-            {
-                text: "When budget time comes around, culture is easily accounted for...",
-                title: "Budgeting for Cultural Costs",
-                description: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
-            },
-            {
-                text: "We have an easy system and process for measuring...",
-                title: "Measuring and Driving Engagement",
-                description: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
-            },
-            {
-                text: "The brand of our company matches the culture...",
-                title: "Aligning Brand and Internal Culture",
-                description: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
-            },
-            {
-                text: "Most culture issues we have are Operations' related.",
-                title: "Operations and Culture Interconnection",
-                description: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
-            }
+            "We have a clear and compelling vision that inspires our team.",
+            "Our leadership team effectively communicates and models our values.",
+            "We have well-defined processes for recruiting and retaining top talent.",
+            "Our onboarding process effectively integrates new hires into our culture.",
+            "We regularly measure and act on employee feedback and engagement.",
+            "Our performance management system aligns with our cultural values.",
+            "We invest in ongoing professional development and growth opportunities.",
+            "Our workplace environment promotes collaboration and innovation.",
+            "We have effective systems for recognition and rewards.",
+            "Our culture directly contributes to our business success."
         ];
 
-        function createQuestionElement(question, index) {
+        function createQuestionElement(questionText, index) {
             const questionItem = document.createElement('div');
             questionItem.className = 'question-item';
-            
-            const questionText = document.createElement('div');
-            questionText.className = 'question-text';
-            questionText.innerHTML = `
-                <span class="question-number">Q${index + 1}.</span> 
-                ${question.text}
-            `;
-            
-            const ratingScale = document.createElement('div');
-            ratingScale.className = 'rating-scale';
-            
-            for (let i = 1; i <= 10; i++) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'rating-button';
-                button.textContent = i;
-                button.onclick = function() {
-                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
-                        btn.classList.remove('selected');
-                    });
-                    button.classList.add('selected');
-                    questionItem.classList.remove('unanswered');
-                };
-                ratingScale.appendChild(button);
-            }
-            
-            questionItem.appendChild(questionText);
-            questionItem.appendChild(ratingScale);
-            
-            return questionItem;
-        }
-
-        // Initialize the form with questions when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            const questionGroup = document.querySelector('.question-group');
-            questions.forEach((question, index) => {
-                const questionElement = createQuestionElement(question, index);
-                questionGroup.appendChild(questionElement);
-            });
-        });
-
-        // First, let's create the scoring calculation functions
-        const calculateScores = {
-            toPercentage: (score) => (score / 10) * 100,
-            
-            // Updated color function with new color codes
-            getColor: (percentage) => {
-                const score = Math.round(percentage);
-                if (score <= 50) {
-                    return '#ED5C5C'; // New red
-                } else if (score <= 84) {
-                    return '#DFD691'; // New yellow
-                } else {
-                    return '#5EBD77'; // New green
-                }
-            },
-            
-            getOverallScore: (scores) => {
-                const sum = scores.reduce((acc, curr) => acc + curr, 0);
-                return sum / scores.length;
-            }
-        };
-
-        // Update the updateRadialGauge function
-        function updateRadialGauge(percentage) {
-            const fillElement = document.getElementById('engagementFill');
-            const textElement = document.getElementById('engagementText');
-            
-            // Set the fill color based on score
-            let strokeColor;
-            if (percentage <= 50) {
-                strokeColor = '#ED5C5C';
-            } else if (percentage <= 84) {
-                strokeColor = '#DFD691';
-            } else {
-                strokeColor = '#5EBD77';
-            }
-
-            // Start at 0%
-            fillElement.style.transition = 'none';
-            fillElement.style.stroke = strokeColor;
-            fillElement.style.strokeDasharray = '367.566';
-            fillElement.style.strokeDashoffset = 367.566; // This is 100% offset (0% shown)
-            textElement.textContent = '0%';
-
-            // Force a reflow to ensure the initial state is rendered
-            fillElement.getBoundingClientRect();
-
-            // Animate to the actual percentage
-            setTimeout(() => {
-                fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
-                fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
-                
-                // Animate the percentage text
-                let currentPercent = 0;
-                const duration = 1000; // 1 second
-                const interval = 16; // ~60fps
-                const steps = duration / interval;
-                const increment = percentage / steps;
-                
-                const counter = setInterval(() => {
-                    currentPercent += increment;
-                    if (currentPercent >= percentage) {
-                        currentPercent = percentage;
-                        clearInterval(counter);
-                    }
-                    textElement.textContent = `${Math.round(currentPercent)}%`;
-                }, interval);
-            }, 50);
-        }
-
-        // Update the createResultsPage function to use this
-        function createResultsPage(scores) {
-            const overallPercentage = Math.round(
-                calculateScores.getOverallScore(
-                    scores.map(score => calculateScores.toPercentage(score))
-                )
-            );
-
-            let resultsHTML = `
-                <header style="margin-bottom: 0.5rem; position: relative;">
-                    <button onclick="showQuestionnaire()" class="close-button" style="position: absolute; right: 0; top: 0; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
-                    <h1>Organizational Health Snapshot™ Results</h1>
-                </header>
-                <div class="results-container" style="margin-top: 0;">
-                    <div class="overall-score" style="margin-top: 0;">
-                        <div class="gauge">
-                            <svg width="195" height="195" viewBox="0 0 195 195">
-                                <path class="gauge__background" 
-                                    d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                                    stroke-width="15"
-                                    transform="rotate(0, 97.5, 97.5)" />
-                                <path class="gauge__fill" 
-                                    id="engagementFill" 
-                                    d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                                    stroke-width="15"
-                                    transform="rotate(0, 97.5, 97.5)" />
-                                <text x="97.5" y="115" 
-                                    text-anchor="middle" 
-                                    font-size="31px" 
-                                    font-weight="700"
-                                    fill="#173248" 
-                                    id="engagementText">${overallPercentage}%</text>
-                            </svg>
-                        </div>
-                        
-                        <!-- Score message -->
-                        <div class="score-message" style="margin-top: 2rem;">
-                            ${getScoreMessage(overallPercentage)}
-                        </div>
-
-                        <!-- First CTA section -->
-                        <div class="cta-section" style="margin-top: 2rem;">
-                            <h3>Your Health Snapshot Is Just the Beginning</h3>
-                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Schedule The Culture MRI® Demo</a>
-                        </div>
-                    </div>
-
-                    <!-- Individual scores section -->
-                    <div class="individual-scores">
-                        <h3>Detailed Breakdown</h3>
-                        ${scores
-                            .map((score, index) => ({
-                                score: score,
-                                percentage: Math.round(calculateScores.toPercentage(score)),
-                                title: questions[index].title,
-                                description: questions[index].description
-                            }))
-                            .sort((a, b) => a.percentage - b.percentage)
-                            .map(item => {
-                                const color = calculateScores.getColor(item.percentage);
-                                return `
-                                    <div class="score-section">
-                                        <div class="score-header">
-                                            <h4>${item.title}</h4>
-                                            <span class="score-value">${item.percentage}%</span>
-                                        </div>
-                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
-                                        </div>
-                                        <p class="score-description">${item.description}</p>
-                                    </div>
-                                `;
-                            }).join('')}
-                    </div>
-                    
-                    <!-- Second CTA section -->
-                    <div class="cta-section" style="margin-top: 2rem;">
-                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                        <p>With the full Culture MRI, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Discover the Full Culture MRI®</a>
-                    </div>
-                    
-                    <!-- Share section -->
-                    <div class="share-section bottom">
-                        <p>Save your snapshot summary to share with your team:</p>
-                        <button onclick="downloadScreenshot()" class="share-button">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                                <polyline points="16 6 12 2 8 6"></polyline>
-                                <line x1="12" y1="2" x2="12" y2="15"></line>
-                            </svg>
-                            Save Summary
+            questionItem.innerHTML = `
+                <div class="question-text">
+                    <span class="question-number">${index + 1}.</span> ${questionText}
+                </div>
+                <div class="rating-scale">
+                    ${Array.from({length: 10}, (_, i) => `
+                        <button type="button" 
+                                class="rating-button" 
+                                data-value="${i + 1}" 
+                                data-question="${index + 1}">
+                            ${i + 1}
                         </button>
-                    </div>
+                    `).join('')}
                 </div>
             `;
 
-            // Update the DOM
-            const container = document.querySelector('.container');
-            container.innerHTML = resultsHTML;
-
-            // Scroll to top smoothly
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+            // Add click handlers for rating buttons
+            const ratingButtons = questionItem.querySelectorAll('.rating-button');
+            ratingButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Remove selected class from all buttons in this question
+                    ratingButtons.forEach(btn => btn.classList.remove('selected'));
+                    // Add selected class to clicked button
+                    this.classList.add('selected');
+                    // Remove unanswered class if present
+                    questionItem.classList.remove('unanswered');
+                });
             });
 
-            // Animate the gauge to the final percentage
-            setTimeout(() => {
-                updateRadialGauge(overallPercentage);
-            }, 100);
+            return questionItem;
         }
 
-        // Store original form HTML
-        let originalFormHTML;
-
-        // Initialize when page loads
+        // Make sure this is at the top level of your JavaScript
         document.addEventListener('DOMContentLoaded', function() {
-            originalFormHTML = document.querySelector('.container').innerHTML;
-            
-            // Check for stored results
-            const storedResults = localStorage.getItem('cultureMRIResults');
-            if (storedResults) {
-                const resultsData = JSON.parse(storedResults);
-                
-                // Check if results are less than 30 minutes old
-                const thirtyMinutes = 30 * 60 * 1000;
-                if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
-                    // Restore the results
-                    scores = resultsData.scores;
-                    Object.assign(formData, resultsData.formData);
-                    createResultsPage(scores);
-                    updateDemoLinks();
-                } else {
-                    // Clear old results
-                    localStorage.removeItem('cultureMRIResults');
-                }
+            // Initialize form with questions
+            const questionGroup = document.querySelector('.question-group');
+            if (questionGroup) {
+                questions.forEach((question, index) => {
+                    const questionElement = createQuestionElement(question, index);
+                    questionGroup.appendChild(questionElement);
+                });
             }
-            
-            initializeForm();
-        });
 
-        // Initialize form and add event listeners
-        function initializeForm() {
+            // Store original questionnaire HTML
+            originalFormHTML = document.getElementById('questionnaireSection').innerHTML;
+            
+            // Add click handler for Begin Evaluation button
+            const beginButton = document.querySelector('.begin-button');
+            if (beginButton) {
+                beginButton.addEventListener('click', showQuestionnaire);
+            }
+
+            // Add submit handler for the form
             const form = document.getElementById('cultureForm');
             if (form) {
-                console.log('Form found, adding submit listener');
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    console.log('Form submitted');
-                    handleFormSubmit();
-                });
+                form.addEventListener('submit', handleFormSubmit);
             }
+        });
 
-            // Add click handlers to rating buttons
-            document.querySelectorAll('.rating-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const ratingScale = this.closest('.rating-scale');
-                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
-                        btn.classList.remove('selected');
-                    });
-                    this.classList.add('selected');
-                });
-            });
-        }
+        // Add this at the top of your JavaScript to store form data
+        let formData = {
+            name: '',
+            company: '',
+            email: '',
+            role: ''
+        };
 
-        // Add this function at the start to get affiliate code
-        function getAffiliateCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI';
-        }
-
-        // Update handleFormSubmit function
-        function handleFormSubmit() {
-            console.log('Processing form submission');
-            
-            // First, remove any existing unanswered markers
-            document.querySelectorAll('.question-item').forEach(item => {
-                item.classList.remove('unanswered');
-            });
-
-            // Get affiliate code first
-            const affiliateCode = getAffiliateCode();
-            
-            // Collect initial form data
-            let formData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
-                affiliateCode: affiliateCode
+        function showQuestionnaire() {
+            // Get all required fields
+            formData = {
+                name: document.getElementById('name').value.trim(),
+                company: document.getElementById('company').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                role: document.getElementById('role').value.trim()
             };
 
-            // Validate required fields
-            if (!formData.name || !formData.company || !formData.email || !formData.role) {
-                // Instead of alert, highlight the empty required fields
-                ['name', 'company', 'email', 'role'].forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (!field.value) {
-                        field.style.borderColor = '#ED5C5C';
-                        field.parentElement.classList.add('unanswered');
-                    }
-                });
-                // Scroll to the first empty field
+            // Remove any existing error states
+            document.querySelectorAll('.form-group').forEach(group => {
+                group.classList.remove('unanswered');
+            });
+
+            // Check if all required fields are filled
+            let isValid = true;
+            Object.entries(formData).forEach(([key, value]) => {
+                if (!value) {
+                    isValid = false;
+                    const field = document.getElementById(key);
+                    field.parentElement.classList.add('unanswered');
+                }
+            });
+
+            // Additional email validation
+            if (formData.email && !isValidEmail(formData.email)) {
+                isValid = false;
+                document.getElementById('email').parentElement.classList.add('unanswered');
+            }
+
+            if (!isValid) {
+                // Scroll to first empty field
                 const firstEmptyField = document.querySelector('.unanswered');
                 if (firstEmptyField) {
                     firstEmptyField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
+                
+                // Show error message
+                showErrorMessage('Please fill in all required fields correctly.');
                 return;
             }
 
-            // Collect all scores and mark unanswered questions
-            const scores = [];
-            const questionItems = document.querySelectorAll('.question-item');
-            let hasUnanswered = false;
+            // Show questionnaire section first
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('questionnaireSection').style.display = 'block';
             
-            questionItems.forEach((item, index) => {
-                const selected = item.querySelector('.rating-button.selected');
-                if (!selected) {
-                    hasUnanswered = true;
-                    item.classList.add('unanswered');
-                    if (!document.querySelector('.unanswered')) {
-                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                } else {
-                    scores.push(parseInt(selected.textContent));
-                }
+            // Force scroll to the absolute top immediately
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'instant'
             });
 
-            // Stop if there are unanswered questions
-            if (hasUnanswered) {
-                return;
-            }
-
-            // If we get here, all questions are answered
-            const overallPercentage = Math.round(
-                calculateScores.getOverallScore(
-                    scores.map(score => calculateScores.toPercentage(score))
-                )
-            );
-
-            // Update form data with scores
-            formData = {
-                ...formData,
-                scores: scores,
-                overallScore: overallPercentage,
-                submissionDate: new Date().toISOString()
-            };
-
-            // Submit to Google Sheet
-            submitToGoogleSheet(formData);
-            
-            // Create results HTML
-            createResultsPage(scores);
-
-            // FORCE scroll to top - both the iframe and parent window
+            // Add a small delay to ensure the scroll happens after the content switch
             setTimeout(() => {
-                // Scroll iframe content
-                window.scrollTo(0, 0);
-                document.body.scrollTop = 0;
-                document.documentElement.scrollTop = 0;
-
-                // If in iframe, scroll parent window
-                try {
-                    if (window.self !== window.top) {
-                        window.parent.document.body.scrollTop = 0;
-                        window.parent.document.documentElement.scrollTop = 0;
-                    }
-                } catch (e) {
-                    console.log('Cannot access parent frame');
-                }
-            }, 100);
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'instant'
+                });
+            }, 0);
         }
 
         // Update submitToGoogleSheet function
@@ -1855,11 +1898,32 @@
             });
         }
 
-        // Show questionnaire function
-        function showQuestionnaire() {
-            const container = document.querySelector('.container');
-            container.innerHTML = originalFormHTML;
-            initializeForm();
+        // Add these helper functions
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showErrorMessage(message) {
+            // Remove any existing error message
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Create and show new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            // Insert after the form
+            const personalInfo = document.querySelector('.personal-info');
+            personalInfo.insertAdjacentElement('afterend', errorDiv);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
         }
 
         function getStatus(percentage) {
@@ -1998,7 +2062,7 @@
                 tempContainer.innerHTML = `
                     <div style="margin: 0 auto; max-width: 500px;">
                         <h2 style="color: #333; margin-bottom: 30px; font-size: 24px;">
-                            Organizational Health Snapshot™
+                            Organizational Health Snapshot
                         </h2>
                         
                         <div style="margin: 40px auto; font-size: 48px; font-weight: bold; color: ${getScoreColor(parseInt(scoreText))}>
@@ -2061,6 +2125,113 @@
             if (score <= 50) return '#ED5C5C';
             if (score <= 84) return '#DFD691';
             return '#5EBD77';
+        }
+
+        // Update form submit handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            // Get stored form data
+            const storedFormData = JSON.parse(localStorage.getItem('formData')) || formData;
+
+            // Validate Questions #1, #2, and #3
+            const openQuestions = document.querySelectorAll('.question-block');
+            let isValid = true;
+            let firstError = null;
+
+            // Check first input of first two questions
+            for (let i = 0; i < 2; i++) {
+                const firstInput = openQuestions[i].querySelector('input');
+                if (!firstInput.value.trim()) {
+                    isValid = false;
+                    openQuestions[i].classList.add('unanswered');
+                    if (!firstError) firstError = openQuestions[i];
+                } else {
+                    openQuestions[i].classList.remove('unanswered');
+                }
+            }
+
+            // Check question 3's textarea
+            const question3Textarea = openQuestions[2].querySelector('textarea');
+            if (!question3Textarea.value.trim()) {
+                isValid = false;
+                openQuestions[2].classList.add('unanswered');
+                if (!firstError) firstError = openQuestions[2];
+            } else {
+                openQuestions[2].classList.remove('unanswered');
+            }
+
+            // Validate 1-10 rating questions
+            const questionItems = document.querySelectorAll('.question-item');
+            let totalScore = 0;
+            let answeredQuestions = 0;
+            
+            questionItems.forEach(item => {
+                const selectedButton = item.querySelector('.rating-button.selected');
+                if (!selectedButton) {
+                    isValid = false;
+                    item.classList.add('unanswered');
+                    if (!firstError) firstError = item;
+                } else {
+                    item.classList.remove('unanswered');
+                    totalScore += parseInt(selectedButton.dataset.value);
+                    answeredQuestions++;
+                }
+            });
+
+            if (!isValid) {
+                // Show error message
+                showErrorMessage('Please complete all required fields and rate all questions before submitting.');
+                
+                // Scroll to first error
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return;
+            }
+
+            // Calculate average score
+            const averageScore = Math.round((totalScore / answeredQuestions) * 10);
+
+            // Collect form data
+            const submissionData = {
+                ...storedFormData,  // Include the stored personal info
+                openQuestions: {
+                    success: Array.from(openQuestions[0].querySelectorAll('input')).map(input => input.value),
+                    barriers: Array.from(openQuestions[1].querySelectorAll('input')).map(input => input.value),
+                    additional: openQuestions[2].querySelector('textarea').value
+                },
+                scores: Array.from(questionItems).map(item => {
+                    const selected = item.querySelector('.rating-button.selected');
+                    return selected ? parseInt(selected.dataset.value) : 0;
+                }),
+                averageScore: averageScore
+            };
+
+            // Submit to Google Sheet if needed
+            submitToGoogleSheet(submissionData);
+
+            // Show results section
+            showResults(submissionData);
+
+            // Clear stored form data
+            localStorage.removeItem('formData');
+        }
+
+        function showResults(formData) {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="results-container">
+                    <div class="thank-you-message">
+                        <h2>Thank You for Completing Your Assessment</h2>
+                        <p>Your responses help us understand your organization's current culture operations and identify opportunities for improvement.</p>
+                        <p>We look forward to helping you transform these insights into actionable strategies for your organization.</p>
+                    </div>
+                </div>
+            `;
+
+            // Submit to Google Sheet still happens in the background
+            submitToGoogleSheet(formData);
         }
     </script>
 </body>
