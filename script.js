@@ -123,12 +123,15 @@ function createQuestionElement(question, index) {
 
 // Form Handling
 function handleFormSubmit(e) {
+    console.log('Form submission started');
     if (e) e.preventDefault();
     
+    // Get all questions
     const questionItems = document.querySelectorAll('.question-item');
     let scores = [];
     let unanswered = false;
 
+    // Check each question
     questionItems.forEach((item) => {
         const selectedButton = item.querySelector('.rating-button.selected');
         if (!selectedButton) {
@@ -139,32 +142,62 @@ function handleFormSubmit(e) {
         }
     });
 
+    // If there are unanswered questions, stop here
     if (unanswered) {
         alert('Please answer all questions before submitting.');
         return;
     }
 
-    // Calculate score and create results page
+    // Calculate overall score
     const overallScore = calculateScores.getOverallScore(scores);
     const percentageScore = calculateScores.toPercentage(overallScore);
-    createResultsPage(scores);
-}
 
-// Results Page Creation
-function createResultsPage(scores) {
-    const overallPercentage = Math.round(
-        calculateScores.getOverallScore(
-            scores.map(score => calculateScores.toPercentage(score))
-        )
-    );
-    
+    // Create results HTML
     const container = document.querySelector('.container');
-    container.innerHTML = generateResultsHTML(overallPercentage, scores);
+    container.innerHTML = `
+        <div class="results-container" style="display: block;">
+            <div class="overall-score">
+                <h2>Your Organizational Health Snapshot™ Results</h2>
+                <div class="gauge">
+                    <svg width="195" height="195" viewBox="0 0 195 195">
+                        <path class="gauge__background" 
+                              d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                              stroke-width="15"
+                              transform="rotate(0, 97.5, 97.5)" />
+                        <path class="gauge__fill" 
+                              d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                              stroke-width="15"
+                              transform="rotate(0, 97.5, 97.5)" />
+                        <text x="97.5" y="115" 
+                              text-anchor="middle" 
+                              font-size="31px" 
+                              font-weight="700"
+                              fill="#173248" 
+                              id="engagementText">0%</text>
+                    </svg>
+                </div>
+                <div class="score-message">
+                    ${getScoreMessage(percentageScore)}
+                </div>
+            </div>
+        </div>
+    `;
 
+    // Update the gauge
     setTimeout(() => {
-        updateRadialGauge(overallPercentage);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateRadialGauge(percentageScore);
     }, 100);
+
+    // Log form data
+    const formData = {
+        name: document.getElementById('name').value,
+        company: document.getElementById('company').value,
+        email: document.getElementById('email').value,
+        role: document.getElementById('role').value,
+        scores: scores,
+        overallScore: percentageScore
+    };
+    console.log('Form submitted:', formData);
 }
 
 // Message Generation
@@ -208,15 +241,20 @@ function shareViaLink() {
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Create questions
     const questionGroup = document.querySelector('.question-group');
     questions.forEach((question, index) => {
         const questionElement = createQuestionElement(question, index);
         questionGroup.appendChild(questionElement);
     });
 
+    // Add form submit handler
     const form = document.getElementById('cultureForm');
     if (form) {
+        console.log('Form found, adding submit listener');
         form.addEventListener('submit', handleFormSubmit);
+    } else {
+        console.error('Form not found!');
     }
 });
 
