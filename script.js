@@ -90,9 +90,47 @@ function createQuestionElement(question, index) {
 // Initialize the form with questions when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     const questionGroup = document.querySelector('.question-group');
+    
+    // Clear any existing content
+    questionGroup.innerHTML = '';
+    
+    // Add each question
     questions.forEach((question, index) => {
-        const questionElement = createQuestionElement(question, index);
-        questionGroup.appendChild(questionElement);
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+        questionText.innerHTML = `
+            <span class="question-number">Q${index + 1}.</span> 
+            ${question.text}
+        `;
+        
+        const ratingScale = document.createElement('div');
+        ratingScale.className = 'rating-scale';
+        
+        // Create rating buttons 1-10
+        for (let i = 1; i <= 10; i++) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'rating-button';
+            button.textContent = i;
+            button.onclick = function() {
+                // Remove selected class from all buttons in this rating scale
+                ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                // Add selected class to clicked button
+                button.classList.add('selected');
+                // Remove unanswered class from question item
+                questionItem.classList.remove('unanswered');
+            };
+            ratingScale.appendChild(button);
+        }
+        
+        questionItem.appendChild(questionText);
+        questionItem.appendChild(ratingScale);
+        questionGroup.appendChild(questionItem);
     });
 });
 
