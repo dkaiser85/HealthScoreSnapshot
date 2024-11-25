@@ -1035,7 +1035,6 @@
             color: var(--primary-color);
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
@@ -1340,26 +1339,14 @@
                     <!-- Add share section at bottom -->
                     <div class="share-section bottom">
                         <p>Found these insights valuable? Share them with your team:</p>
-                        <div style="display: flex; gap: 1rem; justify-content: center;">
-                            <button onclick="generatePDF()" class="share-button">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10 9 9 9 8 9"></polyline>
-                                </svg>
-                                Download PDF
-                            </button>
-                            <button onclick="downloadScreenshot()" class="share-button">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                </svg>
-                                Download Image
-                            </button>
-                        </div>
+                        <button onclick="downloadScreenshot()" class="share-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            Download Results
+                        </button>
                     </div>
                 </div>
             `;
@@ -1707,130 +1694,17 @@
             return `
                 <div class="share-section bottom">
                     <p>Found these insights valuable? Share them with your team:</p>
-                    <button onclick="shareResults()" class="share-button">
+                    <button onclick="downloadScreenshot()" class="share-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                            <polyline points="16 6 12 2 8 6"></polyline>
-                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
-                        Share Results
+                        Download Results
                     </button>
                 </div>
             `;
         }
-        // First, add the jsPDF library to your HTML
-        function addJsPDF() {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-            document.head.appendChild(script);
-        }
-
-        // Function to generate and send PDF
-        function shareResults() {
-            console.log('Share button clicked');
-            
-            // Check if jsPDF is available in the window object
-            if (typeof window.jspdf === 'undefined') {
-                console.log('jsPDF not found, loading library...');
-                loadJsPDF().then(() => {
-                    generatePDF();
-                }).catch(error => {
-                    console.error('Failed to load jsPDF:', error);
-                    alert('Unable to generate PDF. Please try again.');
-                });
-            } else {
-                generatePDF();
-            }
-        }
-
-        // Add new function to load jsPDF
-        function loadJsPDF() {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-                script.onload = () => resolve();
-                script.onerror = () => reject(new Error('Failed to load jsPDF'));
-                document.head.appendChild(script);
-            });
-        }
-
-        // Separate the PDF generation logic
-        function generatePDF() {
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                // Get the data
-                const userName = document.getElementById('name')?.value || 'User';
-                const overallPercentage = document.getElementById('engagementText')?.textContent?.replace('%', '') || '0';
-                
-                // Get scores from the pill gauges
-                const scores = Array.from(document.querySelectorAll('.score-value'))
-                    .map(el => parseInt(el.textContent) || 0);
-                
-                console.log('Generating PDF with:', { userName, overallPercentage, scores });
-
-                // Add content to PDF
-                doc.setFontSize(20);
-                doc.text('Organizational Health Snapshot™ Results', 20, 20);
-                
-                doc.setFontSize(14);
-                doc.text(`Overall Score: ${overallPercentage}%`, 20, 40);
-                doc.text(`Generated for: ${userName}`, 20, 50);
-                
-                // Add score breakdown
-                doc.setFontSize(12);
-                let yPos = 70;
-                
-                const categories = [
-                    "Understanding Cultural Costs",
-                    "HR Metrics and Profit Impact",
-                    "Mission, Vision, and Values in Action",
-                    "Managing Employee Turnover Costs",
-                    "Ensuring ROI for Cultural Initiatives",
-                    "Post-COVID Workplace Changes",
-                    "Budgeting for Cultural Costs",
-                    "Measuring and Driving Engagement",
-                    "Aligning Brand and Internal Culture",
-                    "Operations and Culture Interconnection"
-                ];
-
-                scores.forEach((score, index) => {
-                    if (yPos > 250) {
-                        doc.addPage();
-                        yPos = 20;
-                    }
-                    doc.text(`${categories[index]}: ${score}%`, 20, yPos);
-                    yPos += 10;
-                });
-                
-                // Add footer
-                doc.setFontSize(10);
-                doc.text('Generated by The Culture MRI®', 20, 280);
-                
-                // Save the PDF
-                const fileName = `Culture_Snapshot_Results_${new Date().toISOString().split('T')[0]}.pdf`;
-                doc.save(fileName);
-                
-                console.log('PDF generated successfully');
-                
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('There was an error generating the PDF. Please try again.');
-            }
-        }
-
-        // Update the DOMContentLoaded event listener
-        document.addEventListener('DOMContentLoaded', function() {
-            // Pre-load jsPDF for faster generation later
-            loadJsPDF().then(() => {
-                console.log('jsPDF pre-loaded successfully');
-            }).catch(error => {
-                console.error('Failed to pre-load jsPDF:', error);
-            });
-            
-            // ... rest of your initialization code ...
-        });
 
         async function downloadScreenshot() {
             try {
@@ -1841,20 +1715,53 @@
                 }
 
                 // Show loading state
-                const originalText = document.querySelector('.share-button').innerHTML;
-                const buttons = document.querySelectorAll('.share-button');
-                buttons.forEach(button => {
-                    button.disabled = true;
-                    button.innerHTML = 'Generating...';
+                const button = document.querySelector('.share-button');
+                const originalText = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = 'Generating...';
+
+                // Calculate dimensions for 8.5x11 at 300 DPI
+                const width = Math.round(8.5 * 300); // 8.5 inches * 300 DPI = 2550 pixels
+                const height = Math.round(11 * 300); // 11 inches * 300 DPI = 3300 pixels
+
+                // Create a temporary container with letter dimensions
+                const tempContainer = document.createElement('div');
+                tempContainer.style.width = `${width}px`;
+                tempContainer.style.height = `${height}px`;
+                tempContainer.style.backgroundColor = 'white';
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.padding = '100px'; // Add padding for content
+                tempContainer.style.boxSizing = 'border-box';
+
+                // Clone the results content
+                const contentClone = resultsContainer.cloneNode(true);
+                
+                // Reset some styles for better printing
+                contentClone.style.width = '100%';
+                contentClone.style.height = 'auto';
+                contentClone.style.padding = '0';
+                contentClone.style.margin = '0';
+                
+                // Remove share buttons from the clone
+                const shareSection = contentClone.querySelector('.share-section');
+                if (shareSection) shareSection.remove();
+
+                tempContainer.appendChild(contentClone);
+                document.body.appendChild(tempContainer);
+
+                // Create canvas
+                const canvas = await html2canvas(tempContainer, {
+                    scale: 1, // Scale is already handled by dimensions
+                    useCORS: true,
+                    logging: false,
+                    width: width,
+                    height: height,
+                    backgroundColor: '#ffffff'
                 });
 
-                // Create canvas from the results container
-                const canvas = await html2canvas(resultsContainer, {
-                    scale: 2, // Higher quality
-                    useCORS: true, // Handle cross-origin images
-                    logging: false, // Disable logging
-                    backgroundColor: '#ffffff' // White background
-                });
+                // Remove temporary container
+                document.body.removeChild(tempContainer);
 
                 // Create download link
                 const link = document.createElement('a');
@@ -1863,21 +1770,17 @@
                 link.click();
 
                 // Restore button state
-                buttons.forEach(button => {
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-                });
+                button.disabled = false;
+                button.innerHTML = originalText;
 
             } catch (error) {
                 console.error('Error generating screenshot:', error);
                 alert('There was an error generating the screenshot. Please try again.');
                 
                 // Restore button state on error
-                const buttons = document.querySelectorAll('.share-button');
-                buttons.forEach(button => {
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-                });
+                const button = document.querySelector('.share-button');
+                button.disabled = false;
+                button.innerHTML = originalText;
             }
         }
     </script>
