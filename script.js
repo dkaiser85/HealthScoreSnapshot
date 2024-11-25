@@ -128,7 +128,10 @@ function showResults() {
     const score = calculateScore();
     const percentage = Math.round((score / 10) * 100);
     
+    // Get the container and clear it
     const container = document.querySelector('.container');
+    
+    // Create results HTML
     container.innerHTML = `
         <div class="results-container">
             <h2>Your Organizational Health Snapshot™ Results</h2>
@@ -136,26 +139,28 @@ function showResults() {
                 <svg width="195" height="195" viewBox="0 0 195 195">
                     <path class="gauge__background" 
                           d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                          stroke="#e6e6e6"
                           stroke-width="15"
+                          fill="none"
                           transform="rotate(0, 97.5, 97.5)" />
                     <path class="gauge__fill" 
                           d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                          stroke="#2c5282"
                           stroke-width="15"
-                          transform="rotate(0, 97.5, 97.5)" />
+                          fill="none"
+                          transform="rotate(0, 97.5, 97.5)"
+                          style="stroke-dasharray: ${percentage}, 100" />
                     <text x="97.5" y="115" 
                           text-anchor="middle" 
                           font-size="31px" 
                           font-weight="700"
-                          fill="#173248" 
-                          id="engagementText">${percentage}%</text>
+                          fill="#173248">${percentage}%</text>
                 </svg>
             </div>
             <div class="score-message">
                 <h3>Your Organization's Health Status</h3>
                 <p>Based on your responses, your organization shows strong potential with room for strategic improvements.</p>
             </div>
-            
-            <!-- Add category breakdown -->
             <div class="category-scores">
                 <div class="category">
                     <h4>Understanding & Costs</h4>
@@ -176,6 +181,11 @@ function showResults() {
             </div>
         </div>
     `;
+
+    // Initialize the gauge animation
+    const gaugeFill = container.querySelector('.gauge__fill');
+    const gaugeValue = percentage;
+    gaugeFill.style.strokeDasharray = `${gaugeValue}, 100`;
 }
 
 // Add this new helper function
