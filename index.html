@@ -1255,14 +1255,14 @@
                         scores.map(score => calculateScores.toPercentage(score))
                     )
                 );
-                
-                const recommendationsHTML = getRecommendations(overallPercentage);
-                
-                const resultsHTML = `
-                    <div class="results-container">
-                        <div class="close-button" onclick="returnToForm()">×</div>
-                        
-                        <div class="overall-score">
+
+                let resultsHTML = `
+                    <header style="margin-bottom: 0.5rem; position: relative;">
+                        <button onclick="showQuestionnaire()" class="close-button" style="position: absolute; right: 0; top: 0; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
+                        <h1>Your Organizational Health Results</h1>
+                    </header>
+                    <div class="results-container" style="margin-top: 0;">
+                        <div class="overall-score" style="margin-top: 0;">
                             <div class="gauge">
                                 <svg width="195" height="195" viewBox="0 0 195 195">
                                     <path class="gauge__background" 
