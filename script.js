@@ -156,14 +156,20 @@ function updateRadialGauge(percentage) {
 
 // Update the createResultsPage function to use this
 function createResultsPage(scores) {
+    // Create container for results
+    const container = document.querySelector('.container');
+    const form = document.getElementById('cultureForm');
+    
+    // Hide the form
+    form.style.display = 'none';
+    
     const overallPercentage = Math.round(
         calculateScores.getOverallScore(
             scores.map(score => calculateScores.toPercentage(score))
         )
     );
     
-    const recommendationsHTML = getRecommendations(overallPercentage);
-    
+    // Create results HTML
     const resultsHTML = `
         <div class="results-container">
             <div class="close-button" onclick="showOptionsPopup()">×</div>
@@ -174,143 +180,106 @@ function createResultsPage(scores) {
                     <svg width="195" height="195" viewBox="0 0 195 195">
                         <path class="gauge__background" 
                               d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                              stroke="#f0f0f0"
                               stroke-width="15"
+                              fill="none"
                               transform="rotate(0, 97.5, 97.5)" />
                         <path class="gauge__fill" 
                               id="engagementFill" 
                               d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                              stroke="${calculateScores.getColor(overallPercentage)}"
                               stroke-width="15"
+                              fill="none"
                               transform="rotate(0, 97.5, 97.5)" />
                         <text x="97.5" y="115" 
                               text-anchor="middle" 
                               font-size="31px" 
                               font-weight="700"
                               fill="#173248" 
-                              id="engagementText">0%</text>
+                              id="engagementText">${overallPercentage}%</text>
                     </svg>
-                </div>
-                
-                <!-- Add conditional message -->
-                <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    ${getScoreMessage(overallPercentage)}
                 </div>
             </div>
             
-            <!-- Add CTA section after the gauge -->
-            <div class="cta-section">
-                <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
-                <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
-                <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
-            </div>
-
-            <!-- Rest of your results page content -->
             <div class="individual-scores">
                 <h3>Detailed Breakdown</h3>
                 ${scores
-                    // Create array of objects with score and question info
                     .map((score, index) => ({
                         score: score,
                         percentage: Math.round(calculateScores.toPercentage(score)),
                         title: questions[index].title,
                         description: questions[index].description
                     }))
-                    // Sort from lowest to highest score
                     .sort((a, b) => a.percentage - b.percentage)
-                    // Generate HTML for each score
-                    .map(item => {
-                        const color = calculateScores.getColor(item.percentage);
-                        return `
-                            <div class="score-section">
-                                <div class="score-header">
-                                    <h4>${item.title}</h4>
-                                    <span class="score-value">${item.percentage}%</span>
-                                </div>
-                                <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
-                                </div>
-                                <p class="score-description">${item.description}</p>
+                    .map(item => `
+                        <div class="score-section">
+                            <div class="score-header">
+                                <h4>${item.title}</h4>
+                                <span class="score-value">${item.percentage}%</span>
                             </div>
-                        `;
-                    }).join('')}
+                            <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${calculateScores.getColor(item.percentage)}">
+                            </div>
+                            <p class="score-description">${item.description}</p>
+                        </div>
+                    `).join('')}
             </div>
             
-            <!-- Add another CTA at the bottom -->
-            <div class="cta-section bottom">
-                <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-            </div>
-
-            <div id="optionsPopup" class="options-popup">
-                <div class="popup-content">
-                    <h3>What would you like to do next?</h3>
-                    <div class="popup-options">
-                        <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
-                        <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                        <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
-                    </div>
-                    <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
-                </div>
-            </div>
-
-            <!-- Add share section at bottom -->
-            <div class="share-section bottom">
-                <p>Found these insights valuable? Share them with your team:</p>
-                <button onclick="shareResults()" class="share-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                        <polyline points="16 6 12 2 8 6"></polyline>
-                        <line x1="12" y1="2" x2="12" y2="15"></line>
-                    </svg>
-                    Share Results
-                </button>
+            <div class="cta-section">
+                <h3>Ready to Dive Deeper?</h3>
+                <p>Schedule a demo to see how The Culture MRI® can help transform your organizational health.</p>
+                <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule Demo</a>
             </div>
         </div>
     `;
-
-    // Update the DOM
-    const container = document.querySelector('.container');
-    container.innerHTML = resultsHTML;
-
-    // Animate the gauge to the final percentage
+    
+    // Add results to page
+    container.insertAdjacentHTML('beforeend', resultsHTML);
+    
+    // Initialize the gauge animation
     setTimeout(() => {
         updateRadialGauge(overallPercentage);
     }, 100);
 }
 
-// Store original form HTML
-let originalFormHTML;
-
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    originalFormHTML = document.querySelector('.container').innerHTML;
-    initializeForm();
-});
-
-// Initialize form and add event listeners
-function initializeForm() {
+// Add helper function to show options popup
+function showOptionsPopup() {
     const form = document.getElementById('cultureForm');
-    if (form) {
-        console.log('Form found, adding submit listener');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submitted');
-            handleFormSubmit();
-        });
-    }
-
-    // Add click handlers to rating buttons
-    document.querySelectorAll('.rating-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const ratingScale = this.closest('.rating-scale');
-            ratingScale.querySelectorAll('.rating-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            this.classList.add('selected');
-        });
-    });
+    const resultsContainer = document.querySelector('.results-container');
+    
+    if (form) form.style.display = 'block';
+    if (resultsContainer) resultsContainer.remove();
 }
+
+// Update the form submission handler
+document.getElementById('cultureForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Check if all questions are answered
+    const unansweredQuestions = document.querySelectorAll('.question-item:not(:has(.rating-button.selected))');
+    if (unansweredQuestions.length > 0) {
+        unansweredQuestions.forEach(q => q.classList.add('unanswered'));
+        alert('Please answer all questions before submitting.');
+        return;
+    }
+    
+    // Collect scores
+    const scores = Array.from(document.querySelectorAll('.question-item')).map(item => {
+        const selectedButton = item.querySelector('.rating-button.selected');
+        return parseInt(selectedButton.textContent);
+    });
+    
+    // Collect form data
+    const formData = {
+        name: document.getElementById('name').value,
+        company: document.getElementById('company').value,
+        email: document.getElementById('email').value,
+        role: document.getElementById('role').value,
+        scores: scores
+    };
+    
+    // Create results page
+    createResultsPage(scores);
+});
 
 // Add this function at the start to get affiliate code
 function getAffiliateCode() {
@@ -318,188 +287,6 @@ function getAffiliateCode() {
     const refCode = urlParams.get('ref');
     console.log('URL Ref Code:', refCode); // Debug log
     return refCode || 'CMRI';
-}
-
-// Update handleFormSubmit function
-function handleFormSubmit() {
-    console.log('Processing form submission');
-    
-    // First, remove any existing unanswered markers
-    document.querySelectorAll('.question-item').forEach(item => {
-        item.classList.remove('unanswered');
-    });
-
-    // Get affiliate code first
-    const affiliateCode = getAffiliateCode();
-    console.log('Using affiliate code:', affiliateCode); // Debug log
-    
-    // Collect initial form data
-    let formData = {
-        name: document.getElementById('name').value,
-        company: document.getElementById('company').value,
-        email: document.getElementById('email').value,
-        role: document.getElementById('role').value,
-        affiliateCode: affiliateCode // Set affiliate code here
-    };
-
-    // Collect all scores
-    const scores = [];
-    const questionItems = document.querySelectorAll('.question-item');
-    let unansweredQuestions = [];
-    
-    questionItems.forEach((item, index) => {
-        const selected = item.querySelector('.rating-button.selected');
-        if (selected) {
-            scores.push(parseInt(selected.textContent));
-        } else {
-            unansweredQuestions.push(index + 1);
-            item.classList.add('unanswered');
-            if (unansweredQuestions.length === 1) {
-                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    });
-
-    // Calculate overall percentage
-    const overallPercentage = Math.round(
-        calculateScores.getOverallScore(
-            scores.map(score => calculateScores.toPercentage(score))
-        )
-    );
-
-    // Update form data with all fields
-    formData = {
-        ...formData,
-        scores: scores,
-        overallScore: overallPercentage,
-        submissionDate: new Date().toISOString()
-    };
-
-    console.log('Final Form Data:', formData); // Debug log
-
-    // Submit to Google Sheet
-    submitToGoogleSheet(formData);
-    
-    // Create results HTML
-    const container = document.querySelector('.container');
-    container.innerHTML = `
-        <div class="results-container">
-            <div class="close-button" onclick="showOptionsPopup()">×</div>
-            
-            <div class="overall-score">
-                <h2>Your Organizational Health Snapshot™ Results</h2>
-                <div class="gauge">
-                    <svg width="195" height="195" viewBox="0 0 195 195">
-                        <path class="gauge__background" 
-                              d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                              stroke-width="15"
-                              transform="rotate(0, 97.5, 97.5)" />
-                        <path class="gauge__fill" 
-                              id="engagementFill" 
-                              d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                              stroke-width="15"
-                              transform="rotate(0, 97.5, 97.5)" />
-                        <text x="97.5" y="115" 
-                              text-anchor="middle" 
-                              font-size="31px" 
-                              font-weight="700"
-                              fill="#173248" 
-                              id="engagementText">0%</text>
-                    </svg>
-                </div>
-                
-                <!-- Add conditional message -->
-                <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    ${getScoreMessage(overallPercentage)}
-                </div>
-            </div>
-            
-            <div class="cta-section">
-                <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
-                <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
-                <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
-            </div>
-
-            <div class="individual-scores">
-                <h3>Detailed Breakdown</h3>
-                ${scores
-                    // Create array of objects with score and question info
-                    .map((score, index) => ({
-                        score: score,
-                        percentage: Math.round(calculateScores.toPercentage(score)),
-                        title: questions[index].title,
-                        description: questions[index].description
-                    }))
-                    // Sort from lowest to highest score
-                    .sort((a, b) => a.percentage - b.percentage)
-                    // Generate HTML for each score
-                    .map(item => {
-                        const color = calculateScores.getColor(item.percentage);
-                        return `
-                            <div class="score-section">
-                                <div class="score-header">
-                                    <h4>${item.title}</h4>
-                                    <span class="score-value">${item.percentage}%</span>
-                                </div>
-                                <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
-                                </div>
-                                <p class="score-description">${item.description}</p>
-                            </div>
-                        `;
-                    }).join('')}
-            </div>
-            
-            <div class="cta-section bottom">
-                <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-            </div>
-
-            <div id="optionsPopup" class="options-popup">
-                <div class="popup-content">
-                    <h3>What would you like to do next?</h3>
-                    <div class="popup-options">
-                        <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
-                        <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                        <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
-                    </div>
-                    <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
-                </div>
-            </div>
-
-            <!-- Add share section at bottom -->
-            <div class="share-section bottom">
-                <p>Found these insights valuable? Share them with your team:</p>
-                <button onclick="shareResults()" class="share-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                        <polyline points="16 6 12 2 8 6"></polyline>
-                        <line x1="12" y1="2" x2="12" y2="15"></line>
-                    </svg>
-                    Share Results
-                </button>
-            </div>
-        </div>
-    `;
-
-    // Add this block after setting innerHTML
-    setTimeout(() => {
-        // Force scroll to absolute top of page
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'smooth'
-        });
-        
-        // Show the options popup after scrolling
-        // showOptionsPopup();
-    }, 100);
-
-    console.log('Form Data:', formData);
-    console.log('Scores:', scores);
-    console.log('Overall Percentage:', overallPercentage);
 }
 
 // Update submitToGoogleSheet function
