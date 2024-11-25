@@ -1,1346 +1,1702 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Culture Snapshot Scorecard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Embed CSS directly in HTML for now -->
-    <style>
-        * {
-            font-family: 'Inter', sans-serif;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Culture Snapshot Scorecard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+        
+        <!-- Embed CSS directly in HTML for now -->
+        <style>
+            * {
+                font-family: 'Inter', sans-serif;
+            }
 
-        :root {
-            --primary-color: #5B5FC7;
-            --background-color: #f5f5f5;
-            --primary-color-light: rgba(91, 95, 199, 0.1);
-        }
+            :root {
+                --primary-color: #5B5FC7;
+                --background-color: #f5f5f5;
+                --primary-color-light: rgba(91, 95, 199, 0.1);
+            }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-
-        @media (max-width: 768px) {
             body {
-                background-color: var(--background-color);
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+                padding: 20px;
             }
-        }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+            @media (max-width: 768px) {
+                body {
+                    background-color: var(--background-color);
+                }
+            }
 
-        .personal-info {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group input {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Inter', sans-serif;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
-        }
-
-        .assessment-grid {
-            margin-top: 2rem;
-        }
-
-        .scale-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            padding: 0 2rem;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .question-group {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .question-item {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-            background-color: #f8f8f8;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .question-item.unanswered {
-            border: 2px solid #ED5C5C;
-            background-color: rgba(237, 92, 92, 0.05);
-        }
-
-        .question-text {
-            font-size: 14px;
-            line-height: 1.4;
-            color: #333;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .rating-scale {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
-            margin-top: 0.5rem;
-        }
-
-        .rating-button {
-            width: 100%;
-            aspect-ratio: 1;
-            padding: 2px;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 12px;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .rating-button:hover {
-            background-color: var(--primary-color-light);
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-            box-shadow: 0 2px 4px rgba(91, 95, 199, 0.2);
-        }
-
-        .rating-button.selected {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-            transform: scale(1);
-            box-shadow: 0 2px 4px rgba(91, 95, 199, 0.3);
-        }
-
-        .rating-button:active {
-            transform: scale(0.95);
-        }
-
-        button[type="submit"] {
-            margin-top: 2rem;
-            padding: 1rem 2rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            transition: opacity 0.2s ease;
-        }
-
-        button[type="submit"]:hover {
-            opacity: 0.9;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            color: #000000;
-            font-size: 2rem;
-            margin: 0 0 1rem 0;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .logo {
-            max-width: 250px;
-            height: auto;
-            margin: 1rem 0 2rem 0;
-        }
-
-        .form-group label {
-            font-weight: 500;
-            color: #333;
-            font-family: 'Inter', sans-serif;
-        }
-
-        @media (max-width: 768px) {
             .personal-info {
-                grid-template-columns: 1fr;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            .question-text {
-                font-size: 13px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                margin-bottom: 2.5rem;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
             }
 
-            header h1 {
-                font-size: 1.5rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .logo {
-                max-width: 180px;
-                margin: 0.5rem 0 1rem 0;
-            }
-
-            .instruction-text {
-                font-size: 13px;
-                margin: 1rem 0;
-            }
-
-            .cta-section h3 {
-                font-size: 1.2rem;
-            }
-
-            .cta-section p {
-                font-size: 0.9rem;
-            }
-
-            .score-message h3 {
-                font-size: 1.1rem;
-            }
-
-            .score-message p {
-                font-size: 0.9rem;
-            }
-
-            .recommendations h3 {
-                font-size: 1.2rem;
-            }
-
-            .recommendations p,
-            .recommendations li {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Add specific mobile adjustments for very small screens */
-        @media (max-width: 320px) {
-            .container {
-                padding: 0.75rem;
-            }
-
-            header h1 {
-                font-size: 1.25rem;
-            }
-
-            .logo {
-                max-width: 150px;
-            }
-
-            .rating-scale {
-                gap: 1px;
-            }
-            
-            .rating-button {
-                padding: 1px;
-                font-size: 11px;
-                border-radius: 2px;
-            }
-            
-            .question-item {
-                padding: 0.75rem;
-            }
-
-            .form-group label {
-                font-size: 0.9rem;
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
             .form-group input {
-                padding: 0.5rem;
-                font-size: 0.9rem;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-family: 'Inter', sans-serif;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
+            }
+
+            .assessment-grid {
+                margin-top: 2rem;
+            }
+
+            .scale-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                padding: 0 2rem;
+                color: var(--primary-color);
+                font-weight: 500;
+            }
+
+            .question-group {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .question-item {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                background-color: #f8f8f8;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .question-item.unanswered {
+                border: 2px solid #ED5C5C;
+                background-color: rgba(237, 92, 92, 0.05);
+            }
+
+            .question-text {
+                font-size: 14px;
+                line-height: 1.4;
+                color: #333;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .rating-scale {
+                display: grid;
+                grid-template-columns: repeat(10, 1fr);
+                gap: 2px;
+                margin-top: 0.5rem;
+            }
+
+            .rating-button {
+                width: 100%;
+                aspect-ratio: 1;
+                padding: 2px;
+                border: 1px solid #ddd;
+                background: white;
+                cursor: pointer;
+                border-radius: 4px;
+                font-size: 12px;
+                transition: all 0.2s ease-in-out;
+                position: relative;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .rating-button:hover {
+                background-color: var(--primary-color-light);
+                border-color: var(--primary-color);
+                transform: scale(1.05);
+                box-shadow: 0 2px 4px rgba(91, 95, 199, 0.2);
+            }
+
+            .rating-button.selected {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(91, 95, 199, 0.3);
+            }
+
+            .rating-button:active {
+                transform: scale(0.95);
             }
 
             button[type="submit"] {
-                padding: 0.75rem 1.5rem;
-                font-size: 0.9rem;
+                margin-top: 2rem;
+                padding: 1rem 2rem;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
+                transition: opacity 0.2s ease;
+            }
+
+            button[type="submit"]:hover {
+                opacity: 0.9;
+            }
+
+            header {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            header h1 {
+                color: #000000;
+                font-size: 2rem;
+                margin: 0 0 1rem 0;
+                font-weight: 600;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .logo {
+                max-width: 250px;
+                height: auto;
+                margin: 1rem 0 2rem 0;
+            }
+
+            .form-group label {
+                font-weight: 500;
+                color: #333;
+                font-family: 'Inter', sans-serif;
+            }
+
+            @media (max-width: 768px) {
+                .personal-info {
+                    grid-template-columns: 1fr;
+                }
+                
+                .container {
+                    padding: 1rem;
+                }
+                
+                .question-text {
+                    font-size: 13px;
+                }
+
+                header h1 {
+                    font-size: 1.5rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .logo {
+                    max-width: 180px;
+                    margin: 0.5rem 0 1rem 0;
+                }
+
+                .instruction-text {
+                    font-size: 13px;
+                    margin: 1rem 0;
+                }
+
+                .cta-section h3 {
+                    font-size: 1.2rem;
+                }
+
+                .cta-section p {
+                    font-size: 0.9rem;
+                }
+
+                .score-message h3 {
+                    font-size: 1.1rem;
+                }
+
+                .score-message p {
+                    font-size: 0.9rem;
+                }
+
+                .recommendations h3 {
+                    font-size: 1.2rem;
+                }
+
+                .recommendations p,
+                .recommendations li {
+                    font-size: 0.9rem;
+                }
+            }
+
+            /* Add specific mobile adjustments for very small screens */
+            @media (max-width: 320px) {
+                .container {
+                    padding: 0.75rem;
+                }
+
+                header h1 {
+                    font-size: 1.25rem;
+                }
+
+                .logo {
+                    max-width: 150px;
+                }
+
+                .rating-scale {
+                    gap: 1px;
+                }
+                
+                .rating-button {
+                    padding: 1px;
+                    font-size: 11px;
+                    border-radius: 2px;
+                }
+                
+                .question-item {
+                    padding: 0.75rem;
+                }
+
+                .form-group label {
+                    font-size: 0.9rem;
+                }
+
+                .form-group input {
+                    padding: 0.5rem;
+                    font-size: 0.9rem;
+                }
+
+                button[type="submit"] {
+                    padding: 0.75rem 1.5rem;
+                    font-size: 0.9rem;
+                }
+
+                .score-section {
+                    padding: 0.75rem;
+                }
+
+                .score-header h4 {
+                    font-size: 0.9rem;
+                }
+
+                .score-value {
+                    font-size: 0.9rem;
+                }
+
+                .score-description {
+                    font-size: 0.8rem;
+                }
+
+                .gauge {
+                    width: 150px;
+                    height: 150px;
+                }
+
+                #engagementText {
+                    font-size: 24px !important;
+                }
+
+                .cta-section {
+                    padding: 1rem;
+                }
+
+                .cta-section h3 {
+                    font-size: 1rem;
+                }
+
+                .cta-section p {
+                    font-size: 0.85rem;
+                }
+
+                .cta-button {
+                    padding: 0.75rem 1.25rem;
+                    font-size: 0.9rem;
+                }
+
+                .popup-content {
+                    padding: 1rem;
+                }
+
+                .popup-option {
+                    padding: 0.75rem;
+                    font-size: 0.9rem;
+                }
+
+                .close-button {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 20px;
+                    top: 10px;
+                    right: 10px;
+                }
+            }
+
+            .score-summary {
+                display: none;
+            }
+
+            .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .average-score {
+                text-align: center;
+            }
+
+            .score-circle {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 24px;
+                font-weight: 600;
+                color: white;
+            }
+
+            /* Add style for the instruction text */
+            .instruction-text {
+                text-align: center;
+                margin: 2rem 0;
+                color: #333; 
+                font-size: 15px;
+                font-weight: 500;
+            }
+
+            /* Results Page Styles */
+            .results-container {
+                padding: 2rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            /* Clean 270-degree Gauge Styles */
+            .gauge {
+                position: relative;
+                width: 195px;
+                height: 195px;
+                margin: 2rem auto;
+            }
+
+            .gauge__background {
+                fill: none;
+                stroke: #f0f0f0;
+                stroke-width: 15;
+                stroke-linecap: round;
+            }
+
+            .gauge__fill {
+                fill: none;
+                stroke-width: 15;
+                stroke-linecap: round;
+                transition: stroke-dashoffset 1s ease-in-out;
+            }
+
+            /* Add status text below percentage */
+            .status {
+                position: absolute;
+                top: 60%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-family: 'Inter', sans-serif;
+                font-size: 1.5rem;
+                color: #64748B; /* Grey color for status */
+                margin: 0;
+            }
+
+            /* Container styling */
+            .overall-score {
+                text-align: center;
+                margin: 3rem 0;
+            }
+
+            .overall-score h3 {
+                margin-top: 2rem;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                font-size: 1.5rem;
+                color: #333;
+            }
+
+            /* Pill Gauges */
+            .score-pill {
+                margin: 1rem 0;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .question-label {
+                width: 120px;
+                font-weight: 500;
+            }
+
+            .pill-gauge {
+                height: 12px;
+                background: #f0f0f0;
+                border-radius: 6px;
+                overflow: hidden;
+                margin: 0.75rem 0;
+                position: relative;
+            }
+
+            .pill-gauge::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: calc(var(--percentage) * 1%);
+                background: var(--color);
+                border-radius: 6px;
+                transition: width 1s ease-in-out;
+            }
+
+            .pill-value {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #333;
+                font-weight: 500;
+                z-index: 1;
+            }
+
+            /* Updated styles for individual scores */
+            .individual-scores {
+                margin-top: 3rem;
             }
 
             .score-section {
-                padding: 0.75rem;
+                margin-bottom: 2rem;
+                padding: 1rem;
+                background: #fff;
+                border-radius: 8px;
+            }
+
+            .score-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.75rem;
             }
 
             .score-header h4 {
-                font-size: 0.9rem;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                font-size: 1.1rem;
+                color: #333;
+                margin: 0;
             }
 
             .score-value {
-                font-size: 0.9rem;
+                font-family: 'Inter', sans-serif;
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: #333;
+            }
+
+            .pill-gauge {
+                height: 12px;
+                background: #f0f0f0;
+                border-radius: 6px;
+                overflow: hidden;
+                margin: 0.75rem 0;
+                position: relative;
+            }
+
+            .pill-gauge::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: calc(var(--percentage) * 1%);
+                background: var(--color);
+                border-radius: 6px;
+                transition: width 1s ease-in-out;
             }
 
             .score-description {
-                font-size: 0.8rem;
+                font-family: 'Inter', sans-serif;
+                font-size: 0.9rem;
+                line-height: 1.5;
+                color: #666;
+                margin: 0.75rem 0 0 0;
             }
 
-            .gauge {
-                width: 150px;
-                height: 150px;
+            .return-button {
+                display: block;
+                margin: 2rem auto;
+                padding: 1rem 2rem;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
+                transition: opacity 0.2s ease;
             }
 
-            #engagementText {
-                font-size: 24px !important;
+            .return-button:hover {
+                opacity: 0.9;
+            }
+
+            .results-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+
+            .percentage {
+                font-family: 'Inter', sans-serif;
+                font-size: 3rem;
+                font-weight: 700;
+                color: #333;
+                text-align: center;
+                margin: 2rem 0;
             }
 
             .cta-section {
-                padding: 1rem;
+                background: var(--primary-color-light);
+                padding: 2rem;
+                border-radius: 8px;
+                text-align: center;
+                margin: 2rem 0;
             }
 
             .cta-section h3 {
-                font-size: 1rem;
+                color: var(--primary-color);
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
             }
 
             .cta-section p {
-                font-size: 0.85rem;
+                color: #333;
+                margin-bottom: 1.5rem;
+                font-size: 1.1rem;
+                line-height: 1.5;
             }
 
             .cta-button {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.9rem;
+                display: inline-block;
+                background-color: var(--primary-color);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.2s ease;
             }
 
-            .popup-content {
-                padding: 1rem;
+            .cta-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(91, 95, 199, 0.2);
             }
 
-            .popup-option {
-                padding: 0.75rem;
-                font-size: 0.9rem;
+            .cta-section.bottom {
+                background: #fff;
+                border: 2px solid var(--primary-color-light);
+            }
+
+            .score-message {
+                margin-top: 2rem;
+                text-align: left;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 1.5rem;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .score-message h3 {
+                margin-bottom: 1rem;
+                font-weight: 600;
+            }
+
+            .score-message p {
+                line-height: 1.6;
+                color: #333;
+                margin: 0;
+            }
+
+            /* Add specific mobile adjustments */
+            @media (max-width: 320px) {
+                .rating-scale {
+                    gap: 1px;
+                }
+                
+                .rating-button {
+                    padding: 1px;
+                    font-size: 11px;
+                    border-radius: 2px;
+                }
+                
+                .question-item {
+                    padding: 0.75rem;
+                }
+            }
+
+            .recommendations {
+                margin: 3rem auto;
+                padding: 2.5rem;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                max-width: 600px;
+            }
+
+            .recommendations h3 {
+                color: #173248;
+                margin-bottom: 1.25rem;
+                font-weight: 600;
+                font-size: 1.5rem;
+            }
+
+            .recommendations p {
+                color: #333;
+                line-height: 1.6;
+                margin-bottom: 1.5rem;
+            }
+
+            .recommendations ul {
+                list-style: none;
+                padding: 0;
+                margin: 0 0 2rem 0;
+            }
+
+            .recommendations li {
+                margin-bottom: 1.25rem;
+                padding-left: 1.75rem;
+                position: relative;
+                line-height: 1.5;
+            }
+
+            .recommendations li:before {
+                content: "→";  /* Changed to arrow for more strategic feel */
+                color: var(--primary-color);
+                position: absolute;
+                left: 0;
+                font-weight: bold;
+            }
+
+            .recommendations li strong {
+                color: var(--primary-color);
+                font-weight: 600;
+                display: block;  /* Put each header on its own line */
+                margin-bottom: 0.25rem;
+            }
+
+            .recommendation-footer {
+                font-weight: 500;
+                color: #173248;
+                text-align: center;
+                margin: 2rem 0 1rem 0;
+            }
+
+            @media (max-width: 768px) {
+                .recommendations {
+                    padding: 1.5rem;
+                    margin: 2rem auto;
+                }
+                
+                .recommendations h3 {
+                    font-size: 1.25rem;
+                }
             }
 
             .close-button {
-                width: 32px;
-                height: 32px;
-                font-size: 20px;
-                top: 10px;
-                right: 10px;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                border: none;
+                background: white;
+                color: #666;
+                font-size: 28px;
+                cursor: pointer;
+                transition: background-color 0.2s ease, color 0.2s ease;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-        }
 
-        .score-summary {
-            display: none;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-
-        .average-score {
-            text-align: center;
-        }
-
-        .score-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 600;
-            color: white;
-        }
-
-        /* Add style for the instruction text */
-        .instruction-text {
-            text-align: center;
-            margin: 2rem 0;
-            color: #333; 
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        /* Results Page Styles */
-        .results-container {
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Clean 270-degree Gauge Styles */
-        .gauge {
-            position: relative;
-            width: 195px;
-            height: 195px;
-            margin: 2rem auto;
-        }
-
-        .gauge__background {
-            fill: none;
-            stroke: #f0f0f0;
-            stroke-width: 15;
-            stroke-linecap: round;
-        }
-
-        .gauge__fill {
-            fill: none;
-            stroke-width: 15;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease-in-out;
-        }
-
-        /* Add status text below percentage */
-        .status {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Inter', sans-serif;
-            font-size: 1.5rem;
-            color: #64748B; /* Grey color for status */
-            margin: 0;
-        }
-
-        /* Container styling */
-        .overall-score {
-            text-align: center;
-            margin: 3rem 0;
-        }
-
-        .overall-score h3 {
-            margin-top: 2rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        /* Pill Gauges */
-        .score-pill {
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .question-label {
-            width: 120px;
-            font-weight: 500;
-        }
-
-        .pill-gauge {
-            height: 12px;
-            background: #f0f0f0;
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 0.75rem 0;
-            position: relative;
-        }
-
-        .pill-gauge::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: calc(var(--percentage) * 1%);
-            background: var(--color);
-            border-radius: 6px;
-            transition: width 1s ease-in-out;
-        }
-
-        .pill-value {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #333;
-            font-weight: 500;
-            z-index: 1;
-        }
-
-        /* Updated styles for individual scores */
-        .individual-scores {
-            margin-top: 3rem;
-        }
-
-        .score-section {
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: #fff;
-            border-radius: 8px;
-        }
-
-        .score-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .score-header h4 {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #333;
-            margin: 0;
-        }
-
-        .score-value {
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .pill-gauge {
-            height: 12px;
-            background: #f0f0f0;
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 0.75rem 0;
-            position: relative;
-        }
-
-        .pill-gauge::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: calc(var(--percentage) * 1%);
-            background: var(--color);
-            border-radius: 6px;
-            transition: width 1s ease-in-out;
-        }
-
-        .score-description {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #666;
-            margin: 0.75rem 0 0 0;
-        }
-
-        .return-button {
-            display: block;
-            margin: 2rem auto;
-            padding: 1rem 2rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            transition: opacity 0.2s ease;
-        }
-
-        .return-button:hover {
-            opacity: 0.9;
-        }
-
-        .results-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .percentage {
-            font-family: 'Inter', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            color: #333;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .cta-section {
-            background: var(--primary-color-light);
-            padding: 2rem;
-            border-radius: 8px;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .cta-section h3 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            color: #333;
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(91, 95, 199, 0.2);
-        }
-
-        .cta-section.bottom {
-            background: #fff;
-            border: 2px solid var(--primary-color-light);
-        }
-
-        .score-message {
-            margin-top: 2rem;
-            text-align: left;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 1.5rem;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .score-message h3 {
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .score-message p {
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-        }
-
-        /* Add specific mobile adjustments */
-        @media (max-width: 320px) {
-            .rating-scale {
-                gap: 1px;
+            .close-button:hover {
+                background: #f5f5f5;
+                color: #333;
             }
-            
-            .rating-button {
-                padding: 1px;
-                font-size: 11px;
-                border-radius: 2px;
+
+            .results-container {
+                position: relative;
             }
-            
-            .question-item {
-                padding: 0.75rem;
-            }
-        }
 
-        .recommendations {
-            margin: 3rem auto;
-            padding: 2.5rem;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 600px;
-        }
-
-        .recommendations h3 {
-            color: #173248;
-            margin-bottom: 1.25rem;
-            font-weight: 600;
-            font-size: 1.5rem;
-        }
-
-        .recommendations p {
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .recommendations ul {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 2rem 0;
-        }
-
-        .recommendations li {
-            margin-bottom: 1.25rem;
-            padding-left: 1.75rem;
-            position: relative;
-            line-height: 1.5;
-        }
-
-        .recommendations li:before {
-            content: "→";  /* Changed to arrow for more strategic feel */
-            color: var(--primary-color);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        .recommendations li strong {
-            color: var(--primary-color);
-            font-weight: 600;
-            display: block;  /* Put each header on its own line */
-            margin-bottom: 0.25rem;
-        }
-
-        .recommendation-footer {
-            font-weight: 500;
-            color: #173248;
-            text-align: center;
-            margin: 2rem 0 1rem 0;
-        }
-
-        @media (max-width: 768px) {
-            .recommendations {
-                padding: 1.5rem;
-                margin: 2rem auto;
-            }
-            
-            .recommendations h3 {
-                font-size: 1.25rem;
-            }
-        }
-
-        .close-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            border: none;
-            background: white;
-            color: #666;
-            font-size: 28px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .close-button:hover {
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .results-container {
-            position: relative;
-        }
-
-        .options-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-            padding-top: 5vh;
-        }
-
-        .options-popup.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .popup-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            position: relative;
-            width: 90%;
-            max-width: 400px;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .popup-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .popup-option {
-            padding: 1rem;
-            background: #f8f8f8;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
-
-        .popup-option:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .popup-close {
-            margin-top: 1.5rem;
-            padding: 0.75rem 2rem;
-            border: none;
-            background: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .popup-close:hover {
-            color: #333;
-        }
-
-        @media (max-width: 768px) {
-            .popup-content {
-                width: 95%;
-                padding: 1.5rem;
-            }
-        }
-
-        /* Small mobile optimization */
-        @media (max-width: 320px) {
             .options-popup {
-                padding-top: 2vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: none;
+                align-items: flex-start;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                z-index: 1000;
+                padding-top: 5vh;
             }
-        }
 
-        .question-number {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-right: 0.5rem;
-        }
+            .options-popup.active {
+                display: flex;
+                opacity: 1;
+            }
 
-        /* Mobile optimization for question numbers */
-        @media (max-width: 320px) {
+            .popup-content {
+                background: white;
+                padding: 2rem;
+                border-radius: 8px;
+                position: relative;
+                width: 90%;
+                max-width: 400px;
+                transform: translateY(-20px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            .popup-options {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .popup-option {
+                padding: 1rem;
+                background: #f8f8f8;
+                border-radius: 4px;
+                text-decoration: none;
+                color: #333;
+                transition: all 0.2s ease;
+                font-weight: 500;
+            }
+
+            .popup-option:hover {
+                background: var(--primary-color);
+                color: white;
+            }
+
+            .popup-close {
+                margin-top: 1.5rem;
+                padding: 0.75rem 2rem;
+                border: none;
+                background: none;
+                color: #666;
+                cursor: pointer;
+                font-size: 0.9rem;
+            }
+
+            .popup-close:hover {
+                color: #333;
+            }
+
+            @media (max-width: 768px) {
+                .popup-content {
+                    width: 95%;
+                    padding: 1.5rem;
+                }
+            }
+
+            /* Small mobile optimization */
+            @media (max-width: 320px) {
+                .options-popup {
+                    padding-top: 2vh;
+                }
+            }
+
             .question-number {
-                display: inline-block;
-                margin-bottom: 0.25rem;
+                font-weight: 600;
+                color: var(--primary-color);
+                margin-right: 0.5rem;
             }
-        }
 
-        .share-section {
-            text-align: center;
-            margin: 2rem 0;
-        }
+            /* Mobile optimization for question numbers */
+            @media (max-width: 320px) {
+                .question-number {
+                    display: inline-block;
+                    margin-bottom: 0.25rem;
+                }
+            }
 
-        .share-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background-color: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
+            .share-section {
+                text-align: center;
+                margin: 2rem 0;
+            }
 
-        .share-button:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .share-button svg {
-            transition: transform 0.2s ease;
-        }
-
-        .share-button:hover svg {
-            transform: translateY(-2px);
-        }
-
-        /* Mobile optimization */
-        @media (max-width: 768px) {
             .share-button {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background-color: white;
+                border: 2px solid var(--primary-color);
+                color: var(--primary-color);
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
+                transition: all 0.2s ease;
             }
-        }
 
-        .share-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-        }
+            .share-button:hover {
+                background-color: var(--primary-color);
+                color: white;
+                transform: translateY(-2px);
+            }
 
-        .share-popup.active {
-            opacity: 1;
-        }
+            .share-button svg {
+                transition: transform 0.2s ease;
+            }
 
-        .share-popup-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            position: relative;
-            width: 90%;
-            max-width: 400px;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-        }
+            .share-button:hover svg {
+                transform: translateY(-2px);
+            }
 
-        .share-popup.active .share-popup-content {
-            transform: translateY(0);
-        }
+            /* Mobile optimization */
+            @media (max-width: 768px) {
+                .share-button {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.9rem;
+                }
+            }
 
-        .share-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
+            .share-popup {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                z-index: 1000;
+            }
 
-        .share-options button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+            .share-popup.active {
+                opacity: 1;
+            }
 
-        .share-options button:hover {
-            background: var(--primary-color-light);
-            border-color: var(--primary-color);
-        }
-
-        .copy-success {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4CAF50;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            animation: fadeInOut 2s ease;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, 20px); }
-            15% { opacity: 1; transform: translate(-50%, 0); }
-            85% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -20px); }
-        }
-
-        @media (max-width: 768px) {
             .share-popup-content {
-                padding: 1.5rem;
+                background: white;
+                padding: 2rem;
+                border-radius: 8px;
+                position: relative;
+                width: 90%;
+                max-width: 400px;
+                transform: translateY(20px);
+                transition: transform 0.3s ease;
             }
-            
+
+            .share-popup.active .share-popup-content {
+                transform: translateY(0);
+            }
+
             .share-options {
-                gap: 0.75rem;
-            }
-            
-            .share-options button {
-                padding: 0.75rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        .share-section.bottom {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            margin-top: 2rem;
-            text-align: center;
-            border: 1px solid var(--primary-color-light);
-        }
-
-        .share-section.bottom p {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        /* Mobile optimization */
-        @media (max-width: 768px) {
-            .share-section.bottom {
-                padding: 1.5rem;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
                 margin-top: 1.5rem;
             }
-            
-            .share-section.bottom p {
-                font-size: 0.9rem;
+
+            .share-options button {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background: white;
+                cursor: pointer;
+                transition: all 0.2s ease;
             }
-        }
 
-        .form-group.unanswered input {
-            border-color: #ED5C5C;
-            background-color: rgba(237, 92, 92, 0.05);
-        }
+            .share-options button:hover {
+                background: var(--primary-color-light);
+                border-color: var(--primary-color);
+            }
 
-        .form-group.unanswered label {
-            color: #ED5C5C;
-        }
+            .copy-success {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4CAF50;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 4px;
+                animation: fadeInOut 2s ease;
+            }
 
-        .question-item.unanswered {
-            border: 2px solid #ED5C5C;
-            background-color: rgba(237, 92, 92, 0.05);
-        }
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translate(-50%, 20px); }
+                15% { opacity: 1; transform: translate(-50%, 0); }
+                85% { opacity: 1; transform: translate(-50%, 0); }
+                100% { opacity: 0; transform: translate(-50%, -20px); }
+            }
 
-        /* Remove red highlighting when user starts filling in the field */
-        .form-group.unanswered input:focus {
-            border-color: var(--primary-color);
-            background-color: white;
-        }
-
-        .form-group input:focus + label {
-            color: var(--primary-color);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Organizational Health Snapshot™</h1>
-            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
-        </header>
-        
-        <form id="cultureForm">
-            <div class="personal-info">
-                <div class="form-group">
-                    <label for="name">Name*</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="company">Company*</label>
-                    <input type="text" id="company" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email*</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="role">Job Role*</label>
-                    <input type="text" id="role" required>
-                </div>
-            </div>
-
-            <div class="instruction-text">
-                Indicate the degree to which you agree or disagree with these statements:
-            </div>
-
-            <div class="assessment-grid">
-                <div class="scale-header">
-                    <span>DISAGREE</span>
-                    <span>AGREE</span>
-                </div>
+            @media (max-width: 768px) {
+                .share-popup-content {
+                    padding: 1.5rem;
+                }
                 
-                <div class="question-group">
-                    <!-- Questions will be added via JavaScript -->
-                </div>
-            </div>
+                .share-options {
+                    gap: 0.75rem;
+                }
+                
+                .share-options button {
+                    padding: 0.75rem;
+                    font-size: 0.9rem;
+                }
+            }
 
-            <button type="submit">See Your Snapshot</button>
-        </form>
+            .share-section.bottom {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 8px;
+                margin-top: 2rem;
+                text-align: center;
+                border: 1px solid var(--primary-color-light);
+            }
 
-        <div class="score-summary" style="display: none;">
-            <h2>Assessment Summary</h2>
-            <div class="summary-grid">
-                <div class="average-score">
-                    <h3>Average Score</h3>
-                    <div class="score-circle"></div>
+            .share-section.bottom p {
+                color: #666;
+                margin-bottom: 1rem;
+                font-size: 1.1rem;
+            }
+
+            /* Mobile optimization */
+            @media (max-width: 768px) {
+                .share-section.bottom {
+                    padding: 1.5rem;
+                    margin-top: 1.5rem;
+                }
+                
+                .share-section.bottom p {
+                    font-size: 0.9rem;
+                }
+            }
+
+            .form-group.unanswered input {
+                border-color: #ED5C5C;
+                background-color: rgba(237, 92, 92, 0.05);
+            }
+
+            .form-group.unanswered label {
+                color: #ED5C5C;
+            }
+
+            .question-item.unanswered {
+                border: 2px solid #ED5C5C;
+                background-color: rgba(237, 92, 92, 0.05);
+            }
+
+            /* Remove red highlighting when user starts filling in the field */
+            .form-group.unanswered input:focus {
+                border-color: var(--primary-color);
+                background-color: white;
+            }
+
+            .form-group input:focus + label {
+                color: var(--primary-color);
+            }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Organizational Health Snapshot™</h1>
+                <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
+            </header>
+            
+            <form id="cultureForm">
+                <div class="personal-info">
+                    <div class="form-group">
+                        <label for="name">Name*</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company*</label>
+                        <input type="text" id="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Job Role*</label>
+                        <input type="text" id="role" required>
+                    </div>
                 </div>
-                <div class="score-breakdown">
-                    <h3>Breakdown by Category</h3>
-                    <!-- Dynamic content -->
+
+                <div class="instruction-text">
+                    Indicate the degree to which you agree or disagree with these statements:
+                </div>
+
+                <div class="assessment-grid">
+                    <div class="scale-header">
+                        <span>DISAGREE</span>
+                        <span>AGREE</span>
+                    </div>
+                    
+                    <div class="question-group">
+                        <!-- Questions will be added via JavaScript -->
+                    </div>
+                </div>
+
+                <button type="submit">See Your Snapshot</button>
+            </form>
+
+            <div class="score-summary" style="display: none;">
+                <h2>Assessment Summary</h2>
+                <div class="summary-grid">
+                    <div class="average-score">
+                        <h3>Average Score</h3>
+                        <div class="score-circle"></div>
+                    </div>
+                    <div class="score-breakdown">
+                        <h3>Breakdown by Category</h3>
+                        <!-- Dynamic content -->
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        // Basic JavaScript to add questions and handle ratings
-        const questions = [
-            {
-                text: "We have a clear picture of our cost of culture...",
-                title: "Understanding Cultural Costs",
-                description: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
-            },
-            {
-                text: "We have clear metrics in place to determine the profit impact...",
-                title: "HR Metrics and Profit Impact",
-                description: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
-            },
-            {
-                text: "Our mission, vision and values are easily translated...",
-                title: "Mission, Vision, and Values in Action",
-                description: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
-            },
-            {
-                text: "We are confident that we are maximizing our efforts...",
-                title: "Managing Employee Turnover Costs",
-                description: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
-            },
-            {
-                text: "We have Culture KPIs and can ensure an effective ROI...",
-                title: "Ensuring ROI for Cultural Initiatives",
-                description: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
-            },
-            {
-                text: "Since COVID happened, there is a distinctive change...",
-                title: "Post-COVID Workplace Changes",
-                description: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
-            },
-            {
-                text: "When budget time comes around, culture is easily accounted for...",
-                title: "Budgeting for Cultural Costs",
-                description: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
-            },
-            {
-                text: "We have an easy system and process for measuring...",
-                title: "Measuring and Driving Engagement",
-                description: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
-            },
-            {
-                text: "The brand of our company matches the culture...",
-                title: "Aligning Brand and Internal Culture",
-                description: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
-            },
-            {
-                text: "Most culture issues we have are Operations' related.",
-                title: "Operations and Culture Interconnection",
-                description: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
-            }
-        ];
-
-        function createQuestionElement(question, index) {
-            const questionItem = document.createElement('div');
-            questionItem.className = 'question-item';
-            
-            const questionText = document.createElement('div');
-            questionText.className = 'question-text';
-            questionText.innerHTML = `
-                <span class="question-number">Q${index + 1}.</span> 
-                ${question.text}
-            `;
-            
-            const ratingScale = document.createElement('div');
-            ratingScale.className = 'rating-scale';
-            
-            for (let i = 1; i <= 10; i++) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'rating-button';
-                button.textContent = i;
-                button.onclick = function() {
-                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
-                        btn.classList.remove('selected');
-                    });
-                    button.classList.add('selected');
-                    questionItem.classList.remove('unanswered');
-                };
-                ratingScale.appendChild(button);
-            }
-            
-            questionItem.appendChild(questionText);
-            questionItem.appendChild(ratingScale);
-            
-            return questionItem;
-        }
-
-        // Initialize the form with questions when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            const questionGroup = document.querySelector('.question-group');
-            questions.forEach((question, index) => {
-                const questionElement = createQuestionElement(question, index);
-                questionGroup.appendChild(questionElement);
-            });
-        });
-
-        // First, let's create the scoring calculation functions
-        const calculateScores = {
-            toPercentage: (score) => (score / 10) * 100,
-            
-            // Updated color function with new color codes
-            getColor: (percentage) => {
-                const score = Math.round(percentage);
-                if (score <= 50) {
-                    return '#ED5C5C'; // New red
-                } else if (score <= 84) {
-                    return '#DFD691'; // New yellow
-                } else {
-                    return '#5EBD77'; // New green
+        <script>
+            // Basic JavaScript to add questions and handle ratings
+            const questions = [
+                {
+                    text: "We have a clear picture of our cost of culture...",
+                    title: "Understanding Cultural Costs",
+                    description: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
+                },
+                {
+                    text: "We have clear metrics in place to determine the profit impact...",
+                    title: "HR Metrics and Profit Impact",
+                    description: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
+                },
+                {
+                    text: "Our mission, vision and values are easily translated...",
+                    title: "Mission, Vision, and Values in Action",
+                    description: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
+                },
+                {
+                    text: "We are confident that we are maximizing our efforts...",
+                    title: "Managing Employee Turnover Costs",
+                    description: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
+                },
+                {
+                    text: "We have Culture KPIs and can ensure an effective ROI...",
+                    title: "Ensuring ROI for Cultural Initiatives",
+                    description: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
+                },
+                {
+                    text: "Since COVID happened, there is a distinctive change...",
+                    title: "Post-COVID Workplace Changes",
+                    description: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
+                },
+                {
+                    text: "When budget time comes around, culture is easily accounted for...",
+                    title: "Budgeting for Cultural Costs",
+                    description: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
+                },
+                {
+                    text: "We have an easy system and process for measuring...",
+                    title: "Measuring and Driving Engagement",
+                    description: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
+                },
+                {
+                    text: "The brand of our company matches the culture...",
+                    title: "Aligning Brand and Internal Culture",
+                    description: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
+                },
+                {
+                    text: "Most culture issues we have are Operations' related.",
+                    title: "Operations and Culture Interconnection",
+                    description: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
                 }
-            },
-            
-            getOverallScore: (scores) => {
-                const sum = scores.reduce((acc, curr) => acc + curr, 0);
-                return sum / scores.length;
+            ];
+
+            function createQuestionElement(question, index) {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.innerHTML = `
+                    <span class="question-number">Q${index + 1}.</span> 
+                    ${question.text}
+                `;
+                
+                const ratingScale = document.createElement('div');
+                ratingScale.className = 'rating-scale';
+                
+                for (let i = 1; i <= 10; i++) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'rating-button';
+                    button.textContent = i;
+                    button.onclick = function() {
+                        ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                            btn.classList.remove('selected');
+                        });
+                        button.classList.add('selected');
+                        questionItem.classList.remove('unanswered');
+                    };
+                    ratingScale.appendChild(button);
+                }
+                
+                questionItem.appendChild(questionText);
+                questionItem.appendChild(ratingScale);
+                
+                return questionItem;
             }
-        };
 
-        // Add the update function
-        function updateRadialGauge(percentage) {
-            const fillElement = document.getElementById('engagementFill');
-            const textElement = document.getElementById('engagementText');
-            
-            // Set the fill color based on score
-            let strokeColor;
-            if (percentage <= 50) {
-                strokeColor = '#ED5C5C';
-            } else if (percentage <= 84) {
-                strokeColor = '#DFD691';
-            } else {
-                strokeColor = '#5EBD77';
+            // Initialize the form with questions when the page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const questionGroup = document.querySelector('.question-group');
+                questions.forEach((question, index) => {
+                    const questionElement = createQuestionElement(question, index);
+                    questionGroup.appendChild(questionElement);
+                });
+            });
+
+            // First, let's create the scoring calculation functions
+            const calculateScores = {
+                toPercentage: (score) => (score / 10) * 100,
+                
+                // Updated color function with new color codes
+                getColor: (percentage) => {
+                    const score = Math.round(percentage);
+                    if (score <= 50) {
+                        return '#ED5C5C'; // New red
+                    } else if (score <= 84) {
+                        return '#DFD691'; // New yellow
+                    } else {
+                        return '#5EBD77'; // New green
+                    }
+                },
+                
+                getOverallScore: (scores) => {
+                    const sum = scores.reduce((acc, curr) => acc + curr, 0);
+                    return sum / scores.length;
+                }
+            };
+
+            // Add the update function
+            function updateRadialGauge(percentage) {
+                const fillElement = document.getElementById('engagementFill');
+                const textElement = document.getElementById('engagementText');
+                
+                // Set the fill color based on score
+                let strokeColor;
+                if (percentage <= 50) {
+                    strokeColor = '#ED5C5C';
+                } else if (percentage <= 84) {
+                    strokeColor = '#DFD691';
+                } else {
+                    strokeColor = '#5EBD77';
+                }
+
+                // Update the gauge
+                fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
+                fillElement.style.stroke = strokeColor;
+                fillElement.style.strokeDasharray = '367.566';
+                fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
+                
+                // Update the text
+                textElement.textContent = `${percentage}%`;
             }
 
-            // Update the gauge
-            fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
-            fillElement.style.stroke = strokeColor;
-            fillElement.style.strokeDasharray = '367.566';
-            fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
-            
-            // Update the text
-            textElement.textContent = `${percentage}%`;
-        }
-
-        // Update the createResultsPage function to use this
-        function createResultsPage(scores) {
-            const overallPercentage = Math.round(
-                calculateScores.getOverallScore(
-                    scores.map(score => calculateScores.toPercentage(score))
-                )
-            );
-            
-            const recommendationsHTML = getRecommendations(overallPercentage);
-            
-            const resultsHTML = `
-                <div class="results-container">
-                    <div class="close-button" onclick="returnToForm()">×</div>
-                    
-                    <div class="overall-score">
-                        <div class="gauge">
-                            <svg width="195" height="195" viewBox="0 0 195 195">
-                                <path class="gauge__background" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                                      stroke-width="15"
-                                      transform="rotate(0, 97.5, 97.5)" />
-                                <path class="gauge__fill" 
-                                      id="engagementFill" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                                      stroke-width="15"
-                                      transform="rotate(0, 97.5, 97.5)" />
-                                <text x="97.5" y="115" 
-                                      text-anchor="middle" 
-                                      font-size="31px" 
-                                      font-weight="700"
-                                      fill="#173248" 
-                                      id="engagementText">${overallPercentage}%</text>
-                            </svg>
-                        </div>
-                    </div>
-                    
-                    <!-- Add CTA section after the gauge -->
-                    <div class="cta-section">
-                        <h3>Your Health Snapshot Is Just the Beginning</h3>
-                        <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-
-                    <!-- Rest of your results page content -->
-                    <div class="individual-scores">
-                        <h3>Detailed Breakdown</h3>
-                        ${scores
-                            // Create array of objects with score and question info
-                            .map((score, index) => ({
-                                score: score,
-                                percentage: Math.round(calculateScores.toPercentage(score)),
-                                title: questions[index].title,
-                                description: questions[index].description
-                            }))
-                            // Sort from lowest to highest score
-                            .sort((a, b) => a.percentage - b.percentage)
-                            // Generate HTML for each score
-                            .map(item => {
-                                const color = calculateScores.getColor(item.percentage);
-                                return `
-                                    <div class="score-section">
-                                        <div class="score-header">
-                                            <h4>${item.title}</h4>
-                                            <span class="score-value">${item.percentage}%</span>
-                                        </div>
-                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
-                                        </div>
-                                        <p class="score-description">${item.description}</p>
-                                    </div>
-                                `;
-                            }).join('')}
-                    </div>
-                    
-                    <!-- Add another CTA at the bottom -->
-                    <div class="cta-section bottom">
-                        <h3>Your Health Snapshot Is Just the Beginning</h3>
-                        <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-
-                    <div id="optionsPopup" class="options-popup">
-                        <div class="popup-content">
-                            <h3>What would you like to do next?</h3>
-                            <div class="popup-options">
-                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
-                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
-                                <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
+            // Update the createResultsPage function to use this
+            function createResultsPage(scores) {
+                const overallPercentage = Math.round(
+                    calculateScores.getOverallScore(
+                        scores.map(score => calculateScores.toPercentage(score))
+                    )
+                );
+                
+                const recommendationsHTML = getRecommendations(overallPercentage);
+                
+                const resultsHTML = `
+                    <div class="results-container">
+                        <div class="close-button" onclick="returnToForm()">×</div>
+                        
+                        <div class="overall-score">
+                            <div class="gauge">
+                                <svg width="195" height="195" viewBox="0 0 195 195">
+                                    <path class="gauge__background" 
+                                        d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                        stroke-width="15"
+                                        transform="rotate(0, 97.5, 97.5)" />
+                                    <path class="gauge__fill" 
+                                        id="engagementFill" 
+                                        d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                        stroke-width="15"
+                                        transform="rotate(0, 97.5, 97.5)" />
+                                    <text x="97.5" y="115" 
+                                        text-anchor="middle" 
+                                        font-size="31px" 
+                                        font-weight="700"
+                                        fill="#173248" 
+                                        id="engagementText">${overallPercentage}%</text>
+                                </svg>
                             </div>
-                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
+                        </div>
+                        
+                        <!-- Add CTA section after the gauge -->
+                        <div class="cta-section">
+                            <h3>Your Health Snapshot Is Just the Beginning</h3>
+                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
+
+                        <!-- Rest of your results page content -->
+                        <div class="individual-scores">
+                            <h3>Detailed Breakdown</h3>
+                            ${scores
+                                // Create array of objects with score and question info
+                                .map((score, index) => ({
+                                    score: score,
+                                    percentage: Math.round(calculateScores.toPercentage(score)),
+                                    title: questions[index].title,
+                                    description: questions[index].description
+                                }))
+                                // Sort from lowest to highest score
+                                .sort((a, b) => a.percentage - b.percentage)
+                                // Generate HTML for each score
+                                .map(item => {
+                                    const color = calculateScores.getColor(item.percentage);
+                                    return `
+                                        <div class="score-section">
+                                            <div class="score-header">
+                                                <h4>${item.title}</h4>
+                                                <span class="score-value">${item.percentage}%</span>
+                                            </div>
+                                            <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
+                                            </div>
+                                            <p class="score-description">${item.description}</p>
+                                        </div>
+                                    `;
+                                }).join('')}
+                        </div>
+                        
+                        <!-- Add another CTA at the bottom -->
+                        <div class="cta-section bottom">
+                            <h3>Your Health Snapshot Is Just the Beginning</h3>
+                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
+
+                        <div id="optionsPopup" class="options-popup">
+                            <div class="popup-content">
+                                <h3>What would you like to do next?</h3>
+                                <div class="popup-options">
+                                    <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                    <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
+                                    <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
+                                    <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
+                                </div>
+                                <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
+                            </div>
+                        </div>
+
+                        <!-- Add share section at bottom -->
+                        <div class="share-section bottom">
+                            <p>Found these insights valuable? Share them with your team:</p>
+                            <button onclick="shareResults()" class="share-button">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                    <polyline points="16 6 12 2 8 6"></polyline>
+                                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                                </svg>
+                                Share Results
+                            </button>
                         </div>
                     </div>
+                `;
 
-                    <!-- Add share section at bottom -->
+                // Update the DOM
+                const container = document.querySelector('.container');
+                container.innerHTML = resultsHTML;
+
+                // Scroll to top smoothly
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                // Animate the gauge to the final percentage
+                setTimeout(() => {
+                    updateRadialGauge(overallPercentage);
+                }, 100);
+            }
+
+            // Store original form HTML
+            let originalFormHTML;
+
+            // Initialize when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                originalFormHTML = document.querySelector('.container').innerHTML;
+                
+                // Check for stored results
+                const storedResults = localStorage.getItem('cultureMRIResults');
+                if (storedResults) {
+                    const resultsData = JSON.parse(storedResults);
+                    
+                    // Check if results are less than 30 minutes old
+                    const thirtyMinutes = 30 * 60 * 1000;
+                    if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
+                        // Restore the results
+                        scores = resultsData.scores;
+                        Object.assign(formData, resultsData.formData);
+                        createResultsPage(scores);
+                        updateDemoLinks();
+                    } else {
+                        // Clear old results
+                        localStorage.removeItem('cultureMRIResults');
+                    }
+                }
+                
+                initializeForm();
+            });
+
+            // Initialize form and add event listeners
+            function initializeForm() {
+                const form = document.getElementById('cultureForm');
+                if (form) {
+                    console.log('Form found, adding submit listener');
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        console.log('Form submitted');
+                        handleFormSubmit();
+                    });
+                }
+
+                // Add click handlers to rating buttons
+                document.querySelectorAll('.rating-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const ratingScale = this.closest('.rating-scale');
+                        ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                            btn.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                    });
+                });
+            }
+
+            // Add this function at the start to get affiliate code
+            function getAffiliateCode() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const refCode = urlParams.get('ref');
+                console.log('URL Ref Code:', refCode); // Debug log
+                return refCode || 'CMRI';
+            }
+
+            // Update handleFormSubmit function
+            function handleFormSubmit() {
+                console.log('Processing form submission');
+                
+                // First, remove any existing unanswered markers
+                document.querySelectorAll('.question-item').forEach(item => {
+                    item.classList.remove('unanswered');
+                });
+
+                // Get affiliate code first
+                const affiliateCode = getAffiliateCode();
+                
+                // Collect initial form data
+                let formData = {
+                    name: document.getElementById('name').value,
+                    company: document.getElementById('company').value,
+                    email: document.getElementById('email').value,
+                    role: document.getElementById('role').value,
+                    affiliateCode: affiliateCode
+                };
+
+                // Validate required fields
+                if (!formData.name || !formData.company || !formData.email || !formData.role) {
+                    // Instead of alert, highlight the empty required fields
+                    ['name', 'company', 'email', 'role'].forEach(fieldId => {
+                        const field = document.getElementById(fieldId);
+                        if (!field.value) {
+                            field.style.borderColor = '#ED5C5C';
+                            field.parentElement.classList.add('unanswered');
+                        }
+                    });
+                    // Scroll to the first empty field
+                    const firstEmptyField = document.querySelector('.unanswered');
+                    if (firstEmptyField) {
+                        firstEmptyField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+
+                // Collect all scores and mark unanswered questions
+                const scores = [];
+                const questionItems = document.querySelectorAll('.question-item');
+                let hasUnanswered = false;
+                
+                questionItems.forEach((item, index) => {
+                    const selected = item.querySelector('.rating-button.selected');
+                    if (!selected) {
+                        hasUnanswered = true;
+                        item.classList.add('unanswered');
+                        if (!document.querySelector('.unanswered')) {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    } else {
+                        scores.push(parseInt(selected.textContent));
+                    }
+                });
+
+                // Stop if there are unanswered questions
+                if (hasUnanswered) {
+                    return;
+                }
+
+                // If we get here, all questions are answered - proceed with form submission
+                const overallPercentage = Math.round(
+                    calculateScores.getOverallScore(
+                        scores.map(score => calculateScores.toPercentage(score))
+                    )
+                );
+
+                // Update form data with scores
+                formData = {
+                    ...formData,
+                    scores: scores,
+                    overallScore: overallPercentage,
+                    submissionDate: new Date().toISOString()
+                };
+
+                // Submit to Google Sheet
+                submitToGoogleSheet(formData);
+                
+                // Create results HTML
+                createResultsPage(scores);
+            }
+
+            // Update submitToGoogleSheet function
+            function submitToGoogleSheet(data) {
+                const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
+                
+                const submissionData = {
+                    ...data,
+                    source: window.location.href,
+                    referrer: document.referrer || 'CMRI'
+                };
+                
+                console.log('Submitting data:', submissionData); // Debug log
+                
+                fetch(scriptUrl, {
+                    method: 'POST',
+                    body: JSON.stringify(submissionData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+
+            // Show questionnaire function
+            function showQuestionnaire() {
+                const container = document.querySelector('.container');
+                container.innerHTML = originalFormHTML;
+                initializeForm();
+            }
+
+            function getStatus(percentage) {
+                if (percentage <= 50) return 'Poor';
+                if (percentage <= 84) return 'Fair';
+                return 'Good';
+            }
+
+            function getRecommendations(percentage) {
+                if (percentage <= 50) {
+                    return `
+                        <div class="recommendations">
+                            <h3>Priority Action Steps</h3>
+                            <p>Your Organizational Health Snapshot™ results indicate critical areas requiring immediate attention to protect and improve business performance:</p>
+                            <ul>
+                                <li>
+                                    <strong>Urgent Intervention:</strong> 
+                                    Address significant cultural gaps that are impacting productivity, engagement, and retention
+                                </li>
+                                <li>
+                                    <strong>Risk Mitigation:</strong> 
+                                    Implement immediate strategies to realign teams and stabilize operational effectiveness
+                                </li>
+                                <li>
+                                    <strong>Recovery Planning:</strong> 
+                                    Develop a structured approach to rebuild cultural foundations and restore business performance
+                                </li>
+                            </ul>
+                            <p class="recommendation-footer">Don't let cultural challenges limit your business potential.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
+                    `;
+                } else if (percentage <= 84) {
+                    return `
+                        <div class="recommendations">
+                            <h3>Growth Opportunities</h3>
+                            <p>Your Organizational Health Snapshot™ reveals key opportunities to strengthen your culture and enhance business outcomes:</p>
+                            <ul>
+                                <li>
+                                    <strong>Performance Enhancement:</strong> 
+                                    Target specific areas where improved alignment can drive stronger team performance
+                                </li>
+                                <li>
+                                    <strong>Engagement Optimization:</strong> 
+                                    Strengthen key cultural drivers to boost employee satisfaction and productivity
+                                </li>
+                                <li>
+                                    <strong>Strategic Planning:</strong> 
+                                    Create a roadmap to transform moderate performance into exceptional results
+                                </li>
+                            </ul>
+                            <p class="recommendation-footer">Ready to unlock your organization's full potential?</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="recommendations">
+                            <h3>Excellence Acceleration</h3>
+                            <p>Your Organizational Health Snapshot™ shows strong foundations. Here's how to leverage your cultural strengths for even greater success:</p>
+                            <ul>
+                                <li>
+                                    <strong>Innovation Opportunities:</strong> 
+                                    Identify advanced strategies to push performance boundaries and maximize team potential
+                                </li>
+                                <li>
+                                    <strong>Competitive Advantage:</strong> 
+                                    Further strengthen your cultural differentiators to maintain market leadership
+                                </li>
+                                <li>
+                                    <strong>Sustainable Growth:</strong> 
+                                    Develop frameworks to ensure continued excellence and scalable success
+                                </li>
+                            </ul>
+                            <p class="recommendation-footer">Discover how to transform strong performance into market dominance.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
+                    `;
+                }
+            }
+
+            function getScoreMessage(percentage) {
+                if (percentage <= 50) {
+                    return `
+                        <h3 style="color: #ED5C5C; margin-bottom: 1rem;">Critical Condition</h3>
+                        <p style="line-height: 1.6; color: #333;">
+                            Your Organizational Health Snapshot™ indicates urgent challenges requiring immediate attention. 
+                            Low scores suggest unmet employee needs, misalignment, and significant risks to productivity 
+                            and profitability. Addressing these issues quickly can stabilize operations, reengage your 
+                            workforce, and recover lost potential. Act now to begin transforming your organizational 
+                            health into a competitive advantage.
+                        </p>
+                    `;
+                } else if (percentage <= 84) {
+                    return `
+                        <h3 style="color: #DFD691; margin-bottom: 1rem;">At Risk and Needing Growth</h3>
+                        <p style="line-height: 1.6; color: #333;">
+                            Your Organizational Health Snapshot™ reveals areas of concern that require proactive intervention. 
+                            While some systems are stable, gaps in meeting employee needs and optimizing performance place 
+                            your organization at risk of declining productivity and profitability. Timely action to address 
+                            these vulnerabilities can create a path toward stronger alignment, engagement, and growth.
+                        </p>
+                    `;
+                } else {
+                    return `
+                        <h3 style="color: #5EBD77; margin-bottom: 1rem;">Strong but Needing Growth</h3>
+                        <p style="line-height: 1.6; color: #333;">
+                            Your Organizational Health Snapshot™ reflects a healthy organization with many systems functioning well. 
+                            However, even strong results can mask critical areas for improvement. Addressing overlooked 
+                            opportunities can push productivity and profitability even higher. Stay vigilant and refine 
+                            your strategy to ensure your organization operates at its peak potential.
+                        </p>
+                    `;
+                }
+            }
+
+            // Add these JavaScript functions:
+            function showOptionsPopup() {
+                const popup = document.getElementById('optionsPopup');
+                popup.style.display = 'flex';
+                popup.style.opacity = '1';
+                window.history.pushState({ showPopup: true }, '');
+            }
+
+            function hideOptionsPopup() {
+                const popup = document.getElementById('optionsPopup');
+                popup.style.opacity = '0';
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 300);
+                window.history.back();
+            }
+
+            // Add popstate event listener after the existing event listeners
+            window.addEventListener('popstate', function(event) {
+                if (event.state && event.state.showPopup) {
+                    showOptionsPopup();
+                } else {
+                    const popup = document.getElementById('optionsPopup');
+                    if (popup) {
+                        popup.style.opacity = '0';
+                        setTimeout(() => {
+                            popup.style.display = 'none';
+                        }, 300);
+                    }
+                }
+            });
+
+            function createShareButton() {
+                return `
                     <div class="share-section bottom">
                         <p>Found these insights valuable? Share them with your team:</p>
                         <button onclick="shareResults()" class="share-button">
@@ -1352,670 +1708,100 @@
                             Share Results
                         </button>
                     </div>
-                </div>
-            `;
+                `;
+            }
+            // First, add the jsPDF library to your HTML
+            function addJsPDF() {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                document.head.appendChild(script);
+            }
 
-            // Update the DOM
-            const container = document.querySelector('.container');
-            container.innerHTML = resultsHTML;
-
-            // Scroll to top smoothly
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-
-            // Animate the gauge to the final percentage
-            setTimeout(() => {
-                updateRadialGauge(overallPercentage);
-            }, 100);
-        }
-
-        // Store original form HTML
-        let originalFormHTML;
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            originalFormHTML = document.querySelector('.container').innerHTML;
-            
-            // Check for stored results
-            const storedResults = localStorage.getItem('cultureMRIResults');
-            if (storedResults) {
-                const resultsData = JSON.parse(storedResults);
+            // Function to generate and send PDF
+            function shareResults() {
+                console.log('Share button clicked'); // Debug log
                 
-                // Check if results are less than 30 minutes old
-                const thirtyMinutes = 30 * 60 * 1000;
-                if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
-                    // Restore the results
-                    scores = resultsData.scores;
-                    Object.assign(formData, resultsData.formData);
-                    createResultsPage(scores);
-                    updateDemoLinks();
-                } else {
-                    // Clear old results
-                    localStorage.removeItem('cultureMRIResults');
-                }
-            }
-            
-            initializeForm();
-        });
-
-        // Initialize form and add event listeners
-        function initializeForm() {
-            const form = document.getElementById('cultureForm');
-            if (form) {
-                console.log('Form found, adding submit listener');
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    console.log('Form submitted');
-                    handleFormSubmit();
-                });
-            }
-
-            // Add click handlers to rating buttons
-            document.querySelectorAll('.rating-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const ratingScale = this.closest('.rating-scale');
-                    ratingScale.querySelectorAll('.rating-button').forEach(btn => {
-                        btn.classList.remove('selected');
+                try {
+                    // Create new jsPDF instance
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    
+                    // Get user info
+                    const userName = document.getElementById('name').value;
+                    
+                    // Get the overall percentage from the gauge
+                    const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
+                    
+                    // Get scores from the pill gauges
+                    const scores = Array.from(document.querySelectorAll('.pill-gauge')).map(gauge => {
+                        const percentage = gauge.style.getPropertyValue('--percentage');
+                        return parseInt(percentage);
                     });
-                    this.classList.add('selected');
-                });
-            });
-        }
 
-        // Add this function at the start to get affiliate code
-        function getAffiliateCode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI';
-        }
-
-        // Update handleFormSubmit function
-        function handleFormSubmit() {
-            console.log('Processing form submission');
-            
-            // First, remove any existing unanswered markers
-            document.querySelectorAll('.question-item').forEach(item => {
-                item.classList.remove('unanswered');
-            });
-
-            // Get affiliate code first
-            const affiliateCode = getAffiliateCode();
-            
-            // Collect initial form data
-            let formData = {
-                name: document.getElementById('name').value,
-                company: document.getElementById('company').value,
-                email: document.getElementById('email').value,
-                role: document.getElementById('role').value,
-                affiliateCode: affiliateCode
-            };
-
-            // Validate required fields
-            if (!formData.name || !formData.company || !formData.email || !formData.role) {
-                // Instead of alert, highlight the empty required fields
-                ['name', 'company', 'email', 'role'].forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (!field.value) {
-                        field.style.borderColor = '#ED5C5C';
-                        field.parentElement.classList.add('unanswered');
-                    }
-                });
-                // Scroll to the first empty field
-                const firstEmptyField = document.querySelector('.unanswered');
-                if (firstEmptyField) {
-                    firstEmptyField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                return;
-            }
-
-            // Collect all scores and mark unanswered questions
-            const scores = [];
-            const questionItems = document.querySelectorAll('.question-item');
-            let hasUnanswered = false;
-            
-            questionItems.forEach((item, index) => {
-                const selected = item.querySelector('.rating-button.selected');
-                if (!selected) {
-                    hasUnanswered = true;
-                    item.classList.add('unanswered');
-                    if (!document.querySelector('.unanswered')) {
-                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                } else {
-                    scores.push(parseInt(selected.textContent));
-                }
-            });
-
-            // Stop if there are unanswered questions
-            if (hasUnanswered) {
-                return;
-            }
-
-            // If we get here, all questions are answered - proceed with form submission
-            const overallPercentage = Math.round(
-                calculateScores.getOverallScore(
-                    scores.map(score => calculateScores.toPercentage(score))
-                )
-            );
-
-            // Update form data with scores
-            formData = {
-                ...formData,
-                scores: scores,
-                overallScore: overallPercentage,
-                submissionDate: new Date().toISOString()
-            };
-
-            // Submit to Google Sheet
-            submitToGoogleSheet(formData);
-            
-            // Create results HTML
-            createResultsPage(scores);
-        }
-
-        // Update submitToGoogleSheet function
-        function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbxajGsKT72THMEnjYeO_rBglhs4hFzrnBcgg8YMCWCDh57LqX2CQ_k7yQG1D22bu5uT/exec';
-            
-            const submissionData = {
-                ...data,
-                source: window.location.href,
-                referrer: document.referrer || 'CMRI'
-            };
-            
-            console.log('Submitting data:', submissionData); // Debug log
-            
-            fetch(scriptUrl, {
-                method: 'POST',
-                body: JSON.stringify(submissionData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
-
-        // Show questionnaire function
-        function showQuestionnaire() {
-            const container = document.querySelector('.container');
-            container.innerHTML = originalFormHTML;
-            initializeForm();
-        }
-
-        function getStatus(percentage) {
-            if (percentage <= 50) return 'Poor';
-            if (percentage <= 84) return 'Fair';
-            return 'Good';
-        }
-
-        function getRecommendations(percentage) {
-            if (percentage <= 50) {
-                return `
-                    <div class="recommendations">
-                        <h3>Priority Action Steps</h3>
-                        <p>Your Organizational Health Snapshot™ results indicate critical areas requiring immediate attention to protect and improve business performance:</p>
-                        <ul>
-                            <li>
-                                <strong>Urgent Intervention:</strong> 
-                                Address significant cultural gaps that are impacting productivity, engagement, and retention
-                            </li>
-                            <li>
-                                <strong>Risk Mitigation:</strong> 
-                                Implement immediate strategies to realign teams and stabilize operational effectiveness
-                            </li>
-                            <li>
-                                <strong>Recovery Planning:</strong> 
-                                Develop a structured approach to rebuild cultural foundations and restore business performance
-                            </li>
-                        </ul>
-                        <p class="recommendation-footer">Don't let cultural challenges limit your business potential.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-                `;
-            } else if (percentage <= 84) {
-                return `
-                    <div class="recommendations">
-                        <h3>Growth Opportunities</h3>
-                        <p>Your Organizational Health Snapshot™ reveals key opportunities to strengthen your culture and enhance business outcomes:</p>
-                        <ul>
-                            <li>
-                                <strong>Performance Enhancement:</strong> 
-                                Target specific areas where improved alignment can drive stronger team performance
-                            </li>
-                            <li>
-                                <strong>Engagement Optimization:</strong> 
-                                Strengthen key cultural drivers to boost employee satisfaction and productivity
-                            </li>
-                            <li>
-                                <strong>Strategic Planning:</strong> 
-                                Create a roadmap to transform moderate performance into exceptional results
-                            </li>
-                        </ul>
-                        <p class="recommendation-footer">Ready to unlock your organization's full potential?</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="recommendations">
-                        <h3>Excellence Acceleration</h3>
-                        <p>Your Organizational Health Snapshot™ shows strong foundations. Here's how to leverage your cultural strengths for even greater success:</p>
-                        <ul>
-                            <li>
-                                <strong>Innovation Opportunities:</strong> 
-                                Identify advanced strategies to push performance boundaries and maximize team potential
-                            </li>
-                            <li>
-                                <strong>Competitive Advantage:</strong> 
-                                Further strengthen your cultural differentiators to maintain market leadership
-                            </li>
-                            <li>
-                                <strong>Sustainable Growth:</strong> 
-                                Develop frameworks to ensure continued excellence and scalable success
-                            </li>
-                        </ul>
-                        <p class="recommendation-footer">Discover how to transform strong performance into market dominance.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-                `;
-            }
-        }
-
-        function getScoreMessage(percentage) {
-            if (percentage <= 50) {
-                return `
-                    <h3 style="color: #ED5C5C; margin-bottom: 1rem;">Critical Condition</h3>
-                    <p style="line-height: 1.6; color: #333;">
-                        Your Organizational Health Snapshot™ indicates urgent challenges requiring immediate attention. 
-                        Low scores suggest unmet employee needs, misalignment, and significant risks to productivity 
-                        and profitability. Addressing these issues quickly can stabilize operations, reengage your 
-                        workforce, and recover lost potential. Act now to begin transforming your organizational 
-                        health into a competitive advantage.
-                    </p>
-                `;
-            } else if (percentage <= 84) {
-                return `
-                    <h3 style="color: #DFD691; margin-bottom: 1rem;">At Risk and Needing Growth</h3>
-                    <p style="line-height: 1.6; color: #333;">
-                        Your Organizational Health Snapshot™ reveals areas of concern that require proactive intervention. 
-                        While some systems are stable, gaps in meeting employee needs and optimizing performance place 
-                        your organization at risk of declining productivity and profitability. Timely action to address 
-                        these vulnerabilities can create a path toward stronger alignment, engagement, and growth.
-                    </p>
-                `;
-            } else {
-                return `
-                    <h3 style="color: #5EBD77; margin-bottom: 1rem;">Strong but Needing Growth</h3>
-                    <p style="line-height: 1.6; color: #333;">
-                        Your Organizational Health Snapshot™ reflects a healthy organization with many systems functioning well. 
-                        However, even strong results can mask critical areas for improvement. Addressing overlooked 
-                        opportunities can push productivity and profitability even higher. Stay vigilant and refine 
-                        your strategy to ensure your organization operates at its peak potential.
-                    </p>
-                `;
-            }
-        }
-
-        // Add these JavaScript functions:
-        function showOptionsPopup() {
-            const popup = document.getElementById('optionsPopup');
-            popup.style.display = 'flex';
-            popup.style.opacity = '1';
-            window.history.pushState({ showPopup: true }, '');
-        }
-
-        function hideOptionsPopup() {
-            const popup = document.getElementById('optionsPopup');
-            popup.style.opacity = '0';
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 300);
-            window.history.back();
-        }
-
-        // Add popstate event listener after the existing event listeners
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.showPopup) {
-                showOptionsPopup();
-            } else {
-                const popup = document.getElementById('optionsPopup');
-                if (popup) {
-                    popup.style.opacity = '0';
-                    setTimeout(() => {
-                        popup.style.display = 'none';
-                    }, 300);
-                }
-            }
-        });
-
-        function createShareButton() {
-            return `
-                <div class="share-section bottom">
-                    <p>Found these insights valuable? Share them with your team:</p>
-                    <button onclick="shareResults()" class="share-button">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                            <polyline points="16 6 12 2 8 6"></polyline>
-                            <line x1="12" y1="2" x2="12" y2="15"></line>
-                        </svg>
-                        Share Results
-                    </button>
-                </div>
-            `;
-        }
-
-        function shareResults() {
-            console.log('Share button clicked'); // Debug log
-            
-            // Get the overall percentage
-            const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
-            console.log('Overall percentage:', overallPercentage); // Debug log
-            
-            // Get scores differently - look for pill-gauge elements
-            const scores = Array.from(document.querySelectorAll('.pill-gauge')).map(gauge => {
-                const percentage = gauge.style.getPropertyValue('--percentage');
-                return parseInt(percentage);
-            });
-            console.log('Collected scores:', scores); // Debug log
-
-            try {
-                // Generate email content
-                const emailContent = generateEmailContent(overallPercentage, scores);
-                const subject = encodeURIComponent(generateEmailSubject(overallPercentage));
-                const body = encodeURIComponent(emailContent);
-                
-                // Create mailto link
-                const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
-                console.log('Generated mailto link'); // Debug log
-                
-                // Open email client
-                window.location.href = mailtoLink;
-            } catch (error) {
-                console.error('Error generating email:', error); // Error logging
-                alert('There was an error sharing the results. Please try again.');
-            }
-        }
-
-        function generateEmailSubject(overallPercentage) {
-            const statusLevel = getStatusLevel(overallPercentage);
-            return `${statusLevel} Organizational Health Results: See How We Scored`;
-        }
-
-        function generateEmailContent(overallPercentage, scores) {
-            try {
-                // Map scores to categories
-                const scoreData = scores.map((score, index) => ({
-                    score: score,
-                    category: getCategoryName(index)
-                }));
-                
-                // Find top strength and biggest opportunity
-                const topStrength = scoreData.reduce((max, item) => 
-                    item.score > max.score ? item : max, scoreData[0]);
-                const biggestOpportunity = scoreData.reduce((min, item) => 
-                    item.score < min.score ? item : min, scoreData[0]);
-
-                const statusLevel = getStatusLevel(overallPercentage);
-                const summary = getStatusSummary(overallPercentage);
-                
-                // Get user's name safely
-                const nameElement = document.getElementById('name');
-                const userName = nameElement ? nameElement.value : 'Team Member';
-
-                return `Team,
-
-I recently completed the Organizational Health Snapshot™ powered by The Culture MRI®, and I'm sharing the insights it uncovered.
-
-Our Organizational Health Score is ${overallPercentage}%, placing us in the ${statusLevel} category. According to The Culture MRI®, this highlights the need for ${getStatusContext(overallPercentage)}.
-
-What does this mean?
-	•	${summary}
-	•	${getStatusImplication(overallPercentage)}
-
-Breakdown of Key Areas:
-	•	Top Strength: ${topStrength.category} (${topStrength.score}%)
-	•	Biggest Opportunity: ${biggestOpportunity.category} (${biggestOpportunity.score}%)
-
-Why does this matter?
-The Snapshot measures how effectively our organization meets employee needs—insights that directly correlate to engagement, satisfaction, and productivity. This data provides a starting point for conversations about improvement, with the potential to help every team member thrive.
-
-If you'd like to explore what these findings mean for us or discuss next steps, you can visit The Culture MRI® website.
-
-Thank you for taking the time to consider these insights.
-
-${userName}`;
-            } catch (error) {
-                console.error('Error in generateEmailContent:', error);
-                throw error;
-            }
-        }
-
-        function getStatusLevel(percentage) {
-            if (percentage <= 50) {
-                return 'Critical Condition';
-            } else if (percentage <= 84) {
-                return 'At Risk';
-            } else {
-                return 'Strong but Needing Growth';
-            }
-        }
-
-        function getStatusSummary(percentage) {
-            if (percentage <= 50) {
-                return 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and overall performance';
-            } else if (percentage <= 84) {
-                return 'Taking action in these areas can enhance team alignment and create stronger engagement across the organization';
-            } else {
-                return 'Building on these strengths can help us achieve even higher levels of performance and engagement';
-            }
-        }
-
-        function getCategoryName(index) {
-            const categories = [
-                "Understanding Cultural Costs",
-                "HR Metrics and Profit Impact",
-                "Mission, Vision, and Values in Action",
-                "Managing Employee Turnover Costs",
-                "Ensuring ROI for Cultural Initiatives",
-                "Post-COVID Workplace Changes",
-                "Budgeting for Cultural Costs",
-                "Measuring and Driving Engagement",
-                "Aligning Brand and Internal Culture",
-                "Operations and Culture Interconnection"
-            ];
-            return categories[index];
-        }
-
-        // Add these helper functions for the new content
-        function getStatusContext(percentage) {
-            if (percentage <= 50) {
-                return "urgent attention to improve alignment, engagement, and overall performance";
-            } else if (percentage <= 84) {
-                return "focused attention on strengthening our cultural foundations and performance";
-            } else {
-                return "continued refinement to maintain and build upon our strong foundation";
-            }
-        }
-
-        function getStatusImplication(percentage) {
-            if (percentage <= 50) {
-                return "Addressing these areas could strengthen how we work together and create meaningful improvements for our entire team.";
-            } else if (percentage <= 84) {
-                return "Taking action in these areas can enhance team alignment and create stronger engagement across the organization.";
-            } else {
-                return "Building on these strengths can help us achieve even higher levels of performance and engagement.";
-            }
-        }
-
-        // Add this new function to handle returning to the form
-        function returnToForm() {
-            // Restore the original form HTML
-            const container = document.querySelector('.container');
-            container.innerHTML = originalFormHTML;
-            
-            // Reinitialize the form
-            initializeForm();
-            
-            // Scroll back to top
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        function generateScoreBreakdown(scores) {
-            const descriptions = [
-                {
-                    title: "Ensuring ROI for Cultural Initiatives",
-                    desc: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
-                },
-                {
-                    title: "Budgeting for Cultural Costs",
-                    desc: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
-                },
-                {
-                    title: "Operations and Culture Interconnection",
-                    desc: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
-                },
-                {
-                    title: "Managing Employee Turnover Costs",
-                    desc: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
-                },
-                {
-                    title: "Post-COVID Workplace Changes",
-                    desc: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
-                },
-                {
-                    title: "Measuring and Driving Engagement",
-                    desc: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
-                },
-                {
-                    title: "Aligning Brand and Internal Culture",
-                    desc: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
-                },
-                {
-                    title: "Mission, Vision, and Values in Action",
-                    desc: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
-                },
-                {
-                    title: "Understanding Cultural Costs",
-                    desc: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
-                },
-                {
-                    title: "HR Metrics and Profit Impact",
-                    desc: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
-                }
-            ];
-
-            // Convert scores to percentages and pair with their descriptions
-            const scoreData = scores.map((score, index) => ({
-                score: calculateScores.toPercentage(score),
-                title: descriptions[index].title,
-                description: descriptions[index].desc
-            }));
-
-            // Sort by score ascending (worst to best)
-            scoreData.sort((a, b) => a.score - b.score);
-
-            // Add the header
-            let html = '<h3 style="margin: 2rem 0 1rem;">Detailed Breakdown</h3>';
-
-            // Generate HTML for each score
-            return html + scoreData.map(data => `
-                <div class="score-section" style="margin-bottom: 2rem;">
-                    <div style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        margin-bottom: 0.5rem;">
-                        <h4 style="
-                            margin: 0;
-                            color: #173248;
-                            font-size: 16px;
-                            font-weight: 600;">${data.title}</h4>
-                        <span style="
-                            font-size: 16px;
-                            font-weight: 700;
-                            color: #173248;">${data.score}%</span>
-                    </div>
+                    // Basic PDF Content
+                    doc.setFontSize(20);
+                    doc.text('Organizational Health Snapshot™ Results', 20, 20);
                     
-                    <div style="
-                        width: 100%;
-                        height: 20px;
-                        background-color: #E5E5E5;
-                        border-radius: 10px;
-                        overflow: hidden;
-                        margin-bottom: 0.5rem;">
-                        <div style="
-                            width: ${data.score}%;
-                            height: 100%;
-                            background-color: ${getScoreColor(data.score)};
-                            transition: width 1s ease-in-out;
-                            border-radius: 10px;">
-                        </div>
-                    </div>
+                    doc.setFontSize(14);
+                    doc.text(`Overall Score: ${overallPercentage}%`, 20, 40);
+                    doc.text(`Generated for: ${userName}`, 20, 50);
                     
-                    <p style="
-                        margin: 0;
-                        color: #666;
-                        font-size: 14px;
-                        line-height: 1.4;">${data.description}</p>
-                </div>
-            `).join('');
-        }
+                    // Add score breakdown
+                    doc.setFontSize(12);
+                    let yPos = 70;
+                    
+                    const categories = [
+                        "Understanding Cultural Costs",
+                        "HR Metrics and Profit Impact",
+                        "Mission, Vision, and Values in Action",
+                        "Managing Employee Turnover Costs",
+                        "Ensuring ROI for Cultural Initiatives",
+                        "Post-COVID Workplace Changes",
+                        "Budgeting for Cultural Costs",
+                        "Measuring and Driving Engagement",
+                        "Aligning Brand and Internal Culture",
+                        "Operations and Culture Interconnection"
+                    ];
 
-        function getScoreColor(score) {
-            if (score <= 50) return '#ED5C5C';  // Red
-            if (score <= 84) return '#5EBD77';  // Green
-            return '#5EBD77';  // Green
-        }
+                    scores.forEach((score, index) => {
+                        if (yPos > 250) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        doc.text(`${categories[index]}: ${score}%`, 20, yPos);
+                        yPos += 10;
+                    });
+                    
+                    // Add footer
+                    doc.setFontSize(10);
+                    doc.text('Generated by The Culture MRI®', 20, 280);
+                    
+                    // Save the PDF
+                    const fileName = `Culture_Snapshot_Results_${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    
+                    console.log('PDF generated successfully');
+                    
+                } catch (error) {
+                    console.error('Error details:', error); // More detailed error logging
+                    alert('There was an error generating the PDF. Please check the console for details.');
+                }
+            }
 
-        // Add this function to store results before navigation
-        function storeResultsAndNavigate(url) {
-            // Store current results data
-            const resultsData = {
-                scores: scores,
-                formData: {
-                    name: document.getElementById('name').value,
-                    company: document.getElementById('company').value,
-                    email: document.getElementById('email').value,
-                    role: document.getElementById('role').value
-                },
-                timestamp: new Date().getTime()
-            };
-            
-            localStorage.setItem('cultureMRIResults', JSON.stringify(resultsData));
-            
-            // Navigate to the demo page - ensure this URL is correct
-            window.location.href = 'https://theculturemri.com/schedule-a-demo';
-        }
-
-        // Update all demo link clicks to use the new function
-        function updateDemoLinks() {
-            document.querySelectorAll('a[href*="schedule-a-demo"]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    storeResultsAndNavigate('https://theculturemri.com/schedule-a-demo');
-                });
+            // Add this to your DOMContentLoaded event listener
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add jsPDF library
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script.onload = function() {
+                    console.log('jsPDF loaded successfully');
+                };
+                script.onerror = function() {
+                    console.error('Failed to load jsPDF');
+                };
+                document.head.appendChild(script);
             });
-        }
+        </script>
+    </body>
+    </html>
 
-        // Add event listeners to remove error styling when user starts filling in fields
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.form-group input');
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    this.style.borderColor = '';
-                    this.parentElement.classList.remove('unanswered');
-                });
-            });
-        });
-    </script>
-</body>
-</html>
