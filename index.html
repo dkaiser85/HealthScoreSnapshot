@@ -1500,6 +1500,20 @@
             
             // Create results HTML
             createResultsPage(scores);
+
+            // Force scroll to top with smooth animation
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            // If embedded, also scroll the parent window
+            if (window.parent !== window) {
+                window.parent.scrollTo({
+                    top: window.frameElement.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         // Update submitToGoogleSheet function
