@@ -77,9 +77,10 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 1rem;
-            padding: 0 2rem;
+            padding: 0;
             color: var(--primary-color);
             font-weight: 500;
+            font-size: 12px;
         }
 
         .question-group {
@@ -129,13 +130,14 @@
             transition: all 0.2s ease-in-out;
             position: relative;
             font-family: 'Inter', sans-serif;
+            transform: none;
         }
 
         .rating-button:hover {
             background-color: var(--primary-color-light);
             border-color: var(--primary-color);
-            transform: scale(1.05);
-            box-shadow: 0 2px 4px rgba(91, 95, 199, 0.2);
+            transform: none;
+            box-shadow: none;
         }
 
         .rating-button.selected {
@@ -170,6 +172,8 @@
         header {
             text-align: center;
             margin-bottom: 2rem;
+            position: relative;
+            padding-top: 40px;
         }
 
         header h1 {
@@ -1766,4 +1770,3 @@
     </script>
 </body>
 </html>
-
