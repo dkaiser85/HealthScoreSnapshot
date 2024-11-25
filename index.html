@@ -1875,32 +1875,57 @@
 
         // Update submitToGoogleSheet function
         function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbwzSmZTxE8qqmRSPCQ_sM2jyImpNuOpx0RFbn1VEKlItMW9PC2wQNiviHpxhEktz1PO/exec';
+            const scriptUrl = 'YOUR_SCRIPT_URL_HERE';
             
-            // Get the comments from textareas
-            const q1Comments = document.querySelector('.question-block:nth-child(1) textarea').value;
-            const q2Comments = document.querySelector('.question-block:nth-child(2) textarea').value;
-            
+            // Get all the open questions data
+            const q1Inputs = Array.from(document.querySelector('.question-block:nth-child(1)').querySelectorAll('input')).map(input => input.value.trim());
+            const q2Inputs = Array.from(document.querySelector('.question-block:nth-child(2)').querySelectorAll('input')).map(input => input.value.trim());
+            const q1Comments = document.querySelector('.question-block:nth-child(1) textarea').value.trim();
+            const q2Comments = document.querySelector('.question-block:nth-child(2) textarea').value.trim();
+            const q3Response = document.querySelector('.question-block:nth-child(3) textarea').value.trim();
+
+            // Get all rating questions
+            const ratingScores = Array.from(document.querySelectorAll('.question-item')).map(item => {
+                const selectedButton = item.querySelector('.rating-button.selected');
+                return selectedButton ? parseInt(selectedButton.dataset.value) : '';
+            });
+
             const formattedData = {
-                timestamp: new Date().toISOString(),
                 name: data.name,
                 company: data.company,
                 email: data.email,
                 role: data.role,
                 
-                openQuestions: {
-                    success: data.openQuestions.success,
-                    successComments: q1Comments,
-                    barriers: data.openQuestions.barriers,
-                    barriersComments: q2Comments,
-                    additional: data.openQuestions.additional
-                },
+                // Q1 responses (What does success look like?)
+                'Q1: 1': q1Inputs[0],
+                'Q1: 2': q1Inputs[1],
+                'Q1: 3': q1Inputs[2],
+                'Q1: Comments': q1Comments,
                 
-                scores: data.scores,
-                averageScore: data.averageScore,
+                // Q2 responses (What's currently preventing you?)
+                'Q2: 1': q2Inputs[0],
+                'Q2: 2': q2Inputs[1],
+                'Q2: 3': q2Inputs[2],
+                'Q2: Comments': q2Comments,
                 
-                Source: window.location.href,
-                Referrer: document.referrer || 'CMRI'
+                // Q3 response
+                'Q3': q3Response,
+                
+                // Rating questions
+                'Rating Q1': ratingScores[0],
+                'Rating Q2': ratingScores[1],
+                'Rating Q3': ratingScores[2],
+                'Rating Q4': ratingScores[3],
+                'Rating Q5': ratingScores[4],
+                'Rating Q6': ratingScores[5],
+                'Rating Q7': ratingScores[6],
+                'Rating Q8': ratingScores[7],
+                'Rating Q9': ratingScores[8],
+                'Rating Q10': ratingScores[9],
+                
+                'Average Score': data.averageScore,
+                'Source': window.location.href,
+                'Referrer': document.referrer || 'CMRI'
             };
             
             console.log('Submitting data:', formattedData); // Debug log
