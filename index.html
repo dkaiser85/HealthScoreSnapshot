@@ -390,7 +390,6 @@
             padding: 2rem;
             max-width: 800px;
             margin: 0 auto;
-            z-index: 1;
         }
 
         /* Clean 270-degree Gauge Styles */
@@ -735,33 +734,28 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 28px;
-            font-weight: 300;
-            color: #666;
-            cursor: pointer;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: all 0.2s ease;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
             border: none;
-            padding: 0;
+            background: white;
+            color: #666;
+            font-size: 28px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .close-button:hover {
-            background: rgba(0,0,0,0.05);
+            background: #f5f5f5;
             color: #333;
-            transform: scale(1.1);
         }
 
         .results-container {
             position: relative;
-            z-index: 1;
         }
 
         .options-popup {
@@ -771,13 +765,18 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            display: flex;
+            display: none;
             align-items: flex-start;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1000;
             padding-top: 5vh;
+        }
+
+        .options-popup.active {
+            display: flex;
+            opacity: 1;
         }
 
         .popup-content {
@@ -1544,7 +1543,7 @@
                                 <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
+                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
                             </div>
                             <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
                         </div>
@@ -1567,21 +1566,16 @@
 
             // Add this block after setting innerHTML
             setTimeout(() => {
-                // Scroll to top
+                // Force scroll to absolute top of page
                 window.scrollTo({
                     top: 0,
+                    left: 0,
                     behavior: 'smooth'
                 });
                 
-                // Backup scroll to element
-                document.querySelector('.results-container').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-
-                // Animate the gauge with the actual percentage
-                updateRadialGauge(overallPercentage);
-            }, 100); // Increased timeout to ensure DOM is ready
+                // Show the options popup after scrolling
+                // showOptionsPopup();
+            }, 100);
 
             console.log('Form Data:', formData);
             console.log('Scores:', scores);
@@ -1739,6 +1733,7 @@
             const popup = document.getElementById('optionsPopup');
             popup.style.display = 'flex';
             popup.style.opacity = '1';
+            window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
@@ -1747,14 +1742,21 @@
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
+            window.history.back();
         }
 
-        // Add click outside to close functionality
-        document.addEventListener('click', function(event) {
-            const popup = document.getElementById('optionsPopup');
-            const popupContent = document.querySelector('.popup-content');
-            if (event.target === popup) {
-                hideOptionsPopup();
+        // Add popstate event listener after the existing event listeners
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.showPopup) {
+                showOptionsPopup();
+            } else {
+                const popup = document.getElementById('optionsPopup');
+                if (popup) {
+                    popup.style.opacity = '0';
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                    }, 300);
+                }
             }
         });
 
