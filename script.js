@@ -109,8 +109,58 @@ function getScoreMessage(percentage) {
 
 // Form Handling
 function handleFormSubmit() {
-    // ... Your existing handleFormSubmit code
+    // Get all questions
+    const questionItems = document.querySelectorAll('.question-item');
+    let scores = [];
+    let unanswered = false;
+
+    // Check each question
+    questionItems.forEach((item) => {
+        const selectedButton = item.querySelector('.rating-button.selected');
+        if (!selectedButton) {
+            item.classList.add('unanswered');
+            unanswered = true;
+        } else {
+            scores.push(parseInt(selectedButton.textContent));
+        }
+    });
+
+    // If there are unanswered questions, stop here
+    if (unanswered) {
+        alert('Please answer all questions before submitting.');
+        return;
+    }
+
+    // Calculate overall score
+    const overallScore = calculateScores.getOverallScore(scores);
+    const percentageScore = calculateScores.toPercentage(overallScore);
+
+    // Hide the form
+    const formContainer = document.querySelector('.container');
+    formContainer.style.display = 'none';
+
+    // Show the results
+    const resultsContainer = document.querySelector('.results-container');
+    resultsContainer.style.display = 'block';
+
+    // Update the gauge
+    updateRadialGauge(percentageScore);
+
+    // Update the message
+    const messageContainer = document.querySelector('.results-message');
+    messageContainer.innerHTML = getScoreMessage(percentageScore);
 }
+
+// Add event listener to the submit button
+document.addEventListener('DOMContentLoaded', function() {
+    const submitButton = document.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleFormSubmit();
+        });
+    }
+});
 
 // Sharing Functions
 function shareResults() {
