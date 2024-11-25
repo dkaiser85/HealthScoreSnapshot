@@ -228,7 +228,6 @@ function shareViaEmail() {
     const body = encodeURIComponent(`Check out my Organizational Health Snapshot™ results!\n\nOverall Score: ${document.getElementById('engagementText').textContent}\nDate: ${new Date().toLocaleDateString()}\n\nView the full report: ${window.location.href}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
-
 function shareViaLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
         const message = document.createElement('div');
@@ -241,21 +240,28 @@ function shareViaLink() {
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    // Create questions
+    // Add questions to the page
     const questionGroup = document.querySelector('.question-group');
     questions.forEach((question, index) => {
-        const questionElement = createQuestionElement(question, index);
-        questionGroup.appendChild(questionElement);
+        questionGroup.innerHTML += `
+            <div class="question-item">
+                <div class="question-text">
+                    <span class="question-number">Q${index + 1}.</span> ${question.text}
+                </div>
+                <div class="rating-scale">
+                    ${[1,2,3,4,5,6,7,8,9,10].map(num => 
+                        `<button type="button" class="rating-button" onclick="selectRating(this)">${num}</button>`
+                    ).join('')}
+                </div>
+            </div>
+        `;
     });
 
-    // Add form submit handler
-    const form = document.getElementById('cultureForm');
-    if (form) {
-        console.log('Form found, adding submit listener');
-        form.addEventListener('submit', handleFormSubmit);
-    } else {
-        console.error('Form not found!');
-    }
+    // Add click handler to the submit button
+    document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        showResults();
+    });
 });
 
 // Popup Management
@@ -287,3 +293,47 @@ window.addEventListener('popstate', function(event) {
         }
     }
 });
+
+// Add these new functions
+function selectRating(button) {
+    // Remove selected class from all siblings
+    const parent = button.parentElement;
+    parent.querySelectorAll('.rating-button').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    // Add selected class to clicked button
+    button.classList.add('selected');
+}
+
+function showResults() {
+    const container = document.querySelector('.container');
+    
+    // Create results HTML
+    container.innerHTML = `
+        <div class="results-container">
+            <h2>Your Organizational Health Snapshot™ Results</h2>
+            <div class="gauge">
+                <svg width="195" height="195" viewBox="0 0 195 195">
+                    <path class="gauge__background" 
+                          d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                          stroke-width="15"
+                          transform="rotate(0, 97.5, 97.5)" />
+                    <path class="gauge__fill" 
+                          d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                          stroke-width="15"
+                          transform="rotate(0, 97.5, 97.5)" />
+                    <text x="97.5" y="115" 
+                          text-anchor="middle" 
+                          font-size="31px" 
+                          font-weight="700"
+                          fill="#173248" 
+                          id="engagementText">75%</text>
+                </svg>
+            </div>
+            <div class="score-message">
+                <h3>Your Organization's Health Status</h3>
+                <p>Based on your responses, your organization shows strong potential with room for strategic improvements.</p>
+            </div>
+        </div>
+    `;
+}
