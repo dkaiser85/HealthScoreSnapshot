@@ -411,7 +411,7 @@
             fill: none;
             stroke-width: 15;
             stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease;
+            transition: stroke-dashoffset 1s ease-in-out;
         }
 
         /* Add status text below percentage */
@@ -1203,35 +1203,24 @@
             const fillElement = document.getElementById('engagementFill');
             const textElement = document.getElementById('engagementText');
             
-            if (!fillElement || !textElement) {
-                console.error('Gauge elements not found');
-                return;
-            }
-            
-            // Calculate the stroke color based on percentage
+            // Set the fill color based on score
             let strokeColor;
             if (percentage <= 50) {
-                strokeColor = '#ED5C5C'; // Red
+                strokeColor = '#ED5C5C';
             } else if (percentage <= 84) {
-                strokeColor = '#DFD691'; // Yellow
+                strokeColor = '#DFD691';
             } else {
-                strokeColor = '#5EBD77'; // Green
+                strokeColor = '#5EBD77';
             }
-            
-            // Update the fill color
-            fillElement.setAttribute('stroke', strokeColor);
-            
-            // Calculate the dash offset for 270 degrees arc
-            const pathLength = 367.566;
-            const maxPercent = 270 / 360; // Use 270 degrees instead of full circle
-            const percentageAdjusted = (percentage / 100) * maxPercent;
-            const dashArray = `${pathLength * percentageAdjusted} ${pathLength}`;
-            
-            // Set the dash array
-            fillElement.style.strokeDasharray = dashArray;
+
+            // Update the gauge
+            fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
+            fillElement.style.stroke = strokeColor;
+            fillElement.style.strokeDasharray = '367.566';
+            fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
             
             // Update the text
-            textElement.textContent = `${Math.round(percentage)}%`;
+            textElement.textContent = `${percentage}%`;
         }
 
         // Update the createResultsPage function to use this
@@ -1246,10 +1235,9 @@
             
             const resultsHTML = `
                 <div class="results-container">
-                    <div class="close-button" onclick="showOptionsPopup()">×</div>
+                    <div class="close-button" onclick="returnToForm()">×</div>
                     
                     <div class="overall-score">
-                        <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
                             <svg width="195" height="195" viewBox="0 0 195 195">
                                 <path class="gauge__background" 
@@ -1266,22 +1254,16 @@
                                       font-size="31px" 
                                       font-weight="700"
                                       fill="#173248" 
-                                      id="engagementText">0%</text>
+                                      id="engagementText">${overallPercentage}%</text>
                             </svg>
-                        </div>
-                        
-                        <!-- Add conditional message -->
-                        <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                            ${getScoreMessage(overallPercentage)}
                         </div>
                     </div>
                     
                     <!-- Add CTA section after the gauge -->
                     <div class="cta-section">
-                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
-                        <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
+                        <h3>Your Health Snapshot Is Just the Beginning</h3>
+                        <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
                         <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
                     <!-- Rest of your results page content -->
@@ -1316,8 +1298,8 @@
                     
                     <!-- Add another CTA at the bottom -->
                     <div class="cta-section bottom">
-                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                        <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <h3>Your Health Snapshot Is Just the Beginning</h3>
+                        <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
                         <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
 
@@ -1365,6 +1347,26 @@
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             originalFormHTML = document.querySelector('.container').innerHTML;
+            
+            // Check for stored results
+            const storedResults = localStorage.getItem('cultureMRIResults');
+            if (storedResults) {
+                const resultsData = JSON.parse(storedResults);
+                
+                // Check if results are less than 30 minutes old
+                const thirtyMinutes = 30 * 60 * 1000;
+                if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
+                    // Restore the results
+                    scores = resultsData.scores;
+                    Object.assign(formData, resultsData.formData);
+                    createResultsPage(scores);
+                    updateDemoLinks();
+                } else {
+                    // Clear old results
+                    localStorage.removeItem('cultureMRIResults');
+                }
+            }
+            
             initializeForm();
         });
 
@@ -1411,7 +1413,6 @@
 
             // Get affiliate code first
             const affiliateCode = getAffiliateCode();
-            console.log('Using affiliate code:', affiliateCode); // Debug log
             
             // Collect initial form data
             let formData = {
@@ -1419,26 +1420,38 @@
                 company: document.getElementById('company').value,
                 email: document.getElementById('email').value,
                 role: document.getElementById('role').value,
-                affiliateCode: affiliateCode // Set affiliate code here
+                affiliateCode: affiliateCode
             };
 
-            // Collect all scores
+            // Validate required fields
+            if (!formData.name || !formData.company || !formData.email || !formData.role) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Collect all scores and mark unanswered questions
             const scores = [];
             const questionItems = document.querySelectorAll('.question-item');
             let unansweredQuestions = [];
             
             questionItems.forEach((item, index) => {
                 const selected = item.querySelector('.rating-button.selected');
-                if (selected) {
-                    scores.push(parseInt(selected.textContent));
-                } else {
+                if (!selected) {
                     unansweredQuestions.push(index + 1);
                     item.classList.add('unanswered');
                     if (unansweredQuestions.length === 1) {
                         item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
+                } else {
+                    scores.push(parseInt(selected.textContent));
                 }
             });
+
+            // Stop if there are unanswered questions
+            if (unansweredQuestions.length > 0) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
 
             // Calculate overall percentage
             const overallPercentage = Math.round(
@@ -1447,15 +1460,13 @@
                 )
             );
 
-            // Update form data with all fields
+            // Update form data with scores
             formData = {
                 ...formData,
                 scores: scores,
                 overallScore: overallPercentage,
                 submissionDate: new Date().toISOString()
             };
-
-            console.log('Final Form Data:', formData); // Debug log
 
             // Submit to Google Sheet
             submitToGoogleSheet(formData);
@@ -1464,21 +1475,27 @@
             const container = document.querySelector('.container');
             container.innerHTML = `
                 <div class="results-container">
-                    <div class="close-button" onclick="showOptionsPopup()">×</div>
+                    <div class="close-button" onclick="returnToForm()">×</div>
+                    
+                    <h2 style="text-align: center; margin-bottom: 2rem; color: #173248; font-family: 'Inter', sans-serif;">Organizational Health Snapshot™ Results</h2>
                     
                     <div class="overall-score">
-                        <h2>Your Organizational Health Snapshot™ Results</h2>
                         <div class="gauge">
                             <svg width="195" height="195" viewBox="0 0 195 195">
                                 <path class="gauge__background" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5"
+                                      stroke="#f0f0f0"
                                       stroke-width="15"
-                                      transform="rotate(0, 97.5, 97.5)" />
+                                      fill="none"
+                                      stroke-linecap="round" />
                                 <path class="gauge__fill" 
                                       id="engagementFill" 
-                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5"
                                       stroke-width="15"
-                                      transform="rotate(0, 97.5, 97.5)" />
+                                      fill="none"
+                                      stroke-linecap="round"
+                                      stroke-dasharray="367.566"
+                                      stroke-dashoffset="367.566" />
                                 <text x="97.5" y="115" 
                                       text-anchor="middle" 
                                       font-size="31px" 
@@ -1487,99 +1504,40 @@
                                       id="engagementText">0%</text>
                             </svg>
                         </div>
-                        
-                        <!-- Add conditional message -->
-                        <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
-                            ${getScoreMessage(overallPercentage)}
-                        </div>
-                    </div>
-                    
-                    <div class="cta-section">
-                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
-                        <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
                     </div>
 
-                    <div class="individual-scores">
-                        <h3>Detailed Breakdown</h3>
-                        ${scores
-                            // Create array of objects with score and question info
-                            .map((score, index) => ({
-                                score: score,
-                                percentage: Math.round(calculateScores.toPercentage(score)),
-                                title: questions[index].title,
-                                description: questions[index].description
-                            }))
-                            // Sort from lowest to highest score
-                            .sort((a, b) => a.percentage - b.percentage)
-                            // Generate HTML for each score
-                            .map(item => {
-                                const color = calculateScores.getColor(item.percentage);
-                                return `
-                                    <div class="score-section">
-                                        <div class="score-header">
-                                            <h4>${item.title}</h4>
-                                            <span class="score-value">${item.percentage}%</span>
-                                        </div>
-                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
-                                        </div>
-                                        <p class="score-description">${item.description}</p>
-                                    </div>
-                                `;
-                            }).join('')}
+                    <div class="score-message" style="margin-top: 2rem;">
+                        ${getScoreMessage(overallPercentage)}
                     </div>
-                    
-                    <div class="cta-section bottom">
-                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                        <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+
+                    <div class="score-breakdown">
+                        ${generateScoreBreakdown(scores)}
+                    </div>
+
+                    <div class="cta-section" style="margin-top: 2rem; text-align: center;">
+                        <h3>Your Health Snapshot Is Just the Beginning  </h3>
+                        <p>With the full Culture MRI®, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
                         <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
                     </div>
 
-                    <div id="optionsPopup" class="options-popup">
-                        <div class="popup-content">
-                            <h3>What would you like to do next?</h3>
-                            <div class="popup-options">
-                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
-                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
-                                <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
-                            </div>
-                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
-                        </div>
-                    </div>
-
-                    <!-- Add share section at bottom -->
-                    <div class="share-section bottom">
-                        <p>Found these insights valuable? Share them with your team:</p>
-                        <button onclick="shareResults()" class="share-button">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                                <polyline points="16 6 12 2 8 6"></polyline>
-                                <line x1="12" y1="2" x2="12" y2="15"></line>
-                            </svg>
-                            Share Results
-                        </button>
+                    <div class="share-section" style="margin-top: 2rem; text-align: center;">
+                        ${createShareButton(overallPercentage, scores)}
                     </div>
                 </div>
             `;
 
             // Add this block after setting innerHTML
             setTimeout(() => {
-                // Force scroll to absolute top of page
                 window.scrollTo({
                     top: 0,
-                    left: 0,
                     behavior: 'smooth'
                 });
-                
-                // Show the options popup after scrolling
-                // showOptionsPopup();
+
+                updateRadialGauge(overallPercentage);
             }, 100);
 
-            console.log('Form Data:', formData);
-            console.log('Scores:', scores);
-            console.log('Overall Percentage:', overallPercentage);
+            // After creating results HTML, add:
+            updateDemoLinks();
         }
 
         // Update submitToGoogleSheet function
@@ -1806,16 +1764,77 @@
             setTimeout(() => sharePopup.classList.add('active'), 10);
         }
 
+        function generateEmailContent(overallPercentage, scores) {
+            // Get highest and lowest scoring categories
+            const scoreData = scores.map((score, index) => ({
+                score: calculateScores.toPercentage(score),
+                category: getCategoryName(index)
+            }));
+            
+            const topStrength = scoreData.reduce((max, item) => 
+                item.score > max.score ? item : max, scoreData[0]);
+            const biggestOpportunity = scoreData.reduce((min, item) => 
+                item.score < min.score ? item : min, scoreData[0]);
+
+            // Get status and summary based on overall score
+            const status = getStatus(overallPercentage);
+            const summary = getStatusSummary(overallPercentage);
+
+            return `Hi Team,
+
+I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
+
+Our Organizational Health Score is ${overallPercentage}%, which falls into the ${status} category.
+
+Here's what it means:
+• ${summary}
+
+Breakdown of Key Areas:
+• Top Strength: ${topStrength.category} (${topStrength.score}%)
+• Biggest Opportunity: ${biggestOpportunity.category} (${biggestOpportunity.score}%)
+
+Why Does This Matter?
+The Snapshot reveals how well we're meeting employee needs, which directly impacts engagement and performance. This can spark a conversation about making improvements that help everyone thrive.
+
+Want to explore what these scores mean for our team? Visit: https://theculturemri.com/schedule-a-demo
+
+Best regards,
+${document.getElementById('name').value}`;
+        }
+
+        function getCategoryName(index) {
+            const categories = [
+                "Ensuring ROI for Cultural Initiatives",
+                "Budgeting for Cultural Costs",
+                "Operations and Culture Interconnection",
+                "Managing Employee Turnover Costs",
+                "Post-COVID Workplace Changes",
+                "Measuring and Driving Engagement",
+                "Aligning Brand and Internal Culture",
+                "Mission, Vision, and Values in Action",
+                "Understanding Cultural Costs",
+                "HR Metrics and Profit Impact"
+            ];
+            return categories[index];
+        }
+
+        function getStatusSummary(percentage) {
+            if (percentage <= 50) {
+                return "Critical Condition: These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.";
+            } else if (percentage <= 84) {
+                return "At Risk: While some systems are stable, there are important gaps in meeting employee needs and optimizing performance. Addressing these areas can create stronger alignment and engagement.";
+            } else {
+                return "Strong Position: Many systems are functioning well, but there are still opportunities to push productivity and profitability even higher by refining our approach.";
+            }
+        }
+
+        // Update the shareViaEmail function to use this template
         function shareViaEmail() {
-            const subject = encodeURIComponent('My Organizational Health Snapshot™ Results');
-            const body = encodeURIComponent(`
-                Check out my Organizational Health Snapshot™ results!
-                
-                Overall Score: ${document.getElementById('engagementText').textContent}
-                Date: ${new Date().toLocaleDateString()}
-                
-                View the full report: ${window.location.href}
-            `);
+            const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
+            const emailContent = generateEmailContent(overallPercentage, scores);
+            
+            const subject = encodeURIComponent('Our Organizational Health Snapshot™ Results');
+            const body = encodeURIComponent(emailContent);
             
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
@@ -1837,6 +1856,159 @@
             const popup = document.querySelector('.share-popup');
             popup.classList.remove('active');
             setTimeout(() => popup.remove(), 300);
+        }
+
+        // Add this new function to handle returning to the form
+        function returnToForm() {
+            // Restore the original form HTML
+            const container = document.querySelector('.container');
+            container.innerHTML = originalFormHTML;
+            
+            // Reinitialize the form
+            initializeForm();
+            
+            // Scroll back to top
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function generateScoreBreakdown(scores) {
+            const descriptions = [
+                {
+                    title: "Ensuring ROI for Cultural Initiatives",
+                    desc: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to return on investment."
+                },
+                {
+                    title: "Budgeting for Cultural Costs",
+                    desc: "Looks at how well your organization incorporates cultural costs and related data into its budgeting and financial planning processes."
+                },
+                {
+                    title: "Operations and Culture Interconnection",
+                    desc: "Explores how well your organization understands and addresses the relationship between operational challenges and their cultural impact."
+                },
+                {
+                    title: "Managing Employee Turnover Costs",
+                    desc: "Reviews your organization's strategies for maximizing efforts and processes to minimize the total costs associated with employee turnover."
+                },
+                {
+                    title: "Post-COVID Workplace Changes",
+                    desc: "Analyzes how effectively your organization has managed cultural and operational changes following the impact of the COVID-19 pandemic."
+                },
+                {
+                    title: "Measuring and Driving Engagement",
+                    desc: "Evaluates the systems and processes your organization uses to track, measure, and improve employee engagement and performance."
+                },
+                {
+                    title: "Aligning Brand and Internal Culture",
+                    desc: "Examines the alignment between your organization's external brand messaging and the internal culture experienced by employees."
+                },
+                {
+                    title: "Mission, Vision, and Values in Action",
+                    desc: "Examines how well your organization translates its mission, vision, and values into actionable behaviors and decisions across the organization."
+                },
+                {
+                    title: "Understanding Cultural Costs",
+                    desc: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture, including what drives those costs and how to minimize them effectively."
+                },
+                {
+                    title: "HR Metrics and Profit Impact",
+                    desc: "Assesses how effectively your organization measures the profit impact of HR activities, such as performance management, coaching, and reviews."
+                }
+            ];
+
+            // Convert scores to percentages and pair with their descriptions
+            const scoreData = scores.map((score, index) => ({
+                score: calculateScores.toPercentage(score),
+                title: descriptions[index].title,
+                description: descriptions[index].desc
+            }));
+
+            // Sort by score ascending (worst to best)
+            scoreData.sort((a, b) => a.score - b.score);
+
+            // Add the header
+            let html = '<h3 style="margin: 2rem 0 1rem;">Detailed Breakdown</h3>';
+
+            // Generate HTML for each score
+            return html + scoreData.map(data => `
+                <div class="score-section" style="margin-bottom: 2rem;">
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 0.5rem;">
+                        <h4 style="
+                            margin: 0;
+                            color: #173248;
+                            font-size: 16px;
+                            font-weight: 600;">${data.title}</h4>
+                        <span style="
+                            font-size: 16px;
+                            font-weight: 700;
+                            color: #173248;">${data.score}%</span>
+                    </div>
+                    
+                    <div style="
+                        width: 100%;
+                        height: 20px;
+                        background-color: #E5E5E5;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        margin-bottom: 0.5rem;">
+                        <div style="
+                            width: ${data.score}%;
+                            height: 100%;
+                            background-color: ${getScoreColor(data.score)};
+                            transition: width 1s ease-in-out;
+                            border-radius: 10px;">
+                        </div>
+                    </div>
+                    
+                    <p style="
+                        margin: 0;
+                        color: #666;
+                        font-size: 14px;
+                        line-height: 1.4;">${data.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function getScoreColor(score) {
+            if (score <= 50) return '#ED5C5C';  // Red
+            if (score <= 84) return '#5EBD77';  // Green
+            return '#5EBD77';  // Green
+        }
+
+        // Add this function to store results before navigation
+        function storeResultsAndNavigate(url) {
+            // Store current results data
+            const resultsData = {
+                scores: scores,
+                formData: {
+                    name: document.getElementById('name').value,
+                    company: document.getElementById('company').value,
+                    email: document.getElementById('email').value,
+                    role: document.getElementById('role').value
+                },
+                timestamp: new Date().getTime()
+            };
+            
+            localStorage.setItem('cultureMRIResults', JSON.stringify(resultsData));
+            
+            // Navigate to the demo page - ensure this URL is correct
+            window.location.href = 'https://theculturemri.com/schedule-a-demo';
+        }
+
+        // Update all demo link clicks to use the new function
+        function updateDemoLinks() {
+            document.querySelectorAll('a[href*="schedule-a-demo"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    storeResultsAndNavigate('https://theculturemri.com/schedule-a-demo');
+                });
+            });
         }
     </script>
 </body>
