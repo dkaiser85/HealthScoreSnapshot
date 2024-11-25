@@ -1,17 +1,14 @@
-/* Root Variables */
 :root {
     --primary-color: #5B5FC7;
     --background-color: #f5f5f5;
     --primary-color-light: rgba(91, 95, 199, 0.1);
 }
 
-/* Base Styles */
 * {
     font-family: 'Inter', sans-serif;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 20px;
 }
@@ -80,7 +77,15 @@ header h1 {
     box-shadow: 0 0 0 2px rgba(91, 95, 199, 0.1);
 }
 
-/* Question Styles */
+/* Assessment Grid Styles */
+.instruction-text {
+    text-align: center;
+    margin: 2rem 0;
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+}
+
 .assessment-grid {
     margin-top: 2rem;
 }
@@ -157,11 +162,7 @@ header h1 {
     box-shadow: 0 2px 4px rgba(91, 95, 199, 0.3);
 }
 
-.rating-button:active {
-    transform: scale(0.95);
-}
-
-/* Submit Button */
+/* Submit Button Styles */
 button[type="submit"] {
     margin-top: 2rem;
     padding: 1rem 2rem;
@@ -178,85 +179,24 @@ button[type="submit"]:hover {
     opacity: 0.9;
 }
 
-/* Results Page Styles */
-.gauge {
-    position: relative;
-    width: 195px;
-    height: 195px;
-    margin: 2rem auto;
-}
-
-.gauge__background {
-    fill: none;
-    stroke: #f0f0f0;
-    stroke-width: 15;
-    stroke-linecap: round;
-}
-
-.gauge__fill {
-    fill: none;
-    stroke-width: 15;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 1s ease;
-}
-
-/* Share Section Styles */
-.share-section {
+/* Results Container Styles */
+.results-container {
+    display: none;
     text-align: center;
-    margin: 2rem 0;
-}
-
-.share-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: white;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.share-button:hover {
-    background-color: var(--primary-color);
-    color: white;
-    transform: translateY(-2px);
-}
-
-/* Popup Styles */
-.options-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1000;
-    padding-top: 5vh;
-}
-
-.popup-content {
-    background: white;
     padding: 2rem;
-    border-radius: 8px;
-    position: relative;
-    width: 90%;
-    max-width: 400px;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Media Queries */
+/* Responsive Styles */
 @media (max-width: 768px) {
+    body {
+        background-color: var(--background-color);
+    }
+
     .personal-info {
         grid-template-columns: 1fr;
     }
@@ -271,26 +211,12 @@ button[type="submit"]:hover {
 
     header h1 {
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo {
-        max-width: 180px;
-        margin: 0.5rem 0 1rem 0;
     }
 }
 
 @media (max-width: 320px) {
     .container {
         padding: 0.75rem;
-    }
-
-    header h1 {
-        font-size: 1.25rem;
-    }
-
-    .logo {
-        max-width: 150px;
     }
 
     .rating-scale {
@@ -300,43 +226,5 @@ button[type="submit"]:hover {
     .rating-button {
         padding: 1px;
         font-size: 11px;
-        border-radius: 2px;
     }
-}
-
-/* Animations */
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translate(-50%, 20px); }
-    15% { opacity: 1; transform: translate(-50%, 0); }
-    85% { opacity: 1; transform: translate(-50%, 0); }
-    100% { opacity: 0; transform: translate(-50%, -20px); }
-}
-
-.results-container {
-    display: none; /* Initially hidden */
-    text-align: center;
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.gauge__background {
-    fill: none;
-    stroke: #f0f0f0;
-    stroke-width: 15;
-}
-
-.gauge__fill {
-    fill: none;
-    stroke: #4CAF50;
-    stroke-width: 15;
-    transition: stroke-dashoffset 1s ease, stroke 1s ease;
-}
-
-.gauge__text {
-    font-size: 24px;
-    font-weight: bold;
 }
