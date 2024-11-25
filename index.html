@@ -1735,26 +1735,26 @@
         }
 
         function shareResults() {
-            // Get the overall percentage from the gauge
             const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
             
-            // Get all the scores from the score sections
             const scores = Array.from(document.querySelectorAll('.score-section')).map(section => {
                 const scoreValue = section.querySelector('.score-value').textContent;
                 return parseInt(scoreValue);
             });
 
-            // Generate and encode email content
             const emailContent = generateEmailContent(overallPercentage, scores);
-            const subject = encodeURIComponent('Our Organizational Health Snapshot™ Results');
+            const subject = encodeURIComponent(generateEmailSubject(overallPercentage));
             const body = encodeURIComponent(emailContent);
             
-            // Open default email client with pre-populated content
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
+        function generateEmailSubject(overallPercentage) {
+            const statusLevel = getStatusLevel(overallPercentage);
+            return `${statusLevel} Organizational Health Results: See How We Scored`;
+        }
+
         function generateEmailContent(overallPercentage, scores) {
-            // Get highest and lowest scoring categories
             const scoreData = scores.map((score, index) => ({
                 score: score,
                 category: getCategoryName(index)
@@ -1765,15 +1765,15 @@
             const biggestOpportunity = scoreData.reduce((min, item) => 
                 item.score < min.score ? item : min, scoreData[0]);
 
-            // Get status and summary based on overall score
-            const status = getStatus(overallPercentage);
+            const statusLevel = getStatusLevel(overallPercentage);
             const summary = getStatusSummary(overallPercentage);
+            const userName = document.getElementById('name') ? document.getElementById('name').value : '';
 
             return `Hi Team,
 
 I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
 
-Our Organizational Health Score is ${overallPercentage}%, which falls into the ${status} category.
+Our Organizational Health Score is ${overallPercentage}%, which falls into the ${statusLevel} category.
 
 Here's what it means:
 • ${summary}
@@ -1785,10 +1785,30 @@ Breakdown of Key Areas:
 Why Does This Matter?
 The Snapshot reveals how well we're meeting employee needs, which directly impacts engagement and performance. This can spark a conversation about making improvements that help everyone thrive.
 
-Want to explore what these scores mean for our team? Visit: https://theculturemri.com/schedule-a-demo
+This overview is based on insights from The Culture MRI®'s Organizational Health Snapshot™. If you want to explore what these scores mean for our team, check out https://theculturemri.com/schedule-a-demo
 
 Best regards,
-${document.getElementById('name').value}`;
+${userName}`;
+        }
+
+        function getStatusLevel(percentage) {
+            if (percentage <= 50) {
+                return 'Critical Condition';
+            } else if (percentage <= 84) {
+                return 'At Risk';
+            } else {
+                return 'Strong but Needing Growth';
+            }
+        }
+
+        function getStatusSummary(percentage) {
+            if (percentage <= 50) {
+                return 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.';
+            } else if (percentage <= 84) {
+                return 'While some systems are stable, there are important gaps in meeting employee needs and optimizing performance. Addressing these areas can create stronger alignment and engagement.';
+            } else {
+                return 'Many systems are functioning well, but there are still opportunities to push productivity and profitability even higher by refining our approach.';
+            }
         }
 
         function getCategoryName(index) {
@@ -1797,24 +1817,14 @@ ${document.getElementById('name').value}`;
                 "HR Metrics and Profit Impact",
                 "Mission, Vision, and Values in Action",
                 "Managing Employee Turnover Costs",
+                "Ensuring ROI for Cultural Initiatives",
                 "Post-COVID Workplace Changes",
+                "Budgeting for Cultural Costs",
                 "Measuring and Driving Engagement",
                 "Aligning Brand and Internal Culture",
-                "Culture KPIs and ROI",
-                "Budgeting for Culture",
-                "Operations and Culture Alignment"
+                "Operations and Culture Interconnection"
             ];
             return categories[index];
-        }
-
-        function getStatusSummary(percentage) {
-            if (percentage <= 50) {
-                return "Critical Condition: These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.";
-            } else if (percentage <= 84) {
-                return "At Risk: While some systems are stable, there are important gaps in meeting employee needs and optimizing performance. Addressing these areas can create stronger alignment and engagement.";
-            } else {
-                return "Strong Position: Many systems are functioning well, but there are still opportunities to push productivity and profitability even higher by refining our approach.";
-            }
         }
 
         // Add this new function to handle returning to the form
