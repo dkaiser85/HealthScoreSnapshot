@@ -1864,71 +1864,27 @@
 
         // Update submitToGoogleSheet function
         function submitToGoogleSheet(data) {
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycbwE8NNKLwds0V66l2fIseYm7oQk-83IWCuZEaviTCRVbRyjR9J2aN7hNeCKbQcVnkGh/exec';
+            const scriptUrl = 'Yhttps://script.google.com/macros/s/AKfycbxPoiAKRuyIdEHmDUmjBeFJhUeQsot_kXALQ4dbaS98PJEVG8zr6O6EhrrCt7sx6R-5/exec'; // Replace with your actual deployed script URL
             
-            // Get all the open questions data
-            const q1Inputs = Array.from(document.querySelector('.question-block:nth-child(1)').querySelectorAll('input')).map(input => input.value.trim());
-            const q2Inputs = Array.from(document.querySelector('.question-block:nth-child(2)').querySelectorAll('input')).map(input => input.value.trim());
-            const q1Comments = document.querySelector('.question-block:nth-child(1) textarea').value.trim();
-            const q2Comments = document.querySelector('.question-block:nth-child(2) textarea').value.trim();
-            const q3Response = document.querySelector('.question-block:nth-child(3) textarea').value.trim();
-
-            // Get all rating questions
-            const ratingScores = Array.from(document.querySelectorAll('.question-item')).map(item => {
-                const selectedButton = item.querySelector('.rating-button.selected');
-                return selectedButton ? parseInt(selectedButton.dataset.value) : '';
+            // Create FormData object
+            const formData = new FormData();
+            
+            // Add all the form fields
+            Object.entries(data).forEach(([key, value]) => {
+                formData.append(key, value);
             });
-
-            const formattedData = {
-                name: data.name,
-                company: data.company,
-                email: data.email,
-                role: data.role,
-                
-                // Q1 responses (What does success look like?)
-                'Q1: 1': q1Inputs[0],
-                'Q1: 2': q1Inputs[1],
-                'Q1: 3': q1Inputs[2],
-                'Q1: Comments': q1Comments,
-                
-                // Q2 responses (What's currently preventing you?)
-                'Q2: 1': q2Inputs[0],
-                'Q2: 2': q2Inputs[1],
-                'Q2: 3': q2Inputs[2],
-                'Q2: Comments': q2Comments,
-                
-                // Q3 response
-                'Q3': q3Response,
-                
-                // Rating questions
-                'Rating Q1': ratingScores[0],
-                'Rating Q2': ratingScores[1],
-                'Rating Q3': ratingScores[2],
-                'Rating Q4': ratingScores[3],
-                'Rating Q5': ratingScores[4],
-                'Rating Q6': ratingScores[5],
-                'Rating Q7': ratingScores[6],
-                'Rating Q8': ratingScores[7],
-                'Rating Q9': ratingScores[8],
-                'Rating Q10': ratingScores[9],
-                
-                'Average Score': data.averageScore,
-                'Source': window.location.href,
-                'Referrer': document.referrer || 'CMRI'
-            };
             
-            console.log('Submitting data:', formattedData); // Debug log
-            
+            // Submit the form
             fetch(scriptUrl, {
                 method: 'POST',
-                body: JSON.stringify(formattedData)
+                mode: 'no-cors', // Important for cross-origin requests
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
+            .then(response => {
+                console.log('Form submitted successfully');
             })
-            .catch((error) => {
-                console.error('Error:', error);
+            .catch(error => {
+                console.error('Error submitting form:', error);
             });
         }
 
