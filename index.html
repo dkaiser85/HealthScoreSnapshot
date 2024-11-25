@@ -1326,7 +1326,7 @@
     <div class="container">
         <header>
             <h1>Organizational Health Snapshot™</h1>
-            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
+            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI® Logo" class="logo">
         </header>
         
         <form id="cultureForm">
@@ -1571,8 +1571,8 @@
                         <!-- First CTA section -->
                         <div class="cta-section" style="margin-top: 2rem;">
                             <h3>Your Health Snapshot Is Just the Beginning</h3>
-                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Schedule The Culture MRI® Demo</a>
+                            <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                            <a href="https://thecultureMRI®.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Schedule The Culture MRI®® Demo</a>
                         </div>
                     </div>
 
@@ -1606,8 +1606,8 @@
                     <!-- Second CTA section -->
                     <div class="cta-section" style="margin-top: 2rem;">
                         <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                        <p>With the full Culture MRI, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Discover the Full Culture MRI®</a>
+                        <p>With the full Culture MRI®, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <a href="https://thecultureMRI®.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Discover the Full Culture MRI®®</a>
                     </div>
                     
                     <!-- Share section -->
@@ -1649,7 +1649,7 @@
             originalFormHTML = document.querySelector('.container').innerHTML;
             
             // Check for stored results
-            const storedResults = localStorage.getItem('cultureMRIResults');
+            const storedResults = localStorage.getItem('cultureMRI®Results');
             if (storedResults) {
                 const resultsData = JSON.parse(storedResults);
                 
@@ -1663,7 +1663,7 @@
                     updateDemoLinks();
                 } else {
                     // Clear old results
-                    localStorage.removeItem('cultureMRIResults');
+                    localStorage.removeItem('cultureMRI®Results');
                 }
             }
             
@@ -1699,7 +1699,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI';
+            return refCode || 'CMRI®';
         }
 
         // Update handleFormSubmit function
@@ -1807,7 +1807,7 @@
             const submissionData = {
                 ...data,
                 source: window.location.href,
-                referrer: document.referrer || 'CMRI'
+                referrer: document.referrer || 'CMRI®'
             };
             
             console.log('Submitting data:', submissionData); // Debug log
