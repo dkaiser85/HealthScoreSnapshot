@@ -1327,7 +1327,7 @@
                             
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="shareDetailedResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="#" onclick="shareResults(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
@@ -1544,7 +1544,7 @@
                             
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="shareDetailedResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="#" onclick="shareResults(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
                                 <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
@@ -1801,92 +1801,22 @@
         }
 
         function shareResults() {
-            const sharePopup = document.createElement('div');
-            sharePopup.className = 'share-popup';
-            sharePopup.innerHTML = `
-                <div class="share-popup-content">
-                    <h3>Share Your Results</h3>
-                    <div class="share-options">
-                        <button onclick="shareViaEmail()">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                <polyline points="22,6 12,13 2,6"></polyline>
-                            </svg>
-                            Email
-                        </button>
-                        <button onclick="shareViaLink()">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                            </svg>
-                            Copy Link
-                        </button>
-                    </div>
-                    <button class="close-button" onclick="closeSharePopup()">×</button>
-                </div>
-            `;
-            document.body.appendChild(sharePopup);
-
-            // Show popup with animation
-            setTimeout(() => sharePopup.classList.add('active'), 10);
-        }
-
-        function shareViaEmail() {
-            const subject = encodeURIComponent('My Organizational Health Snapshot™ Results');
-            const body = encodeURIComponent(`
-                Check out my Organizational Health Snapshot™ results!
-                
-                Overall Score: ${document.getElementById('engagementText').textContent}
-                Date: ${new Date().toLocaleDateString()}
-                
-                View the full report: ${window.location.href}
-            `);
-            
-            window.location.href = `mailto:?subject=${subject}&body=${body}`;
-        }
-
-        function shareViaLink() {
-            const shareUrl = window.location.href;
-            
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                const message = document.createElement('div');
-                message.className = 'copy-success';
-                message.textContent = 'Link copied to clipboard!';
-                document.body.appendChild(message);
-                
-                setTimeout(() => message.remove(), 2000);
-            });
-        }
-
-        function closeSharePopup() {
-            const popup = document.querySelector('.share-popup');
-            popup.classList.remove('active');
-            setTimeout(() => popup.remove(), 300);
-        }
-
-        // Add the new detailed email sharing function
-        function shareDetailedResults() {
             const percentage = document.getElementById('engagementText').textContent;
             const numericPercentage = parseInt(percentage);
             let condition = '';
-            let colorClass = '';
             let summary = '';
 
             if (numericPercentage <= 50) {
                 condition = 'Critical Condition';
-                colorClass = '#ED5C5C';
                 summary = 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.';
             } else if (numericPercentage <= 84) {
                 condition = 'At Risk and Needing Growth';
-                colorClass = '#DFD691';
                 summary = 'While there are positive elements, some key areas need attention to strengthen team alignment and performance. Addressing these opportunities could enhance our workplace culture.';
             } else {
                 condition = 'Strong but Needing Growth';
-                colorClass = '#5EBD77';
                 summary = 'Our foundation is solid, showing strong alignment in many areas. There are still opportunities to build on this strength and create an even more engaging workplace.';
             }
 
-            // Get the highest and lowest scoring categories
             const categories = [
                 { name: 'Purpose', score: scores[0] },
                 { name: 'Autonomy', score: scores[1] },
