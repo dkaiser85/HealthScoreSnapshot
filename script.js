@@ -71,11 +71,23 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     });
 
-    // Add click handler to the submit button
+    // Update the form submission handler
     const form = document.getElementById('cultureForm');
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Check if all questions are answered
+            const unanswered = document.querySelectorAll('.question-item:not(:has(.rating-button.selected))');
+            if (unanswered.length > 0) {
+                unanswered.forEach(item => item.classList.add('unanswered'));
+                return; // Stop here if there are unanswered questions
+            }
+
+            // Hide the form
+            form.style.display = 'none';
+            
+            // Show results
             showResults();
         });
     }
