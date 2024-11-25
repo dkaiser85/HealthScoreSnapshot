@@ -390,6 +390,7 @@
             padding: 2rem;
             max-width: 800px;
             margin: 0 auto;
+            z-index: 1;
         }
 
         /* Clean 270-degree Gauge Styles */
@@ -734,28 +735,33 @@
             position: absolute;
             top: 20px;
             right: 20px;
+            font-size: 28px;
+            font-weight: 300;
+            color: #666;
+            cursor: pointer;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            border: none;
+            transition: all 0.2s ease;
             background: white;
-            color: #666;
-            font-size: 28px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, color 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border: none;
+            padding: 0;
         }
 
         .close-button:hover {
-            background: #f5f5f5;
+            background: rgba(0,0,0,0.05);
             color: #333;
+            transform: scale(1.1);
         }
 
         .results-container {
             position: relative;
+            z-index: 1;
         }
 
         .options-popup {
@@ -765,53 +771,73 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
-            display: none;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1000;
+            padding-top: 5vh;
         }
 
-        .options-popup .popup-content {
-            position: relative;
+        .popup-content {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
+            padding: 2rem;
+            border-radius: 8px;
+            position: relative;
             width: 90%;
-            margin: 20px auto;
+            max-width: 400px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        @media screen and (max-width: 480px) {
+        .popup-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .popup-option {
+            padding: 1rem;
+            background: #f8f8f8;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .popup-option:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .popup-close {
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            border: none;
+            background: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .popup-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Small mobile optimization */
+        @media (max-width: 320px) {
             .options-popup {
-                align-items: flex-start; /* Align to top */
-                padding-top: 0; /* Remove top padding */
-            }
-
-            .options-popup .popup-content {
-                margin: 0 auto; /* Remove vertical margin */
-                border-radius: 0; /* Optional: Remove border radius at top */
-                min-height: 100vh; /* Make it full height */
-                width: 100%; /* Full width on mobile */
-                max-width: 100%; /* Allow full width */
-                padding: 20px 15px;
-            }
-
-            /* Adjust the close button position for full-width layout */
-            .close-button {
-                top: 15px;
-                right: 15px;
-            }
-
-            /* Ensure popup options have proper spacing */
-            .popup-options {
-                margin-top: 40px; /* Space for close button */
-            }
-        }
-
-        /* Additional adjustments for very small screens */
-        @media screen and (max-width: 360px) {
-            .options-popup .popup-content {
-                padding: 15px 10px;
+                padding-top: 2vh;
             }
         }
 
@@ -988,204 +1014,6 @@
             
             .share-section.bottom p {
                 font-size: 0.9rem;
-            }
-        }
-
-        /* Update/add these CSS rules */
-        @media screen and (max-width: 480px) {
-            .results-container {
-                padding: 20px 10px;
-                margin: 10px;
-            }
-
-            .gauge-container {
-                transform: scale(0.8);
-                margin: 0 auto;
-                margin-bottom: 20px;
-            }
-
-            .results-header {
-                font-size: 24px;
-                margin-bottom: 15px;
-                text-align: center;
-            }
-
-            .category-scores {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                margin-top: 20px;
-            }
-
-            .category-score {
-                width: 100%;
-                padding: 15px;
-                margin: 0;
-            }
-
-            .category-title {
-                font-size: 18px;
-                margin-bottom: 8px;
-            }
-
-            .score-bar {
-                height: 15px;
-                margin: 8px 0;
-            }
-
-            .score-text {
-                font-size: 16px;
-            }
-
-            /* Popup adjustments for mobile */
-            .options-popup .popup-content {
-                width: 90%;
-                max-width: 340px;
-                padding: 20px 15px;
-                margin: 10px;
-            }
-
-            .popup-options {
-                gap: 12px;
-            }
-
-            .popup-option {
-                padding: 12px;
-                font-size: 16px;
-            }
-
-            .close-button {
-                top: 10px;
-                right: 10px;
-                width: 30px;
-                height: 30px;
-                font-size: 24px;
-            }
-        }
-
-        /* Additional adjustments for very small screens */
-        @media screen and (max-width: 360px) {
-            .results-container {
-                padding: 15px 8px;
-                margin: 5px;
-            }
-
-            .gauge-container {
-                transform: scale(0.7);
-                margin-bottom: 10px;
-            }
-
-            .results-header {
-                font-size: 22px;
-            }
-
-            .category-score {
-                padding: 12px;
-            }
-
-            .category-title {
-                font-size: 16px;
-            }
-
-            .score-text {
-                font-size: 14px;
-            }
-
-            .options-popup .popup-content {
-                width: 95%;
-                padding: 15px 10px;
-            }
-
-            .popup-option {
-                padding: 10px;
-                font-size: 14px;
-            }
-        }
-
-        /* Update input styles */
-        input[type="number"] {
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-            text-align: center;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            -webkit-appearance: none; /* Remove default iOS styling */
-            -moz-appearance: textfield; /* Remove default Firefox styling */
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Remove spinner buttons */
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Active/Focus states */
-        input[type="number"]:focus,
-        input[type="number"]:active {
-            outline: none;
-            border-color: #4A90E2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
-            transform: scale(1.05);
-        }
-
-        /* Mobile styles */
-        @media screen and (max-width: 480px) {
-            input[type="number"] {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-            
-            /* Enhance touch target size */
-            input[type="number"] {
-                touch-action: manipulation;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            /* Improve animation performance */
-            input[type="number"]:focus,
-            input[type="number"]:active {
-                transform: scale(1.1);
-                transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            }
-        }
-
-        /* Specific adjustments for very small screens */
-        @media screen and (max-width: 360px) {
-            input[type="number"] {
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
-            
-            /* Adjust question container for better spacing */
-            .question-container {
-                padding: 10px;
-                margin-bottom: 15px;
-            }
-            
-            /* Make labels more compact but still readable */
-            .question-label {
-                font-size: 14px;
-                margin-bottom: 8px;
-            }
-            
-            /* Adjust scale indicators */
-            .scale-indicator {
-                font-size: 12px;
-            }
-        }
-
-        /* Add smooth scrolling for iOS */
-        @supports (-webkit-touch-callout: none) {
-            input[type="number"] {
-                /* iOS-specific smooth animation */
-                -webkit-transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
         }
     </style>
@@ -1371,40 +1199,40 @@
             }
         };
 
-        // Make sure this function is properly defined at the top level
+        // Add the update function
         function updateRadialGauge(percentage) {
-            // Add console log for debugging
-            console.log('Updating gauge with percentage:', percentage);
-            
-            const fillElement = document.querySelector('.gauge-fill');
-            const textElement = document.querySelector('.gauge-text');
+            const fillElement = document.getElementById('engagementFill');
+            const textElement = document.getElementById('engagementText');
             
             if (!fillElement || !textElement) {
                 console.error('Gauge elements not found');
                 return;
             }
-
+            
             // Calculate the stroke color based on percentage
             let strokeColor;
             if (percentage <= 50) {
-                strokeColor = '#ED5C5C';
+                strokeColor = '#ED5C5C'; // Red
             } else if (percentage <= 84) {
-                strokeColor = '#DFD691';
+                strokeColor = '#DFD691'; // Yellow
             } else {
-                strokeColor = '#5EBD77';
+                strokeColor = '#5EBD77'; // Green
             }
-
+            
             // Update the fill color
-            fillElement.style.stroke = strokeColor;
-
-            // Calculate the dash array
-            const circumference = 2 * Math.PI * 90; // r=90, so circumference = 2πr
-            const dashArray = (percentage / 100) * circumference;
-            fillElement.style.strokeDasharray = `${dashArray} ${circumference}`;
-
+            fillElement.setAttribute('stroke', strokeColor);
+            
+            // Calculate the dash offset for 270 degrees arc
+            const pathLength = 367.566;
+            const maxPercent = 270 / 360; // Use 270 degrees instead of full circle
+            const percentageAdjusted = (percentage / 100) * maxPercent;
+            const dashArray = `${pathLength * percentageAdjusted} ${pathLength}`;
+            
+            // Set the dash array
+            fillElement.style.strokeDasharray = dashArray;
+            
             // Update the text
             textElement.textContent = `${Math.round(percentage)}%`;
-            textElement.style.color = strokeColor;
         }
 
         // Update the createResultsPage function to use this
@@ -1496,16 +1324,14 @@
 
                     <div id="optionsPopup" class="options-popup">
                         <div class="popup-content">
-                            <div class="close-button" onclick="hideOptionsPopup()">×</div>
-                            
                             <h3>What would you like to do next?</h3>
                             <div class="popup-options">
-                                <a href="#" onclick="shareResults(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
                                 <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
                                 <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/" class="popup-option">Buy The Book</a>
-                                <a href="#" onclick="hideOptionsPopup(); return false;" class="popup-option">Back to Snapshot</a>
+                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
                             </div>
+                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
                         </div>
                     </div>
 
@@ -1576,46 +1402,191 @@
         }
 
         // Update handleFormSubmit function
-        function handleFormSubmit(event) {
-            event.preventDefault(); // Keep this
+        function handleFormSubmit() {
+            console.log('Processing form submission');
             
-            // Check if all inputs are filled with valid values (1-10)
-            const inputs = ['purpose', 'autonomy', 'mastery', 'stability'];
-            let isValid = true;
-            
-            inputs.forEach(id => {
-                const input = document.getElementById(id);
-                const value = input.value;
-                
-                // Reset styling
-                input.style.borderColor = '';
-                
-                // Check if empty or outside 1-10 range
-                if (!value || value < 1 || value > 10) {
-                    input.style.borderColor = '#ED5C5C'; // Red border
-                    isValid = false;
-                }
+            // First, remove any existing unanswered markers
+            document.querySelectorAll('.question-item').forEach(item => {
+                item.classList.remove('unanswered');
             });
-            
-            // Only proceed if all inputs are valid
-            if (!isValid) {
-                return;
-            }
-            
-            // Rest of your form submission code...
-        }
 
-        // Add this to your HTML inputs to prevent default validation
-        const inputs = document.querySelectorAll('input[type="number"]');
-        inputs.forEach(input => {
-            input.setAttribute('novalidate', '');
-            input.addEventListener('input', function() {
-                // Remove red border when user starts typing valid number
-                if (this.value >= 1 && this.value <= 10) {
-                    this.style.borderColor = '';
+            // Get affiliate code first
+            const affiliateCode = getAffiliateCode();
+            console.log('Using affiliate code:', affiliateCode); // Debug log
+            
+            // Collect initial form data
+            let formData = {
+                name: document.getElementById('name').value,
+                company: document.getElementById('company').value,
+                email: document.getElementById('email').value,
+                role: document.getElementById('role').value,
+                affiliateCode: affiliateCode // Set affiliate code here
+            };
+
+            // Collect all scores
+            const scores = [];
+            const questionItems = document.querySelectorAll('.question-item');
+            let unansweredQuestions = [];
+            
+            questionItems.forEach((item, index) => {
+                const selected = item.querySelector('.rating-button.selected');
+                if (selected) {
+                    scores.push(parseInt(selected.textContent));
+                } else {
+                    unansweredQuestions.push(index + 1);
+                    item.classList.add('unanswered');
+                    if (unansweredQuestions.length === 1) {
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             });
-        });
+
+            // Calculate overall percentage
+            const overallPercentage = Math.round(
+                calculateScores.getOverallScore(
+                    scores.map(score => calculateScores.toPercentage(score))
+                )
+            );
+
+            // Update form data with all fields
+            formData = {
+                ...formData,
+                scores: scores,
+                overallScore: overallPercentage,
+                submissionDate: new Date().toISOString()
+            };
+
+            console.log('Final Form Data:', formData); // Debug log
+
+            // Submit to Google Sheet
+            submitToGoogleSheet(formData);
+            
+            // Create results HTML
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="results-container">
+                    <div class="close-button" onclick="showOptionsPopup()">×</div>
+                    
+                    <div class="overall-score">
+                        <h2>Your Organizational Health Snapshot™ Results</h2>
+                        <div class="gauge">
+                            <svg width="195" height="195" viewBox="0 0 195 195">
+                                <path class="gauge__background" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <path class="gauge__fill" 
+                                      id="engagementFill" 
+                                      d="M39 162.5 A78 78 0 1 1 156 162.5" 
+                                      stroke-width="15"
+                                      transform="rotate(0, 97.5, 97.5)" />
+                                <text x="97.5" y="115" 
+                                      text-anchor="middle" 
+                                      font-size="31px" 
+                                      font-weight="700"
+                                      fill="#173248" 
+                                      id="engagementText">0%</text>
+                            </svg>
+                        </div>
+                        
+                        <!-- Add conditional message -->
+                        <div class="score-message" style="margin-top: 2rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                            ${getScoreMessage(overallPercentage)}
+                        </div>
+                    </div>
+                    
+                    <div class="cta-section">
+                        <h3>Your Organizational Health is Your Competitive Edge—Start Unlocking Its Full Potential Today.</h3>
+                        <p>Schedule a demo now to discover how The Culture MRI® can unlock team potential and drive measurable business growth.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        <p style="margin-top: 2rem; font-size: 0.9rem; color: #666;">Not ready to dive deeper yet? Review your detailed results below to uncover key insights about your organizational health and performance.</p>
+                    </div>
+
+                    <div class="individual-scores">
+                        <h3>Detailed Breakdown</h3>
+                        ${scores
+                            // Create array of objects with score and question info
+                            .map((score, index) => ({
+                                score: score,
+                                percentage: Math.round(calculateScores.toPercentage(score)),
+                                title: questions[index].title,
+                                description: questions[index].description
+                            }))
+                            // Sort from lowest to highest score
+                            .sort((a, b) => a.percentage - b.percentage)
+                            // Generate HTML for each score
+                            .map(item => {
+                                const color = calculateScores.getColor(item.percentage);
+                                return `
+                                    <div class="score-section">
+                                        <div class="score-header">
+                                            <h4>${item.title}</h4>
+                                            <span class="score-value">${item.percentage}%</span>
+                                        </div>
+                                        <div class="pill-gauge" style="--percentage: ${item.percentage}; --color: ${color}">
+                                        </div>
+                                        <p class="score-description">${item.description}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                    </div>
+                    
+                    <div class="cta-section bottom">
+                        <h3>Your Health Snapshot™ Is Just the Beginning</h3>
+                        <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                    </div>
+
+                    <div id="optionsPopup" class="options-popup">
+                        <div class="popup-content">
+                            <h3>What would you like to do next?</h3>
+                            <div class="popup-options">
+                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
+                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
+                                <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
+                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
+                            </div>
+                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
+                        </div>
+                    </div>
+
+                    <!-- Add share section at bottom -->
+                    <div class="share-section bottom">
+                        <p>Found these insights valuable? Share them with your team:</p>
+                        <button onclick="shareResults()" class="share-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                            Share Results
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Add this block after setting innerHTML
+            setTimeout(() => {
+                // Scroll to top
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
+                // Backup scroll to element
+                document.querySelector('.results-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Animate the gauge with the actual percentage
+                updateRadialGauge(overallPercentage);
+            }, 100); // Increased timeout to ensure DOM is ready
+
+            console.log('Form Data:', formData);
+            console.log('Scores:', scores);
+            console.log('Overall Percentage:', overallPercentage);
+        }
 
         // Update submitToGoogleSheet function
         function submitToGoogleSheet(data) {
@@ -1766,23 +1737,8 @@
         // Add these JavaScript functions:
         function showOptionsPopup() {
             const popup = document.getElementById('optionsPopup');
-            
-            // Get current scroll position
-            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Position popup relative to current viewport
-            popup.style.position = 'fixed';
-            popup.style.top = '0';
-            popup.style.left = '0';
-            popup.style.right = '0';
-            popup.style.bottom = '0';
             popup.style.display = 'flex';
-            popup.style.alignItems = 'center';
-            popup.style.justifyContent = 'center';
             popup.style.opacity = '1';
-            popup.style.zIndex = '9999';
-            
-            window.history.pushState({ showPopup: true }, '');
         }
 
         function hideOptionsPopup() {
@@ -1791,21 +1747,14 @@
             setTimeout(() => {
                 popup.style.display = 'none';
             }, 300);
-            window.history.back();
         }
 
-        // Add popstate event listener after the existing event listeners
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.showPopup) {
-                showOptionsPopup();
-            } else {
-                const popup = document.getElementById('optionsPopup');
-                if (popup) {
-                    popup.style.opacity = '0';
-                    setTimeout(() => {
-                        popup.style.display = 'none';
-                    }, 300);
-                }
+        // Add click outside to close functionality
+        document.addEventListener('click', function(event) {
+            const popup = document.getElementById('optionsPopup');
+            const popupContent = document.querySelector('.popup-content');
+            if (event.target === popup) {
+                hideOptionsPopup();
             }
         });
 
@@ -1825,57 +1774,67 @@
         }
 
         function shareResults() {
-            const percentage = document.getElementById('engagementText').textContent;
-            const numericPercentage = parseInt(percentage);
-            let condition = '';
-            let summary = '';
+            const sharePopup = document.createElement('div');
+            sharePopup.className = 'share-popup';
+            sharePopup.innerHTML = `
+                <div class="share-popup-content">
+                    <h3>Share Your Results</h3>
+                    <div class="share-options">
+                        <button onclick="shareViaEmail()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email
+                        </button>
+                        <button onclick="shareViaLink()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Copy Link
+                        </button>
+                    </div>
+                    <button class="close-button" onclick="closeSharePopup()">×</button>
+                </div>
+            `;
+            document.body.appendChild(sharePopup);
 
-            if (numericPercentage <= 50) {
-                condition = 'Critical Condition';
-                summary = 'These results suggest urgent challenges that need attention to protect team alignment, engagement, and performance. Taking action could improve how we work together and achieve results.';
-            } else if (numericPercentage <= 84) {
-                condition = 'At Risk and Needing Growth';
-                summary = 'While there are positive elements, some key areas need attention to strengthen team alignment and performance. Addressing these opportunities could enhance our workplace culture.';
-            } else {
-                condition = 'Strong but Needing Growth';
-                summary = 'Our foundation is solid, showing strong alignment in many areas. There are still opportunities to build on this strength and create an even more engaging workplace.';
-            }
+            // Show popup with animation
+            setTimeout(() => sharePopup.classList.add('active'), 10);
+        }
 
-            const categories = [
-                { name: 'Purpose', score: scores[0] },
-                { name: 'Autonomy', score: scores[1] },
-                { name: 'Mastery', score: scores[2] },
-                { name: 'Stability', score: scores[3] }
-            ];
-            
-            const sortedCategories = [...categories].sort((a, b) => b.score - a.score);
-            const topStrength = sortedCategories[0].name;
-            const biggestOpportunity = sortedCategories[sortedCategories.length - 1].name;
-
-            const subject = encodeURIComponent(`${condition}: Organizational Health Results - See How We Scored`);
+        function shareViaEmail() {
+            const subject = encodeURIComponent('My Organizational Health Snapshot™ Results');
             const body = encodeURIComponent(`
-Hi Team,
-
-I recently completed The Culture MRI®'s Organizational Health Snapshot™, and I wanted to share the results with you.
-
-Our Organizational Health Score is ${percentage}, which falls into the ${condition} category.
-
-Here's what it means:
-${summary}
-
-Breakdown of Key Areas:
-• Top Strength: ${topStrength}
-• Biggest Opportunity: ${biggestOpportunity}
-
-Why Does This Matter?
-The Snapshot reveals how well we're meeting employee needs, which directly impacts engagement and performance. This can spark a conversation about making improvements that help everyone thrive.
-
-This overview is based on insights from The Culture MRI®'s Organizational Health Snapshot™. If you want to explore what these scores mean for our team, visit: https://theculturemri.com/schedule-a-demo
-
-Best regards`);
+                Check out my Organizational Health Snapshot™ results!
+                
+                Overall Score: ${document.getElementById('engagementText').textContent}
+                Date: ${new Date().toLocaleDateString()}
+                
+                View the full report: ${window.location.href}
+            `);
             
-            const recipient = 'info@theculturemri.com';
-            window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function shareViaLink() {
+            const shareUrl = window.location.href;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const message = document.createElement('div');
+                message.className = 'copy-success';
+                message.textContent = 'Link copied to clipboard!';
+                document.body.appendChild(message);
+                
+                setTimeout(() => message.remove(), 2000);
+            });
+        }
+
+        function closeSharePopup() {
+            const popup = document.querySelector('.share-popup');
+            popup.classList.remove('active');
+            setTimeout(() => popup.remove(), 300);
         }
     </script>
 </body>
