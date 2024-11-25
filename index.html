@@ -1638,14 +1638,14 @@
                     
                     <!-- Share section -->
                     <div class="share-section bottom">
-                        <p>Found these insights valuable? Share them with your team:</p>
+                        <p>Save your snapshot summary to share with your team:</p>
                         <button onclick="downloadScreenshot()" class="share-button">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                                 <polyline points="16 6 12 2 8 6"></polyline>
                                 <line x1="12" y1="2" x2="12" y2="15"></line>
                             </svg>
-                            Share
+                            Save Summary
                         </button>
                     </div>
                 </div>
@@ -1954,14 +1954,14 @@
         function createShareButton() {
             return `
                 <div class="share-section bottom">
-                    <p>Found these insights valuable? Share them with your team:</p>
+                    <p>Save your snapshot summary to share with your team:</p>
                     <button onclick="downloadScreenshot()" class="share-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                             <polyline points="16 6 12 2 8 6"></polyline>
                             <line x1="12" y1="2" x2="12" y2="15"></line>
                         </svg>
-                        Share
+                        Save Summary
                     </button>
                 </div>
             `;
@@ -1969,89 +1969,52 @@
 
         async function downloadScreenshot() {
             try {
-                // Find the results container
-                const resultsContainer = document.querySelector('.results-container');
-                if (!resultsContainer) {
-                    throw new Error('Results container not found');
-                }
-
                 // Show loading state
                 const button = document.querySelector('.share-button');
                 const originalText = button.innerHTML;
                 button.disabled = true;
                 button.innerHTML = 'Sharing...';
 
-                // Calculate dimensions for 8.5x11 at 300 DPI
-                const width = Math.round(8.5 * 300); // 8.5 inches * 300 DPI = 2550 pixels
-                const height = Math.round(11 * 300); // 11 inches * 300 DPI = 3300 pixels
-
-                // Create a temporary container with letter dimensions
+                // Create a temporary container for the screenshot content
                 const tempContainer = document.createElement('div');
-                tempContainer.style.width = `${width}px`;
-                tempContainer.style.height = `${height}px`;
+                tempContainer.style.width = '1200px'; // Wide enough for good quality
+                tempContainer.style.padding = '40px';
                 tempContainer.style.backgroundColor = 'white';
-                tempContainer.style.position = 'absolute';
-                tempContainer.style.left = '-9999px';
-                tempContainer.style.padding = '100px'; // Add padding for content
                 tempContainer.style.boxSizing = 'border-box';
 
-                // Clone the results content
-                const contentClone = resultsContainer.cloneNode(true);
-                
-                // Enhance styles for better printing
-                contentClone.style.width = '100%';
-                contentClone.style.height = 'auto';
-                contentClone.style.padding = '0';
-                contentClone.style.margin = '0';
-                contentClone.style.fontSize = '16px'; // Increase base font size
-                contentClone.style.lineHeight = '1.5';
-                
-                // Enhance specific elements
-                contentClone.querySelectorAll('h1, h2, h3').forEach(heading => {
-                    heading.style.fontSize = heading.tagName === 'H1' ? '36px' : 
-                                           heading.tagName === 'H2' ? '30px' : '24px';
-                    heading.style.marginBottom = '20px';
-                });
+                // Clone only the elements we want
+                const gauge = document.querySelector('.gauge').cloneNode(true);
+                const scoreMessage = document.querySelector('.score-message').cloneNode(true);
+                const cta = document.querySelector('.cta-section').cloneNode(true);
+                const logo = document.querySelector('.logo').cloneNode(true);
 
-                contentClone.querySelectorAll('.gauge').forEach(gauge => {
-                    gauge.style.transform = 'scale(1.5)';
-                    gauge.style.margin = '60px auto';
-                });
+                // Style the temporary container content
+                tempContainer.innerHTML = `
+                    <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                        <img src="${logo.src}" style="width: 200px; margin-bottom: 40px;">
+                        <div style="margin-bottom: 40px;">
+                            ${gauge.outerHTML}
+                        </div>
+                        <div style="margin-bottom: 40px;">
+                            ${scoreMessage.outerHTML}
+                        </div>
+                        <div>
+                            ${cta.outerHTML}
+                        </div>
+                    </div>
+                `;
 
-                contentClone.querySelectorAll('.score-section').forEach(section => {
-                    section.style.marginBottom = '30px';
-                    section.style.padding = '20px';
-                    section.style.border = '1px solid #eee';
-                });
-
-                // Remove share buttons and any navigation elements from the clone
-                const elementsToRemove = [
-                    '.share-section',
-                    '.return-button',
-                    '.close-button',
-                    '.options-popup'
-                ];
-                
-                elementsToRemove.forEach(selector => {
-                    const elements = contentClone.querySelectorAll(selector);
-                    elements.forEach(element => element.remove());
-                });
-
-                tempContainer.appendChild(contentClone);
+                // Add the temporary container to the body but hide it
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.left = '-9999px';
                 document.body.appendChild(tempContainer);
 
-                // Create canvas with better quality settings
+                // Create canvas
                 const canvas = await html2canvas(tempContainer, {
-                    scale: 1, // Scale is handled by dimensions
+                    scale: 2, // Higher resolution
                     useCORS: true,
                     logging: false,
-                    width: width,
-                    height: height,
-                    backgroundColor: '#ffffff',
-                    imageTimeout: 0,
-                    removeContainer: true,
-                    letterRendering: true,
-                    allowTaint: true
+                    backgroundColor: '#ffffff'
                 });
 
                 // Remove temporary container
