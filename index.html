@@ -1015,6 +1015,117 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Update/add these CSS rules */
+        @media screen and (max-width: 480px) {
+            .results-container {
+                padding: 20px 10px;
+                margin: 10px;
+            }
+
+            .gauge-container {
+                transform: scale(0.8);
+                margin: 0 auto;
+                margin-bottom: 20px;
+            }
+
+            .results-header {
+                font-size: 24px;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .category-scores {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .category-score {
+                width: 100%;
+                padding: 15px;
+                margin: 0;
+            }
+
+            .category-title {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+
+            .score-bar {
+                height: 15px;
+                margin: 8px 0;
+            }
+
+            .score-text {
+                font-size: 16px;
+            }
+
+            /* Popup adjustments for mobile */
+            .options-popup .popup-content {
+                width: 90%;
+                max-width: 340px;
+                padding: 20px 15px;
+                margin: 10px;
+            }
+
+            .popup-options {
+                gap: 12px;
+            }
+
+            .popup-option {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .close-button {
+                top: 10px;
+                right: 10px;
+                width: 30px;
+                height: 30px;
+                font-size: 24px;
+            }
+        }
+
+        /* Additional adjustments for very small screens */
+        @media screen and (max-width: 360px) {
+            .results-container {
+                padding: 15px 8px;
+                margin: 5px;
+            }
+
+            .gauge-container {
+                transform: scale(0.7);
+                margin-bottom: 10px;
+            }
+
+            .results-header {
+                font-size: 22px;
+            }
+
+            .category-score {
+                padding: 12px;
+            }
+
+            .category-title {
+                font-size: 16px;
+            }
+
+            .score-text {
+                font-size: 14px;
+            }
+
+            .options-popup .popup-content {
+                width: 95%;
+                padding: 15px 10px;
+            }
+
+            .popup-option {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
