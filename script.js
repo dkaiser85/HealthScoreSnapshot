@@ -1,206 +1,100 @@
-// Question Data
+// Survey questions array
 const questions = [
-    {
-        text: "We have a clear picture of our cost of culture...",
-        title: "Understanding Cultural Costs",
-        description: "Evaluates your organization's ability to identify, understand, and manage the costs associated with culture."
-    },
-    {
-        text: "We have clear metrics in place to determine the profit impact...",
-        title: "HR Metrics and Profit Impact",
-        description: "Assesses how effectively your organization measures the profit impact of HR activities."
-    },
-    {
-        text: "Our mission, vision and values are easily translated...",
-        title: "Mission, Vision, and Values in Action",
-        description: "Examines how well your organization translates its mission, vision, and values into actionable behaviors."
-    },
-    {
-        text: "We are confident that we are maximizing our efforts...",
-        title: "Managing Employee Turnover Costs",
-        description: "Reviews your organization's strategies for maximizing efforts to minimize turnover costs."
-    },
-    {
-        text: "We have Culture KPIs and can ensure an effective ROI...",
-        title: "Ensuring ROI for Cultural Initiatives",
-        description: "Measures your organization's ability to establish Culture KPIs and connect cultural efforts to ROI."
-    },
-    {
-        text: "Since COVID happened, there is a distinctive change...",
-        title: "Post-COVID Workplace Changes",
-        description: "Analyzes how effectively your organization has managed cultural changes following COVID-19."
-    },
-    {
-        text: "When budget time comes around, culture is easily accounted for...",
-        title: "Budgeting for Cultural Costs",
-        description: "Looks at how well your organization incorporates cultural costs into budgeting processes."
-    },
-    {
-        text: "We have an easy system and process for measuring...",
-        title: "Measuring and Driving Engagement",
-        description: "Evaluates the systems your organization uses to track and improve employee engagement."
-    },
-    {
-        text: "The brand of our company matches the culture...",
-        title: "Aligning Brand and Internal Culture",
-        description: "Examines the alignment between external brand messaging and internal culture."
-    },
-    {
-        text: "Most culture issues we have are Operations' related.",
-        title: "Operations and Culture Interconnection",
-        description: "Explores how well your organization understands the relationship between operations and culture."
-    }
+    "We have a clear picture of our cost of culture...",
+    "We have clear metrics in place to determine the profit impact...",
+    "Our mission, vision and values are easily translated...",
+    "We are confident that we are maximizing our efforts...",
+    "We have Culture KPIs and can ensure an effective ROI...",
+    "Since COVID happened, there is a distinctive change...",
+    "When budget time comes around, culture is easily accounted for...",
+    "We have an easy system and process for measuring...",
+    "The brand of our company matches the culture...",
+    "Most culture issues we have are Operations' related."
 ];
 
-// When the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Add questions to the page
-    const questionGroup = document.querySelector('.question-group');
+// Function to create question elements
+function createQuestions() {
+    const questionsContainer = document.querySelector('.questions');
+    questionsContainer.className = 'question-group';
+    
     questions.forEach((question, index) => {
-        questionGroup.innerHTML += `
-            <div class="question-item">
-                <div class="question-text">
-                    <span class="question-number">Q${index + 1}.</span> ${question.text}
-                </div>
-                <div class="rating-scale">
-                    ${[1,2,3,4,5,6,7,8,9,10].map(num => 
-                        `<button type="button" class="rating-button" onclick="selectRating(this)">${num}</button>`
-                    ).join('')}
-                </div>
-            </div>
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+        questionText.innerHTML = `
+            <span class="question-number">Q${index + 1}.</span> 
+            ${question.text}
         `;
+        
+        const ratingScale = document.createElement('div');
+        ratingScale.className = 'rating-scale';
+        
+        // Create rating buttons 1-10
+        for (let i = 1; i <= 10; i++) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'rating-button';
+            button.textContent = i;
+            button.onclick = function() {
+                ratingScale.querySelectorAll('.rating-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                button.classList.add('selected');
+                questionItem.classList.remove('unanswered');
+            };
+            ratingScale.appendChild(button);
+        }
+        
+        questionItem.appendChild(questionText);
+        questionItem.appendChild(ratingScale);
+        questionsContainer.appendChild(questionItem);
     });
+}
 
-    // Update the form submission handler
-    const form = document.getElementById('cultureForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Check if all questions are answered
-            const unanswered = document.querySelectorAll('.question-item:not(:has(.rating-button.selected))');
-            if (unanswered.length > 0) {
-                unanswered.forEach(item => item.classList.add('unanswered'));
-                return; // Stop here if there are unanswered questions
-            }
-
-            // Hide the form
-            form.style.display = 'none';
-            
-            // Show results
-            showResults();
-        });
+// Add new scoring calculation functions
+const calculateScores = {
+    toPercentage: (score) => (score / 10) * 100,
+    
+    getColor: (percentage) => {
+        const score = Math.round(percentage);
+        if (score <= 50) return '#ED5C5C';
+        if (score <= 84) return '#DFD691';
+        return '#5EBD77';
+    },
+    
+    getOverallScore: (scores) => {
+        const sum = scores.reduce((acc, curr) => acc + curr, 0);
+        return sum / scores.length;
     }
+};
+
+// Updated form submission handler
+document.getElementById('surveyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const results = {
+        personalInfo: {
+            name: formData.get('name'),
+            company: formData.get('company'),
+            email: formData.get('email'),
+            role: formData.get('role')
+        },
+        answers: {}
+    };
+    
+    // Collect answers and calculate scores
+    const scores = questions.map((_, index) => {
+        const score = parseInt(formData.get(`q${index + 1}`));
+        results.answers[`q${index + 1}`] = score;
+        return score;
+    });
+    
+    // Create and display results page
+    createResultsPage(scores);
 });
 
-// Handle rating button clicks
-function selectRating(button) {
-    // Remove selected class from all siblings
-    const parent = button.parentElement;
-    parent.querySelectorAll('.rating-button').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    // Add selected class to clicked button
-    button.classList.add('selected');
-    // Remove unanswered class if it exists
-    button.closest('.question-item').classList.remove('unanswered');
-}
-
-// Calculate scores
-function calculateScore() {
-    const questions = document.querySelectorAll('.question-item');
-    let total = 0;
-    let answered = 0;
-    
-    questions.forEach(question => {
-        const selected = question.querySelector('.rating-button.selected');
-        if (selected) {
-            total += parseInt(selected.textContent);
-            answered++;
-        }
-    });
-    
-    return answered > 0 ? (total / answered) : 0;
-}
-
-// Show results page
-function showResults() {
-    const score = calculateScore();
-    const percentage = Math.round((score / 10) * 100);
-    
-    // Get the container and clear it
-    const container = document.querySelector('.container');
-    
-    // Create results HTML
-    container.innerHTML = `
-        <div class="results-container">
-            <h2>Your Organizational Health Snapshot™ Results</h2>
-            <div class="gauge">
-                <svg width="195" height="195" viewBox="0 0 195 195">
-                    <path class="gauge__background" 
-                          d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                          stroke="#e6e6e6"
-                          stroke-width="15"
-                          fill="none"
-                          transform="rotate(0, 97.5, 97.5)" />
-                    <path class="gauge__fill" 
-                          d="M39 162.5 A78 78 0 1 1 156 162.5" 
-                          stroke="#2c5282"
-                          stroke-width="15"
-                          fill="none"
-                          transform="rotate(0, 97.5, 97.5)"
-                          style="stroke-dasharray: ${percentage}, 100" />
-                    <text x="97.5" y="115" 
-                          text-anchor="middle" 
-                          font-size="31px" 
-                          font-weight="700"
-                          fill="#173248">${percentage}%</text>
-                </svg>
-            </div>
-            <div class="score-message">
-                <h3>Your Organization's Health Status</h3>
-                <p>Based on your responses, your organization shows strong potential with room for strategic improvements.</p>
-            </div>
-            <div class="category-scores">
-                <div class="category">
-                    <h4>Understanding & Costs</h4>
-                    <p>${calculateCategoryAverage(0, 1).toFixed(1)}/10</p>
-                </div>
-                <div class="category">
-                    <h4>Mission & Values</h4>
-                    <p>${calculateCategoryAverage(2, 3).toFixed(1)}/10</p>
-                </div>
-                <div class="category">
-                    <h4>Culture & ROI</h4>
-                    <p>${calculateCategoryAverage(4, 5).toFixed(1)}/10</p>
-                </div>
-                <div class="category">
-                    <h4>Measurement & Alignment</h4>
-                    <p>${calculateCategoryAverage(6, 9).toFixed(1)}/10</p>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Initialize the gauge animation
-    const gaugeFill = container.querySelector('.gauge__fill');
-    const gaugeValue = percentage;
-    gaugeFill.style.strokeDasharray = `${gaugeValue}, 100`;
-}
-
-// Add this new helper function
-function calculateCategoryAverage(startIndex, endIndex) {
-    let total = 0;
-    let count = 0;
-    
-    for (let i = startIndex; i <= endIndex; i++) {
-        const questionItem = document.querySelectorAll('.question-item')[i];
-        const selectedButton = questionItem.querySelector('.rating-button.selected');
-        if (selectedButton) {
-            total += parseInt(selectedButton.textContent);
-            count++;
-        }
-    }
-    
-    return count > 0 ? total / count : 0;
-}
+// Initialize questions when the page loads
+document.addEventListener('DOMContentLoaded', createQuestions);
