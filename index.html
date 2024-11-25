@@ -45,6 +45,7 @@
             padding: 1rem;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding-bottom: 3rem;
         }
 
         @media (max-width: 768px) {
@@ -55,6 +56,7 @@
                 box-sizing: border-box;
                 border-radius: 0;
                 box-shadow: none;
+                padding-bottom: 2rem;
             }
 
             .results-container {
@@ -196,6 +198,7 @@
 
         button[type="submit"] {
             margin-top: 2rem;
+            margin-bottom: 2rem;
             padding: 1rem 2rem;
             background-color: var(--primary-color);
             color: white;
@@ -1326,7 +1329,7 @@
     <div class="container">
         <header>
             <h1>Organizational Health Snapshot™</h1>
-            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI® Logo" class="logo">
+            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
         </header>
         
         <form id="cultureForm">
@@ -1503,7 +1506,7 @@
             }
         };
 
-        // Add the update function
+        // Update the updateRadialGauge function
         function updateRadialGauge(percentage) {
             const fillElement = document.getElementById('engagementFill');
             const textElement = document.getElementById('engagementText');
@@ -1518,14 +1521,37 @@
                 strokeColor = '#5EBD77';
             }
 
-            // Update the gauge
-            fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
+            // Start at 0%
+            fillElement.style.transition = 'none';
             fillElement.style.stroke = strokeColor;
             fillElement.style.strokeDasharray = '367.566';
-            fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
-            
-            // Update the text
-            textElement.textContent = `${percentage}%`;
+            fillElement.style.strokeDashoffset = 367.566; // This is 100% offset (0% shown)
+            textElement.textContent = '0%';
+
+            // Force a reflow to ensure the initial state is rendered
+            fillElement.getBoundingClientRect();
+
+            // Animate to the actual percentage
+            setTimeout(() => {
+                fillElement.style.transition = 'stroke-dashoffset 1s ease-in-out';
+                fillElement.style.strokeDashoffset = 367.566 * (1 - (percentage / 100));
+                
+                // Animate the percentage text
+                let currentPercent = 0;
+                const duration = 1000; // 1 second
+                const interval = 16; // ~60fps
+                const steps = duration / interval;
+                const increment = percentage / steps;
+                
+                const counter = setInterval(() => {
+                    currentPercent += increment;
+                    if (currentPercent >= percentage) {
+                        currentPercent = percentage;
+                        clearInterval(counter);
+                    }
+                    textElement.textContent = `${Math.round(currentPercent)}%`;
+                }, interval);
+            }, 50);
         }
 
         // Update the createResultsPage function to use this
@@ -1571,8 +1597,8 @@
                         <!-- First CTA section -->
                         <div class="cta-section" style="margin-top: 2rem;">
                             <h3>Your Health Snapshot Is Just the Beginning</h3>
-                            <p>With the full Culture MRI®, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                            <a href="https://thecultureMRI®.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Schedule The Culture MRI®® Demo</a>
+                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Schedule The Culture MRI® Demo</a>
                         </div>
                     </div>
 
@@ -1606,8 +1632,8 @@
                     <!-- Second CTA section -->
                     <div class="cta-section" style="margin-top: 2rem;">
                         <h3>Your Health Snapshot™ Is Just the Beginning</h3>
-                        <p>With the full Culture MRI®, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://thecultureMRI®.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Discover the Full Culture MRI®®</a>
+                        <p>With the full Culture MRI, uncover how well you’re meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button" target="_blank" rel="noopener noreferrer">Discover the Full Culture MRI®</a>
                     </div>
                     
                     <!-- Share section -->
@@ -1649,7 +1675,7 @@
             originalFormHTML = document.querySelector('.container').innerHTML;
             
             // Check for stored results
-            const storedResults = localStorage.getItem('cultureMRI®Results');
+            const storedResults = localStorage.getItem('cultureMRIResults');
             if (storedResults) {
                 const resultsData = JSON.parse(storedResults);
                 
@@ -1663,7 +1689,7 @@
                     updateDemoLinks();
                 } else {
                     // Clear old results
-                    localStorage.removeItem('cultureMRI®Results');
+                    localStorage.removeItem('cultureMRIResults');
                 }
             }
             
@@ -1699,7 +1725,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             console.log('URL Ref Code:', refCode); // Debug log
-            return refCode || 'CMRI®';
+            return refCode || 'CMRI';
         }
 
         // Update handleFormSubmit function
@@ -1764,7 +1790,7 @@
                 return;
             }
 
-            // If we get here, all questions are answered - proceed with form submission
+            // If we get here, all questions are answered
             const overallPercentage = Math.round(
                 calculateScores.getOverallScore(
                     scores.map(score => calculateScores.toPercentage(score))
@@ -1785,19 +1811,23 @@
             // Create results HTML
             createResultsPage(scores);
 
-            // Force scroll to top with smooth animation
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            // FORCE scroll to top - both the iframe and parent window
+            setTimeout(() => {
+                // Scroll iframe content
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
 
-            // If embedded, also scroll the parent window
-            if (window.parent !== window) {
-                window.parent.scrollTo({
-                    top: window.frameElement.offsetTop,
-                    behavior: 'smooth'
-                });
-            }
+                // If in iframe, scroll parent window
+                try {
+                    if (window.self !== window.top) {
+                        window.parent.document.body.scrollTop = 0;
+                        window.parent.document.documentElement.scrollTop = 0;
+                    }
+                } catch (e) {
+                    console.log('Cannot access parent frame');
+                }
+            }, 100);
         }
 
         // Update submitToGoogleSheet function
@@ -1807,7 +1837,7 @@
             const submissionData = {
                 ...data,
                 source: window.location.href,
-                referrer: document.referrer || 'CMRI®'
+                referrer: document.referrer || 'CMRI'
             };
             
             console.log('Submitting data:', submissionData); // Debug log
