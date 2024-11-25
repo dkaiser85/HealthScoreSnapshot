@@ -69,6 +69,25 @@ const calculateScores = {
     }
 };
 
+// Gauge Update Function
+function updateRadialGauge(percentage) {
+    const fillElement = document.querySelector('.gauge__fill');
+    const textElement = document.querySelector('#engagementText');
+    
+    if (!fillElement || !textElement) {
+        console.error('Gauge elements not found');
+        return;
+    }
+
+    const strokeColor = calculateScores.getColor(percentage);
+    fillElement.setAttribute('stroke', strokeColor);
+    
+    const circumference = 364.425; // 2 * π * 58 (radius)
+    const offset = circumference * (1 - (percentage / 100));
+    fillElement.style.strokeDashoffset = offset;
+    textElement.textContent = `${Math.round(percentage)}%`;
+}
+
 // DOM Manipulation Functions
 function createQuestionElement(question, index) {
     const questionItem = document.createElement('div');
@@ -146,20 +165,6 @@ function createResultsPage(scores) {
         updateRadialGauge(overallPercentage);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
-}
-
-// Gauge Update Function
-function updateRadialGauge(percentage) {
-    const fillElement = document.querySelector('.gauge__fill');
-    const textElement = document.querySelector('.gauge__text');
-    
-    const strokeColor = calculateScores.getColor(percentage);
-    fillElement.setAttribute('stroke', strokeColor);
-    
-    const circumference = 364.425;
-    const offset = circumference * (1 - (percentage / 100));
-    fillElement.style.strokeDashoffset = offset;
-    textElement.textContent = `${Math.round(percentage)}%`;
 }
 
 // Message Generation
