@@ -1360,45 +1360,51 @@
                 const container = document.querySelector('.container');
                 container.innerHTML = resultsHTML;
 
-                // Scroll to top smoothly
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                // Force scroll to top of iframe
+                window.scrollTo(0, 0);
+                container.scrollTo(0, 0);
+                container.scrollIntoView({ behavior: 'instant', block: 'start' });
 
-                // Animate the gauge to the final percentage
-                setTimeout(() => {
-                    updateRadialGauge(overallPercentage);
-                }, 100);
+                // Update demo links to open in new tab and store results
+                const demoLinks = document.querySelectorAll('a[href*="schedule-a-demo"]');
+                demoLinks.forEach(link => {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener');
+                    link.addEventListener('click', function(e) {
+                        // Store current results in localStorage
+                        const resultsData = {
+                            scores: scores,
+                            overallPercentage: overallPercentage,
+                            timestamp: new Date().getTime()
+                        };
+                        localStorage.setItem('cultureMRIResults', JSON.stringify(resultsData));
+                    });
+                });
             }
 
-            // Store original form HTML
-            let originalFormHTML;
-
-            // Initialize when page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                originalFormHTML = document.querySelector('.container').innerHTML;
-                
-                // Check for stored results
+            // Add this function to check and restore results
+            function checkForStoredResults() {
                 const storedResults = localStorage.getItem('cultureMRIResults');
                 if (storedResults) {
-                    const resultsData = JSON.parse(storedResults);
-                    
-                    // Check if results are less than 30 minutes old
-                    const thirtyMinutes = 30 * 60 * 1000;
-                    if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
-                        // Restore the results
-                        scores = resultsData.scores;
-                        Object.assign(formData, resultsData.formData);
-                        createResultsPage(scores);
-                        updateDemoLinks();
-                    } else {
-                        // Clear old results
+                    try {
+                        const resultsData = JSON.parse(storedResults);
+                        // Check if results are less than 30 minutes old
+                        const thirtyMinutes = 30 * 60 * 1000;
+                        if (new Date().getTime() - resultsData.timestamp < thirtyMinutes) {
+                            createResultsPage(resultsData.scores);
+                            // Clear stored results after restoring
+                            localStorage.removeItem('cultureMRIResults');
+                        }
+                    } catch (e) {
+                        console.error('Error restoring results:', e);
                         localStorage.removeItem('cultureMRIResults');
                     }
                 }
-                
-                initializeForm();
+            }
+
+            // Call this when the page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                checkForStoredResults();
             });
 
             // Initialize form and add event listeners
@@ -1722,6 +1728,11 @@
                 console.log('Share button clicked'); // Debug log
                 
                 try {
+                    // Make sure jsPDF is available
+                    if (typeof window.jspdf === 'undefined') {
+                        throw new Error('jsPDF library not loaded');
+                    }
+
                     // Create new jsPDF instance
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
@@ -1731,12 +1742,14 @@
                     
                     // Get the overall percentage from the gauge
                     const overallPercentage = parseInt(document.getElementById('engagementText').textContent);
+                    console.log('Overall percentage:', overallPercentage); // Debug log
                     
                     // Get scores from the pill gauges
                     const scores = Array.from(document.querySelectorAll('.pill-gauge')).map(gauge => {
                         const percentage = gauge.style.getPropertyValue('--percentage');
                         return parseInt(percentage);
                     });
+                    console.log('Collected scores:', scores); // Debug log
 
                     // Basic PDF Content
                     doc.setFontSize(20);
@@ -1784,22 +1797,24 @@
                     
                 } catch (error) {
                     console.error('Error details:', error); // More detailed error logging
-                    alert('There was an error generating the PDF. Please check the console for details.');
+                    console.error('Error stack:', error.stack); // Stack trace
+                    alert('There was an error generating the PDF. Please try again.');
                 }
             }
 
-            // Add this to your DOMContentLoaded event listener
+            // Add this to ensure jsPDF is loaded
             document.addEventListener('DOMContentLoaded', function() {
-                // Add jsPDF library
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-                script.onload = function() {
-                    console.log('jsPDF loaded successfully');
-                };
-                script.onerror = function() {
-                    console.error('Failed to load jsPDF');
-                };
-                document.head.appendChild(script);
+                if (typeof window.jspdf === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                    script.onload = function() {
+                        console.log('jsPDF loaded successfully');
+                    };
+                    script.onerror = function() {
+                        console.error('Failed to load jsPDF');
+                    };
+                    document.head.appendChild(script);
+                }
             });
         </script>
     </body>
