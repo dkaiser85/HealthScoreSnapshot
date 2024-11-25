@@ -1737,27 +1737,60 @@
                 // Clone the results content
                 const contentClone = resultsContainer.cloneNode(true);
                 
-                // Reset some styles for better printing
+                // Enhance styles for better printing
                 contentClone.style.width = '100%';
                 contentClone.style.height = 'auto';
                 contentClone.style.padding = '0';
                 contentClone.style.margin = '0';
+                contentClone.style.fontSize = '16px'; // Increase base font size
+                contentClone.style.lineHeight = '1.5';
                 
-                // Remove share buttons from the clone
-                const shareSection = contentClone.querySelector('.share-section');
-                if (shareSection) shareSection.remove();
+                // Enhance specific elements
+                contentClone.querySelectorAll('h1, h2, h3').forEach(heading => {
+                    heading.style.fontSize = heading.tagName === 'H1' ? '36px' : 
+                                           heading.tagName === 'H2' ? '30px' : '24px';
+                    heading.style.marginBottom = '20px';
+                });
+
+                contentClone.querySelectorAll('.gauge').forEach(gauge => {
+                    gauge.style.transform = 'scale(1.5)';
+                    gauge.style.margin = '60px auto';
+                });
+
+                contentClone.querySelectorAll('.score-section').forEach(section => {
+                    section.style.marginBottom = '30px';
+                    section.style.padding = '20px';
+                    section.style.border = '1px solid #eee';
+                });
+
+                // Remove share buttons and any navigation elements from the clone
+                const elementsToRemove = [
+                    '.share-section',
+                    '.return-button',
+                    '.close-button',
+                    '.options-popup'
+                ];
+                
+                elementsToRemove.forEach(selector => {
+                    const elements = contentClone.querySelectorAll(selector);
+                    elements.forEach(element => element.remove());
+                });
 
                 tempContainer.appendChild(contentClone);
                 document.body.appendChild(tempContainer);
 
-                // Create canvas
+                // Create canvas with better quality settings
                 const canvas = await html2canvas(tempContainer, {
-                    scale: 1, // Scale is already handled by dimensions
+                    scale: 1, // Scale is handled by dimensions
                     useCORS: true,
                     logging: false,
                     width: width,
                     height: height,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    imageTimeout: 0,
+                    removeContainer: true,
+                    letterRendering: true,
+                    allowTaint: true
                 });
 
                 // Remove temporary container
