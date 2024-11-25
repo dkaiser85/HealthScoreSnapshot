@@ -2,62 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Culture Snapshot Scorecard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizational Health Snapshot™ Survey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Organizational Health Snapshot™</h1>
-            <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="The Culture MRI Logo" class="logo">
-        </header>
+    <form class="form-container" id="surveyForm">
+        <img src="https://static.showit.co/file/JNQ0xT5W_YRPIk_uSDJ7-Q/176740/3.png" alt="Logo" class="logo">
+        <h1>Organizational Health Snapshot™</h1>
         
-        <form id="cultureForm">
-            <div class="personal-info">
-                <div class="form-group">
-                    <label for="name">Name*</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="company">Company*</label>
-                    <input type="text" id="company" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email*</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="role">Job Role*</label>
-                    <input type="text" id="role" required>
-                </div>
+        <div class="personal-info">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
             </div>
-
-            <div class="instruction-text">
-                Indicate the degree to which you agree or disagree with these statements:
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company" required>
             </div>
-
-            <div class="assessment-grid">
-                <div class="scale-header">
-                    <span>DISAGREE</span>
-                    <span>AGREE</span>
-                </div>
-                
-                <div class="question-group">
-                    <!-- Questions will be added via JavaScript -->
-                </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
             </div>
-
-            <button type="submit">See Your Snapshot</button>
-        </form>
-
-        <div id="results" class="results-container" style="display: none;">
-            <h2>Your Culture Snapshot Results</h2>
-            <div id="scoreResults"></div>
-            <div id="categoryScores"></div>
+            <div class="form-group">
+                <label for="role">Job Role:</label>
+                <input type="text" id="role" name="role" required>
+            </div>
         </div>
-    </div>
 
+        <h2>Indicate the degree to which you agree or disagree with these statements:</h2>
+        <div class="scale-labels">
+            <span>DISAGREE</span>
+            <span>AGREE</span>
+        </div>
+
+        <div class="questions">
+            <!-- Questions will be dynamically added via JavaScript -->
+        </div>
+
+        <button type="submit" class="submit-btn">See Your Snapshot</button>
+    </form>
     <script src="script.js"></script>
 </body>
 </html>
