@@ -117,8 +117,7 @@ function showResults() {
     const unanswered = document.querySelectorAll('.question-item:not(:has(.rating-button.selected))');
     if (unanswered.length > 0) {
         unanswered.forEach(item => item.classList.add('unanswered'));
-        alert('Please answer all questions before submitting.');
-        return;
+        return; // Stop here if there are unanswered questions
     }
 
     const score = calculateScore();
