@@ -1253,7 +1253,7 @@
             let resultsHTML = `
                 <header style="margin-bottom: 0.5rem; position: relative;">
                     <button onclick="showQuestionnaire()" class="close-button" style="position: absolute; right: 0; top: 0; background: none; border: none; font-size: 24px; cursor: pointer; color: #333;">&times;</button>
-                    <h1>Your Organizational Health Results</h1>
+                    <h1>Organizational Health Snapshot™ Results</h1>
                 </header>
                 <div class="results-container" style="margin-top: 0;">
                     <div class="overall-score" style="margin-top: 0;">
@@ -1277,26 +1277,30 @@
                             </svg>
                         </div>
                         
-                        <!-- Add score message here -->
+                        <!-- Score message -->
                         <div class="score-message" style="margin-top: 2rem;">
                             ${getScoreMessage(overallPercentage)}
                         </div>
+
+                        <!-- CTA section -->
+                        <div class="cta-section" style="margin-top: 2rem;">
+                            <h3>Your Health Snapshot Is Just the Beginning</h3>
+                            <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
+                            <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
+                        </div>
                     </div>
-                    
-                    <!-- Rest of your results page content -->
+
+                    <!-- Individual scores section -->
                     <div class="individual-scores">
                         <h3>Detailed Breakdown</h3>
                         ${scores
-                            // Create array of objects with score and question info
                             .map((score, index) => ({
                                 score: score,
                                 percentage: Math.round(calculateScores.toPercentage(score)),
                                 title: questions[index].title,
                                 description: questions[index].description
                             }))
-                            // Sort from lowest to highest score
                             .sort((a, b) => a.percentage - b.percentage)
-                            // Generate HTML for each score
                             .map(item => {
                                 const color = calculateScores.getColor(item.percentage);
                                 return `
@@ -1313,27 +1317,7 @@
                             }).join('')}
                     </div>
                     
-                    <!-- Add another CTA at the bottom -->
-                    <div class="cta-section bottom">
-                        <h3>Your Health Snapshot Is Just the Beginning</h3>
-                        <p>With the full Culture MRI, uncover how well you're meeting employee needs, driving productivity, and unlocking untapped profitability across your organization.</p>
-                        <a href="https://theculturemri.com/schedule-a-demo" class="cta-button">Schedule The Culture MRI® Demo</a>
-                    </div>
-
-                    <div id="optionsPopup" class="options-popup">
-                        <div class="popup-content">
-                            <h3>What would you like to do next?</h3>
-                            <div class="popup-options">
-                                <a href="#" onclick="shareResults(); hideOptionsPopup(); return false;" class="popup-option">Share Results with Your Team</a>
-                                <a href="https://theculturemri.com/schedule-a-demo" class="popup-option">Schedule The Culture MRI® Demo</a>
-                                <a href="https://theculturemri.com/survey" class="popup-option">Take The Assessment</a>
-                                <a href="https://www.amazon.com/Culture-New-Leadership-Millennials-Performance/dp/B0D4VYQZYM/ref=tmm_pap_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.2TGodGMc88iaCp-k-UVrECu-Z4kDlfn56t6NOgRL0Q4JIKF4bQnLiXy5qFFBjz5jYEzC3stjZQqzG1LilsADDXr7g62Pm4Y-2dMtRaPua478HuGNogxlgVaibGXEke5EpodzCIh3eZr4z4BE-CxnxktpMhO58YbTlRk3h0srx2zDw8kRdb1sw_KCAIN9BUqCEL_9nJ9FPZHyhuz9iHrPdl7VahPVkwjfd_x4oSh1-jE.0LDv9aX7t7i3MYZFK_ryt6fSB306B1vpNhInWBH7ONM&qid=1732475031&sr=8-1" class="popup-option">Buy The Book</a>
-                            </div>
-                            <button class="popup-close" onclick="hideOptionsPopup()">Close</button>
-                        </div>
-                    </div>
-
-                    <!-- Add share section at bottom -->
+                    <!-- Share section -->
                     <div class="share-section bottom">
                         <p>Found these insights valuable? Share them with your team:</p>
                         <button onclick="downloadScreenshot()" class="share-button">
